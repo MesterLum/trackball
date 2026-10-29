@@ -15,7 +15,7 @@ document.addEventListener('alpine:init', () => {
     explode: 0,
     visible: { cup: true, carrier: true, tray: true, palmrest: true, ball: true },
     toast: '',
-    theme: localStorage.getItem('theme') || 'corporate',
+    theme: localStorage.getItem('theme') || 'night',
     _abort: null, _es: null, _timer: null,
 
     // ---------------------------------------------------------------- lifecycle

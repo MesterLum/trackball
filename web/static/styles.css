@@ -19,3 +19,7 @@
 .chip:hover { opacity: .85; }
 .chip-off { opacity: .4; text-decoration: line-through; }
 .dot { width: 9px; height: 9px; border-radius: 3px; display: inline-block; }
+
+/* presets */
+article.card figure img { filter: saturate(1.05); }
+[data-theme="night"] article.card figure { background: #0f172a; }

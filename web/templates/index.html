@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="corporate">
+<html lang="en" data-theme="night">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -19,7 +19,7 @@
       <span class="logo" aria-hidden="true"><span class="logo-ball"></span></span>
       <div>
         <div class="font-bold leading-tight">Trackball module</div>
-        <div class="text-xs opacity-60 leading-tight">parametric, printable, PMW3360</div>
+        <div class="text-xs opacity-60 leading-tight">parametric · printable · live</div>
       </div>
     </div>
     <div class="flex-none gap-2">
@@ -29,11 +29,12 @@
         <span x-text="rendering ? 'rendering' : (design ? (fits ? 'fits' : 'does not fit') : '…')"></span>
       </span>
       <label class="swap swap-rotate btn btn-ghost btn-sm btn-circle" title="theme">
-        <input type="checkbox" :checked="theme === 'night'" @change="setTheme($event.target.checked ? 'night' : 'corporate')">
+        <input type="checkbox" :checked="theme === 'night'" @change="setTheme($event.target.checked ? 'night' : 'winter')">
         <svg class="swap-on w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
         <svg class="swap-off w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.79 1.42-1.41zM4 10.5H1v2h3v-2zm9-9.95h-2V3.5h2V.55zm7.45 3.91l-1.41-1.41-1.79 1.79 1.41 1.41 1.79-1.79zm-3.21 13.7l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM20 10.5v2h3v-2h-3zm-8-5c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm-1 16.95h2V19.5h-2v2.95zm-7.45-3.91l1.41 1.41 1.79-1.8-1.41-1.41-1.79 1.8z"/></svg>
       </label>
-      <a class="btn btn-ghost btn-sm" href="/docs" target="_blank" rel="noopener">API</a>
+      <a class="btn btn-ghost btn-sm gap-1" href="/docs" target="_blank" rel="noopener">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>API</a>
     </div>
   </header>
 
@@ -62,11 +63,11 @@
                     </div>
                     <div class="flex items-center gap-2 mt-1">
                       <input type="range" class="range range-primary range-xs flex-1" :min="o.min" :max="o.max" :step="o.step || 1"
-                             x-model.number="cfg[o.name]" @input="update()" :title="o.help">
+                             x-model.number="cfg[o.name]" @input="update()" @change="$el.blur()" @wheel="$el.blur()" :title="o.help">
                       <div class="join">
                         <button class="btn btn-xs join-item" @click="nudge(o.name, -1)" aria-label="decrease">−</button>
                         <input type="number" class="input input-xs input-bordered join-item w-16 text-center font-mono"
-                               :min="o.min" :max="o.max" :step="o.step || 1" x-model.number="cfg[o.name]" @input="update()">
+                               :min="o.min" :max="o.max" :step="o.step || 1" x-model.number="cfg[o.name]" @input="update()" @wheel="$el.blur()">
                         <button class="btn btn-xs join-item" @click="nudge(o.name, 1)" aria-label="increase">+</button>
                       </div>
                     </div>
@@ -111,9 +112,11 @@
           </div>
         </template>
 
-        <div class="flex gap-2 pt-2 border-t border-base-300">
-          <button class="btn btn-sm btn-outline flex-1" @click="reset()">Reset</button>
-          <button class="btn btn-sm btn-outline flex-1" @click="share()">Share link</button>
+        <div class="flex gap-2 pt-3 border-t border-base-300">
+          <button class="btn btn-sm btn-ghost flex-1 gap-1" @click="reset()">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h5M20 20v-5h-5M5.6 9A7.5 7.5 0 0119 7.5M18.4 15A7.5 7.5 0 015 16.5"/></svg>Reset</button>
+          <button class="btn btn-sm btn-secondary flex-1 gap-1" @click="share()">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.8 10.2a4 4 0 010 5.6l-2.8 2.8a4 4 0 01-5.6-5.6l1.4-1.4M10.2 13.8a4 4 0 010-5.6l2.8-2.8a4 4 0 015.6 5.6l-1.4 1.4"/></svg>Share link</button>
         </div>
       </div>
     </aside>
@@ -143,21 +146,26 @@
           </div>
 
           <!-- overlay: tools -->
-          <div class="absolute top-3 right-3 flex items-center gap-2 bg-base-100/80 backdrop-blur rounded-full px-3 py-1.5 shadow">
+          <div class="absolute top-3 right-3 flex items-center gap-2 bg-base-100/80 backdrop-blur rounded-full pl-4 pr-2 py-1 shadow-lg border border-base-content/10">
             <span class="text-xs opacity-70">explode</span>
-            <input type="range" min="0" max="40" step="1" class="range range-primary range-xs w-28" x-model.number="explode">
-            <button class="btn btn-ghost btn-xs" @click="viewer.fit()" title="fit view">⌖ fit</button>
-            <button class="btn btn-ghost btn-xs" @click="viewer.snapshot()" title="save PNG">📷</button>
+            <input type="range" min="0" max="40" step="1" class="range range-primary range-xs w-28" x-model.number="explode" @wheel="$el.blur()">
+            <div class="join">
+              <button class="btn btn-ghost btn-xs join-item" @click="viewer.fit()" title="fit view">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4"/></svg></button>
+              <button class="btn btn-ghost btn-xs join-item" @click="viewer.snapshot()" title="save PNG">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h1.2a2 2 0 001.7-.9l.7-1.2A2 2 0 0110.3 4h3.4a2 2 0 011.7.9l.7 1.2a2 2 0 001.7.9H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><circle cx="12" cy="13" r="3.5"/></svg></button>
+            </div>
           </div>
 
           <!-- overlay: state -->
           <div class="absolute bottom-3 left-3 right-3 flex items-end justify-between gap-3 pointer-events-none">
             <div class="text-xs opacity-60">drag to orbit · wheel to zoom · right-drag to pan</div>
-            <div class="pointer-events-auto flex gap-2">
-              <a class="btn btn-primary btn-sm shadow" :class="{'btn-disabled': !allDone}" :href="stlUrl">
+            <div class="pointer-events-auto join shadow-lg">
+              <a class="btn btn-primary btn-sm join-item gap-2" :class="{'btn-disabled': !allDone}" :href="stlUrl">
                 <span class="loading loading-spinner loading-xs" x-show="rendering"></span>
+                <svg x-show="!rendering" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/></svg>
                 <span x-text="allDone ? 'Download STLs' : 'Rendering…'"></span></a>
-              <a class="btn btn-sm shadow" :class="{'btn-disabled': !design}" :href="scadUrl">SCAD</a>
+              <a class="btn btn-sm join-item btn-neutral" :class="{'btn-disabled': !design}" :href="scadUrl">SCAD</a>
             </div>
           </div>
         </div>
@@ -203,7 +211,8 @@
         <div class="card-body p-4 gap-3">
           <div class="flex items-center gap-2">
             <code class="flex-1 text-xs break-all bg-base-200 rounded px-3 py-2" x-text="design && design.cmd"></code>
-            <button class="btn btn-sm" @click="copy(design.cmd, 'Command copied')">Copy</button>
+            <button class="btn btn-sm btn-square btn-ghost" @click="copy(design.cmd, 'Command copied')" title="copy command">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg></button>
           </div>
           <details class="collapse collapse-arrow bg-base-200">
             <summary class="collapse-title text-sm font-medium min-h-0 py-2">Dimensions and assumptions</summary>
@@ -231,6 +240,10 @@
                 <div class="flex flex-wrap gap-1">
                   <template x-for="t in p.tags"><span class="badge badge-sm badge-outline" x-text="t"></span></template>
                 </div>
+                <div class="card-actions justify-end mt-1">
+                  <button class="btn btn-sm" :class="activePreset === p.key ? 'btn-primary' : 'btn-outline btn-primary'"
+                          x-text="activePreset === p.key ? 'Loaded' : 'Load'"></button>
+                </div>
               </div>
             </article>
           </template>
@@ -238,7 +251,7 @@
       </section>
 
       <footer class="text-xs opacity-50 pb-4">
-        Generated with SolidPython2 and OpenSCAD. Printed parts: cup, carrier, tray, optional palm rest.
+        Generated with SolidPython2 and OpenSCAD. Printed parts: cup, carrier, tray, optional palm rest. Sensor boards: Bastardkb PMW3360, round PMW3389 module.
       </footer>
     </main>
   </div>

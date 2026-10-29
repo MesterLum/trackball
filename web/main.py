@@ -30,7 +30,7 @@ def create_app(out_dir: Path | None = None) -> FastAPI:
     static_dir = Path(__file__).resolve().parent / "static"
 
     app = FastAPI(title="Trackball module configurator", version="0.3.0",
-                  description="Parametric trackball module around the Bastardkb PMW3360 PCB. "
+                  description="Parametric, printable trackball module (PMW3360 / PMW3389 sensor boards). "
                               "Validate a configuration, render the printable parts, download STLs.")
     app.state.designs = DesignService(out)
     app.state.render = RenderQueue(out)
