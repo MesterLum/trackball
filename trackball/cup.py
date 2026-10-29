@@ -25,7 +25,7 @@ def cup(d: Design):
 
     # --- outer body: hull of a wide base disk and the dome ring at the rim
     # the straight skirt must be at least as tall as the insert holes
-    base = zcyl(c.base_dia, z_bot, z_bot + c.insert_depth + 1.5, fn)
+    base = zcyl(d.skirt_dia, z_bot, z_bot + c.insert_depth + 1.5, fn)
     # the hull overshoots the rim by 1 mm so the opening cut leaves no coplanar faces
     top = zcyl(2 * dome_r, -c.base_top_below_center, z_rim + 1.0, fn)
     body = hull()(base, top)
@@ -56,7 +56,7 @@ def cup(d: Design):
     # --- heat-set inserts for the carrier screws (from below)
     inserts = []
     for ang in c.carrier_screw_angles:
-        x, y = polar(c.carrier_screw_radius, ang)
+        x, y = polar(c.screw_radius(R), ang)
         inserts.append(zcyl(c.insert_dia, z_bot - EPS, z_bot + c.insert_depth, fn).translate([x, y, 0]))
 
     return body - cavity - opening - window - union()(*cutters) - union()(*inserts)

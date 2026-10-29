@@ -49,6 +49,19 @@ def place_on_ball(obj, ball_r: float, seat_offset: float, azimuth_deg: float, po
     return obj.rotate([0, -polar_deg, 0]).rotate([0, 0, azimuth_deg]).translate(seat)
 
 
+def to_world(obj, deck):
+    """Deck frame -> world frame (tilt about X, then tent about Y)."""
+    return obj.rotate([deck.tilt_deg, 0, 0]).rotate([0, deck.tent_deg, 0])
+
+
+def half_space_above(z: float, size=(600.0, 600.0), center=(0.0, 0.0), height: float = 600.0):
+    """Box whose bottom face is at world z (for intersections). Keep it only as
+    big as needed: OpenSCAD's --viewall frames every primitive, even the
+    operands of an intersection."""
+    sx, sy = size
+    return cube([sx, sy, height]).translate([center[0] - sx / 2, center[1] - sy / 2, z])
+
+
 def support_lowest_z(ball_r: float, seat_offset: float, polar_deg: float,
                      reach: float, radius: float) -> float:
     """Lowest Z touched by a support cutter (for sanity checks)."""
