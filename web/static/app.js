@@ -16,7 +16,10 @@ document.addEventListener('alpine:init', () => {
     visible: { cup: true, carrier: true, tray: true, palmrest: true, ball: true },
     toast: '',
     theme: localStorage.getItem('theme') || 'night',
-    _abort: null, _es: null, _timer: null,
+    auto: boot.settings.auto_render,       // render previews as you edit
+    settings: boot.settings,
+    finalizing: null,                      // {done, total} while the full-quality STLs render
+    _abort: null, _es: null, _timer: null, _renderId: null,
 
     // ---------------------------------------------------------------- lifecycle
     init() {
@@ -78,7 +81,7 @@ document.addEventListener('alpine:init', () => {
       const ac = new AbortController(); this._abort = ac;
       let r;
       try {
-        r = await fetch('/api/design', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        r = await fetch('/api/design?quality=preview', { method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(this.cfg), signal: ac.signal });
       } catch (e) { if (e.name === 'AbortError') return; this.say('Server unreachable'); return; }
       if (ac !== this._abort) return;
@@ -88,12 +91,15 @@ document.addEventListener('alpine:init', () => {
       const d = await r.json();
       this.design = d;
       viewer.setFrame({ tilt: d.tilt, tent: d.tent, ball_r: d.ball_r, floor_z: d.floor_z });
-      if (d.fits) this.render(d.id); else { this.stopEvents(); this.rendering = false; }
+      if (d.fits && this.auto) this.render(d.id); else { this.stopEvents(); this.rendering = false; }
     },
+    renderNow() { if (this.design && this.design.fits) this.render(this.design.id); },
     async render(id) {
       this.stopEvents();
       this.rendering = true;
-      const st = await (await fetch(`/api/design/${id}/render`, { method: 'POST' })).json();
+      const prev = this._renderId && this._renderId !== id ? `?supersedes=${this._renderId}` : '';
+      this._renderId = id;
+      const st = await (await fetch(`/api/design/${id}/render${prev}`, { method: 'POST' })).json();
       if (!this.design || this.design.id !== id) return;
       const names = st.parts.map((p) => p.name);
       viewer.clear(names); viewer.markStale(names);
@@ -112,6 +118,28 @@ document.addEventListener('alpine:init', () => {
       this._es.onerror = () => { this.stopEvents(); this.rendering = false; };
     },
     stopEvents() { if (this._es) { this._es.close(); this._es = null; } },
+    /** full-quality STLs: a separate design id (final $fn), rendered on request, then downloaded */
+    async downloadFinal() {
+      if (!this.design || !this.design.fits || this.finalizing) return;
+      const r = await fetch('/api/design?quality=final', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(this.cfg) });
+      if (!r.ok) { this.say('Could not prepare the final design'); return; }
+      const d = await r.json();
+      let st = await (await fetch(`/api/design/${d.id}/render`, { method: 'POST' })).json();
+      const total = st.parts.length;
+      const tick = (s) => { this.finalizing = { done: s.parts.filter((p) => p.state === 'done').length, total }; };
+      tick(st);
+      if (!st.done) {
+        await new Promise((resolve) => {
+          const es = new EventSource(`/api/design/${d.id}/events`);
+          es.onmessage = (e) => { st = JSON.parse(e.data); tick(st); };
+          es.addEventListener('end', () => { es.close(); resolve(); });
+          es.onerror = () => { es.close(); resolve(); };
+        });
+      }
+      this.finalizing = null;
+      if (!st.ok) { this.say('Final render failed'); return; }
+      location.href = `/api/design/${d.id}/stl.zip`;
+    },
 
     // ---------------------------------------------------------------- ui helpers
     toggle(name) { this.visible[name] = !this.visible[name]; viewer.setVisible(name, this.visible[name]); },

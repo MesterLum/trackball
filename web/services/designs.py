@@ -42,12 +42,14 @@ class DesignResult:
             "tilt": d.deck.tilt_deg, "tent": d.deck.tent_deg, "ball_r": d.ball.r,
             "floor_z": d.z_floor_bottom, "footprint": tuple(round(x, 1) for x in d.footprint[:2]),
             "height": round(d.ball.r - d.z_floor_bottom, 1), "values": self.values,
+            "fn": self.values["fn"], "bom": d.bom(),
         }
 
 
 class DesignService:
-    def __init__(self, out_dir: Path):
+    def __init__(self, out_dir: Path, fn_tiers: dict[str, int] | None = None):
         self.out = out_dir
+        self.fn_tiers = fn_tiers or {}
 
     @staticmethod
     def design_id(values: dict[str, Any]) -> str:
@@ -61,9 +63,12 @@ class DesignService:
             return None
         return self.prepare(json.loads(p.read_text()), write=False)
 
-    def prepare(self, values: dict[str, Any], write: bool = True) -> DesignResult:
-        """Validate (ValueError on bad values) and write SCAD files when the design fits."""
+    def prepare(self, values: dict[str, Any], write: bool = True, quality: str | None = None) -> DesignResult:
+        """Validate (ValueError on bad values) and write SCAD files when the design fits.
+        ``quality`` ("preview" / "final") overrides $fn with the configured tier."""
         v = options.coerce(values)
+        if quality in self.fn_tiers:
+            v["fn"] = self.fn_tiers[quality]
         d = options.make_design(v)
         problems = d.validate()
         did = self.design_id(v)

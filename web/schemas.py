@@ -68,6 +68,13 @@ class PresetSchema(BaseModel):
     tags: list[str]
     values: dict[str, Any]
     thumb: str | None = None
+    bundle: str | None = None       # prebuilt zip with STLs, photos and BOM, when available
+
+
+class BomItem(BaseModel):
+    item: str
+    qty: int
+    note: str = ""
 
 
 class DesignResponse(BaseModel):
@@ -84,11 +91,20 @@ class DesignResponse(BaseModel):
     footprint: tuple[float, float]
     height: float
     values: dict[str, Any]
+    fn: int
+    bom: list[BomItem]
+
+
+class SettingsResponse(BaseModel):
+    fn_preview: int
+    fn_final: int
+    workers: int
+    auto_render: bool
 
 
 class PartStatus(BaseModel):
     name: str
-    state: Literal["queued", "rendering", "done", "error"]
+    state: Literal["queued", "rendering", "done", "error", "cancelled"]
     url: str | None = None
     color: str
     frame: Literal["deck", "world"]

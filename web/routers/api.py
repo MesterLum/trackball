@@ -7,12 +7,14 @@ import json
 import zipfile
 from pathlib import Path
 
-from fastapi import APIRouter, HTTPException, Request
+from typing import Literal
+
+from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 
 from trackball.presets import PRESETS
 from web.schemas import (DesignRequest, DesignResponse, OptionsResponse, PresetSchema, RenderStatus,
-                         options_response)
+                         SettingsResponse, options_response)
 
 router = APIRouter(prefix="/api", tags=["design"])
 
@@ -26,22 +28,35 @@ def get_options():
     return options_response()
 
 
-@router.get("/presets", response_model=list[PresetSchema], summary="Proposed configurations")
-def get_presets(request: Request):
-    static = Path(request.app.state.static_dir) / "presets"
+@router.get("/settings", response_model=SettingsResponse, summary="Render quality tiers and worker count")
+def get_settings(request: Request):
+    return request.app.state.settings.public()
+
+
+def preset_entries(app) -> list[dict]:
+    static = Path(app.state.static_dir) / "presets"
+    bundles = Path(app.state.settings.presets_dir)
     out = []
     for p in PRESETS:
-        thumb = f"/static/presets/{p.key}.jpg" if (static / f"{p.key}.jpg").exists() else None
-        out.append(PresetSchema(key=p.key, title=p.title, blurb=p.blurb, tags=list(p.tags), values=p.values, thumb=thumb))
+        out.append({"key": p.key, "title": p.title, "blurb": p.blurb, "tags": list(p.tags), "values": p.values,
+                    "thumb": f"/static/presets/{p.key}.jpg" if (static / f"{p.key}.jpg").exists() else None,
+                    "bundle": f"/presets/{p.key}/{p.key}.zip" if (bundles / p.key / f"{p.key}.zip").exists() else None})
     return out
+
+
+@router.get("/presets", response_model=list[PresetSchema], summary="Proposed configurations")
+def get_presets(request: Request):
+    return preset_entries(request.app)
 
 
 @router.post("/design", response_model=DesignResponse,
              summary="Validate a configuration and prepare its SCAD files (instant)")
-def post_design(body: DesignRequest, request: Request):  # type: ignore[valid-type]
+def post_design(body: DesignRequest, request: Request,  # type: ignore[valid-type]
+                quality: Literal["preview", "final", "custom"] = Query(
+                    "custom", description="preview/final override $fn with the server's tiers; custom keeps the request's fn")):
     designs, _ = _svc(request)
     try:
-        res = designs.prepare(body.model_dump())
+        res = designs.prepare(body.model_dump(), quality=quality)
     except ValueError as e:
         # options.coerce reports "name: message"
         name, _, msg = str(e).partition(": ")
@@ -51,12 +66,21 @@ def post_design(body: DesignRequest, request: Request):  # type: ignore[valid-ty
 
 
 @router.post("/design/{did}/render", response_model=RenderStatus, summary="Queue the printable parts")
-def post_render(did: str, request: Request):
+def post_render(did: str, request: Request,
+                supersedes: str | None = Query(None, description="design id whose pending renders should be cancelled")):
     designs, rq = _svc(request)
     names = designs.part_names(did)
     if not names:
         raise HTTPException(404, "unknown design, or it does not fit (nothing to render)")
+    if supersedes and supersedes != did:
+        rq.cancel(supersedes)
     return rq.submit(did, names)
+
+
+@router.delete("/design/{did}/render", summary="Cancel pending renders of a design")
+def delete_render(did: str, request: Request):
+    _, rq = _svc(request)
+    return {"cancelled": rq.cancel(did)}
 
 
 @router.get("/design/{did}/status", response_model=RenderStatus)

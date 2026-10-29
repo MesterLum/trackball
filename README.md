@@ -68,26 +68,53 @@ Open any `.scad` in OpenSCAD and press F5 for a preview, F6 to render.
 OpenSCAD 2021.01 renders each part in 10 to 25 s at `$fn=96`. A 2025
 snapshot with Manifold is much faster if you iterate a lot.
 
+## Run it from Docker (recommended)
+
+One image does everything; `./out` holds the results.
+
+```sh
+docker compose up --build                                    # configurator at http://localhost:8321 (API docs at /docs)
+docker run --rm -v "$PWD/out:/data" trackball-web presets     # prebuilt bundles for all 16 presets + gallery
+docker run --rm -v "$PWD/out:/data" trackball-web build --tilt 10 --palm 40 --stl   # CLI, same flags as build.py
+docker run --rm trackball-web test                           # pytest inside the image
+```
+
+Environment variables (see `docker-compose.yml`): `TRACKBALL_FN_PREVIEW` (32, curve
+resolution of the live preview), `TRACKBALL_FN_FINAL` (96, printable STLs),
+`TRACKBALL_WORKERS` (parallel OpenSCAD processes), `TRACKBALL_AUTO_RENDER`
+(0 = render previews only when you press the button), `TRACKBALL_OUT`, `TRACKBALL_PRESETS`.
+
+GitHub Actions (`.github/workflows/build.yml`) builds the image, runs the tests
+and the preset bundles inside it, uploads the bundles as artifacts, and on a
+`v*` tag pushes the image to GHCR, attaches the bundle zips to the release and
+publishes the bundle gallery to GitHub Pages.
+
+## Prebuilt presets
+
+`trackball/presets.py` holds 16 proposed builds. `presets_bundle.py` (or the
+`presets` Docker command) renders each at full quality into
+`out/presets/<key>/`: the STLs, four photos, `bom.md` (everything to buy, with
+counts), `summary.txt` (dimensions), `design.json`, the CLI command, and a zip.
+`out/presets/index.html` is a gallery of all of them; the web page shows a
+"prebuilt" download on each preset card when its bundle exists.
+
 ## Web configurator (FastAPI + Alpine.js + Three.js)
 
 ```sh
-docker compose up --build              # http://localhost:8321  (API docs at /docs)
-# or without Docker (needs openscad on PATH):
-uv run uvicorn web.main:app --reload   # http://127.0.0.1:8000
-uv run pytest                          # API + option tests (render test runs only if openscad exists)
+uv run uvicorn web.main:app --reload   # without Docker, needs openscad on PATH: http://127.0.0.1:8000
+uv run pytest
 ```
 
-One page, no build step: Tailwind + daisyUI for the controls, Alpine.js for
-state, Three.js for the 3D view. Every change calls `POST /api/design`,
-which validates the values (pydantic, 422 with a per-field map) and the
-geometry (the "does not fit" list), and returns the summary instantly. If
-the design fits, its printable parts are queued (`POST /api/design/<id>/render`)
-and the page follows `GET /api/design/<id>/events` (server-sent events),
-swapping each STL into the viewer as OpenSCAD finishes it. STLs are cached
-per part by the hash of that part's SCAD text, so changing the tilt
-re-renders the tray and palm rest only, not the cup. The current design is
-mirrored into the URL, so a link reproduces it, and twelve proposed builds
-(`trackball/presets.py`) can be loaded with one click.
+One page, no build step: Tailwind + daisyUI, Alpine.js, Three.js. Every change
+calls `POST /api/design?quality=preview`, which validates the values (pydantic,
+422 with a per-field map) and the geometry ("does not fit" list) and returns the
+summary and bill of materials instantly. If the design fits and "live" is on,
+the printable parts are queued at preview quality and the page follows the
+server-sent events, swapping each STL into the viewer as it finishes; a newer
+edit cancels the previous design's pending renders ("latest wins"). STLs are
+cached per part by the hash of their SCAD text. "Download STLs" renders the
+same design at final quality on request and downloads the zip. The design is
+mirrored into the URL so a link reproduces it.
 
 Architecture:
 
@@ -97,7 +124,9 @@ Architecture:
 | `trackball/presets.py`    | the proposed configurations (web gallery and `demo.py`)     |
 | `web/schemas.py`          | pydantic request/response models                            |
 | `web/services/designs.py` | values → validated `Design` → SCAD files + hashes           |
-| `web/services/render.py`  | OpenSCAD worker thread, per-part STL cache, status          |
+| `web/services/render.py`  | OpenSCAD worker pool, per-part STL cache, cancellation, status |
+| `web/settings.py`         | environment-variable settings (quality tiers, workers, paths) |
+| `presets_bundle.py`       | prebuilt bundles + gallery for the presets                  |
 | `web/routers/api.py`      | `/api/options`, `/api/presets`, `/api/design…`, zips, SSE   |
 | `web/routers/pages.py`    | the page                                                    |
 | `web/static/`, `web/templates/` | `app.js` (Alpine), `viewer.js` (Three.js), styles, preset thumbnails |

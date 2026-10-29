@@ -28,6 +28,10 @@
         <span class="loading loading-spinner loading-xs" x-show="rendering"></span>
         <span x-text="rendering ? 'rendering' : (design ? (fits ? 'fits' : 'does not fit') : '…')"></span>
       </span>
+      <label class="label cursor-pointer gap-2 py-0" title="render the preview while you edit">
+        <span class="label-text text-xs">live</span>
+        <input type="checkbox" class="toggle toggle-primary toggle-sm" x-model="auto" @change="auto && renderNow()">
+      </label>
       <label class="swap swap-rotate btn btn-ghost btn-sm btn-circle" title="theme">
         <input type="checkbox" :checked="theme === 'night'" @change="setTheme($event.target.checked ? 'night' : 'winter')">
         <svg class="swap-on w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
@@ -159,13 +163,17 @@
 
           <!-- overlay: state -->
           <div class="absolute bottom-3 left-3 right-3 flex items-end justify-between gap-3 pointer-events-none">
-            <div class="text-xs opacity-60">drag to orbit · wheel to zoom · right-drag to pan</div>
-            <div class="pointer-events-auto join shadow-lg">
-              <a class="btn btn-primary btn-sm join-item gap-2" :class="{'btn-disabled': !allDone}" :href="stlUrl">
-                <span class="loading loading-spinner loading-xs" x-show="rendering"></span>
-                <svg x-show="!rendering" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/></svg>
-                <span x-text="allDone ? 'Download STLs' : 'Rendering…'"></span></a>
-              <a class="btn btn-sm join-item btn-neutral" :class="{'btn-disabled': !design}" :href="scadUrl">SCAD</a>
+            <div class="text-xs opacity-60">drag to orbit · wheel to zoom · right-drag to pan · preview at $fn <span x-text="settings.fn_preview"></span>, downloads at $fn <span x-text="settings.fn_final"></span></div>
+            <div class="pointer-events-auto flex gap-2">
+              <button class="btn btn-sm btn-accent shadow-lg gap-1" x-show="!auto && fits && !rendering" @click="renderNow()">Render preview</button>
+              <div class="join shadow-lg">
+                <button class="btn btn-primary btn-sm join-item gap-2" :class="{'btn-disabled': !fits || finalizing}" @click="downloadFinal()"
+                        :title="'full quality ($fn ' + settings.fn_final + '), rendered on request'">
+                  <span class="loading loading-spinner loading-xs" x-show="finalizing"></span>
+                  <svg x-show="!finalizing" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/></svg>
+                  <span x-text="finalizing ? `Rendering ${finalizing.done}/${finalizing.total}…` : 'Download STLs'"></span></button>
+                <a class="btn btn-sm join-item btn-neutral" :class="{'btn-disabled': !design}" :href="scadUrl">SCAD</a>
+              </div>
             </div>
           </div>
         </div>
@@ -215,6 +223,15 @@
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg></button>
           </div>
           <details class="collapse collapse-arrow bg-base-200">
+            <summary class="collapse-title text-sm font-medium min-h-0 py-2">Parts to buy (bill of materials)</summary>
+            <div class="collapse-content overflow-x-auto">
+              <table class="table table-xs">
+                <thead><tr><th class="w-12">qty</th><th>item</th><th>note</th></tr></thead>
+                <tbody><template x-for="b in (design ? design.bom : [])"><tr><td x-text="b.qty"></td><td x-text="b.item"></td><td class="opacity-70" x-text="b.note"></td></tr></template></tbody>
+              </table>
+            </div>
+          </details>
+          <details class="collapse collapse-arrow bg-base-200">
             <summary class="collapse-title text-sm font-medium min-h-0 py-2">Dimensions and assumptions</summary>
             <div class="collapse-content"><pre class="text-xs whitespace-pre-wrap" x-text="design && design.summary"></pre></div>
           </details>
@@ -240,7 +257,9 @@
                 <div class="flex flex-wrap gap-1">
                   <template x-for="t in p.tags"><span class="badge badge-sm badge-outline" x-text="t"></span></template>
                 </div>
-                <div class="card-actions justify-end mt-1">
+                <div class="card-actions justify-end mt-1 gap-2">
+                  <a x-show="p.bundle" :href="p.bundle" @click.stop class="btn btn-sm btn-ghost gap-1" title="prebuilt STLs, photos and BOM">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/></svg>prebuilt</a>
                   <button class="btn btn-sm" :class="activePreset === p.key ? 'btn-primary' : 'btn-outline btn-primary'"
                           x-text="activePreset === p.key ? 'Loaded' : 'Load'"></button>
                 </div>

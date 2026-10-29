@@ -681,6 +681,38 @@ class Design:
         y1 = -self.half_length - 0.5          # 0.5 mm gap to the body
         return y1 - self.deck.palm_length, y1
 
+    def bom(self) -> list[dict]:
+        """Bill of materials: everything that is not printed."""
+        sw, t, b = self.switches, self.tray, self.battery
+        items: list[dict] = [
+            {"item": f"Trackball Ø{self.ball.diameter:g} mm", "qty": 1, "note": "a two-colour or speckled ball tracks best"},
+            {"item": f"Sensor board: {self.pcb.name}", "qty": 1, "note": "PMW3360 / PMW3389 with the LM19-LSI lens"},
+            {"item": f"Controller: {t.mcu.name}", "qty": 1, "note": ("wireless capable" if t.mcu.wireless else "USB") +
+             (", on 4x M2x6 self-tapping screws" if t.mcu.holes else ", friction pocket (dab of glue)")},
+        ]
+        sup = self.cup.support.describe()
+        items.append({"item": f"Ball support: {sup}", "qty": self.cup.support_count,
+                      "note": "press fit" if "BTU" in sup else ("plus one M3x25 screw each as axle" if "bearing" in sup
+                                                                else "snap into the printed sockets")})
+        if sw.count:
+            n = sw.count * (2 if sw.placement == "sides" else 1)
+            if sw.type.kind == "key":
+                items.append({"item": f"{sw.type.name} switches", "qty": n, "note": "wired GPIO to GND, internal pull-up"})
+                items.append({"item": f"keycaps {sw.keycap_u:g}u", "qty": n, "note": "any profile"})
+            else:
+                items.append({"item": "Omron D2F / Kailh GM microswitches", "qty": n, "note": "pushed into the holder bars"})
+        if b.enabled:
+            items.append({"item": f"LiPo {b.length:g}x{b.width:g}x{b.thickness:g} mm", "qty": 1,
+                          "note": "plus a slide switch for the side-wall slot"})
+        items += [
+            {"item": "M3 heat-set inserts (Ø4 x 5 mm)", "qty": 10, "note": "4 cup, 2 sensor PCB, 4 tray posts"},
+            {"item": "M3x8 screws", "qty": 8, "note": "cup to carrier (4), lid to tray (4)"},
+            {"item": "M3x6 screws", "qty": 2, "note": "sensor PCB to carrier"},
+            {"item": f"Rubber feet Ø{t.feet_dia:g} mm", "qty": 4 if t.feet_dia > 0 else 0, "note": "self-adhesive"},
+            {"item": "Wire (6 for the sensor SPI, 2 per switch)", "qty": 1, "note": "JST or direct solder"},
+        ]
+        return [i for i in items if i["qty"]]
+
     def summary(self) -> str:
         w, l, _, _ = self.footprint
         sw = self.switches

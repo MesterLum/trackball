@@ -45,5 +45,13 @@ PRESETS: tuple[Preset, ...] = (
            {"tilt": 8, "tent": 6, "switches": 4, "mcu": "supermini", "padding": 12}, ("tilt", "choc")),
     Preset("bearings", "Bearing rollers", "Three MR63 bearings on M3 screws instead of BTUs, 2 mm between the keys.",
            {"support": "mr63", "switch_gap": 2}, ("bearings", "choc")),
+    Preset("mx-wide", "MX 1.25u", "Three 1.25u MX keys, Pico 2, 6° tilt, 12 mm padding.",
+           {"switch_type": "mx", "keycap_u": 1.25, "mcu": "pico2", "tilt": 6, "padding": 12}, ("tilt", "mx")),
+    Preset("left-cable", "Left cable, thick walls", "USB out of the left wall, 4 mm walls and floor, 12 mm feet.",
+           {"usb": "left", "wall": 4, "floor": 4, "feet": 12}, ("wired", "choc")),
+    Preset("ball44-bearings", "44 mm on bearings", "44 mm ball on MR83 bearings, Pico under the sensor, three Choc keys with 2 mm gaps.",
+           {"ball": 44, "support": "mr83", "mcu_place": "under", "switch_gap": 2}, ("big ball", "bearings")),
+    Preset("bare25", "Bare 25 mm", "Smallest module: 25 mm ball on 4.8 mm BTUs, Pro Micro under the sensor, no buttons.",
+           {"ball": 25, "support": "btu-4.8", "mcu": "pro-micro", "mcu_place": "under", "switches": 0, "padding": 5}, ("tiny",)),
 )
 BY_KEY = {p.key: p for p in PRESETS}

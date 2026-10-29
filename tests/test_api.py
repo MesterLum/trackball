@@ -30,7 +30,7 @@ def test_presets_all_fit(client):
     r = client.get("/api/presets")
     assert r.status_code == 200
     presets = r.json()
-    assert 10 <= len(presets) <= 14
+    assert 10 <= len(presets) <= 20
     for p in presets:
         d = client.post("/api/design", json=p["values"]).json()
         assert d["fits"], (p["key"], d["problems"])
@@ -92,3 +92,16 @@ def test_render_queue_produces_cached_stls(client):
     # second submission of the same design hits the cache
     again = client.post(f"/api/design/{d['id']}/render").json()
     assert again["done"]
+
+
+def test_quality_tiers_and_bom(client):
+    p = client.post("/api/design?quality=preview", json={}).json()
+    f = client.post("/api/design?quality=final", json={}).json()
+    assert p["fn"] == 32 and f["fn"] == 96 and p["id"] != f["id"]
+    assert any("heat-set" in b["item"] for b in p["bom"])
+    assert client.get("/api/settings").json()["fn_preview"] == 32
+
+
+def test_cancel_endpoint_is_idempotent(client):
+    d = client.post("/api/design", json={}).json()
+    assert client.delete(f"/api/design/{d['id']}/render").json() == {"cancelled": 0}

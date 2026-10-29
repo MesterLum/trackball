@@ -22,20 +22,28 @@ if str(ROOT) not in sys.path:
 from web.routers import api, pages  # noqa: E402
 from web.services.designs import DesignService  # noqa: E402
 from web.services.render import RenderQueue  # noqa: E402
+from web.settings import Settings  # noqa: E402
 
 
-def create_app(out_dir: Path | None = None) -> FastAPI:
-    out = out_dir or Path(os.environ.get("TRACKBALL_OUT", ROOT / "out" / "web"))
+def create_app(out_dir: Path | None = None, settings: Settings | None = None) -> FastAPI:
+    settings = settings or Settings()
+    if out_dir is not None:
+        import dataclasses
+        settings = dataclasses.replace(settings, out=out_dir, presets_dir=out_dir.parent / "presets")
+    out = settings.out
     out.mkdir(parents=True, exist_ok=True)
     static_dir = Path(__file__).resolve().parent / "static"
 
     app = FastAPI(title="Trackball module configurator", version="0.3.0",
                   description="Parametric, printable trackball module (PMW3360 / PMW3389 sensor boards). "
                               "Validate a configuration, render the printable parts, download STLs.")
-    app.state.designs = DesignService(out)
-    app.state.render = RenderQueue(out)
+    app.state.settings = settings
+    app.state.designs = DesignService(out, {"preview": settings.fn_preview, "final": settings.fn_final})
+    app.state.render = RenderQueue(out, workers=settings.workers)
     app.state.static_dir = static_dir
     app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
+    if settings.presets_dir.exists():
+        app.mount("/presets", StaticFiles(directory=str(settings.presets_dir), html=True), name="presets")
     app.include_router(api.router)
     app.include_router(pages.router)
 
@@ -50,7 +58,7 @@ def create_app(out_dir: Path | None = None) -> FastAPI:
 
     @app.get("/health", include_in_schema=False)
     def health():
-        return {"ok": True, "out": str(out), "queue": app.state.render.pending}
+        return {"ok": True, "out": str(out), "queue": app.state.render.pending, **settings.public()}
 
     return app
 
