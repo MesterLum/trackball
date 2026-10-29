@@ -68,7 +68,7 @@ Open any `.scad` in OpenSCAD and press F5 for a preview, F6 to render.
 OpenSCAD 2021.01 renders each part in 10 to 25 s at `$fn=96`. A 2025
 snapshot with Manifold is much faster if you iterate a lot.
 
-## Web configurator (Flask + Docker)
+## Web configurator (Flask API + Alpine.js + Three.js)
 
 ```sh
 docker compose up --build        # then open http://localhost:8321
@@ -76,15 +76,21 @@ docker compose up --build        # then open http://localhost:8321
 uv run flask --app web.app run   # http://127.0.0.1:5000
 ```
 
-The form is generated from `build.py`'s options, so every CLI flag is
-there. "Generate photos" writes the SCAD files and renders eight preview
-images (about 20 s). The result page then has a **3D view**: "Render 3D
-view" runs OpenSCAD on the cup, carrier, tray and palm rest (about a
-minute on OpenSCAD 2021) and shows them assembled in a Three.js viewer
-(orbit, zoom, explode slider, per-part toggles, translucent ball), plus
-download buttons for the STL and SCAD zips. The validator runs first and
-shows what does not fit. Generated files land in `out/web/` (`./out/web`
-is mounted into the container).
+One page, no build step: Tailwind + daisyUI for the controls, Alpine.js
+for state, Three.js for the 3D view. The form is generated from
+`build.py`'s options. Every change calls `POST /api/design`, which
+validates and returns the summary instantly; if the design fits, the
+printable parts are queued (`POST /api/design/<id>/render`) and the page
+follows `GET /api/design/<id>/events` (server-sent events), swapping each
+STL into the viewer as OpenSCAD finishes it. STLs are cached per part by
+the hash of that part's SCAD text, so changing the tilt re-renders the
+tray and palm rest only. Download buttons give the STL and SCAD zips.
+Generated files land in `out/web/` (`./out/web` is mounted into the
+container); `out/web/cache/` holds the per-part STL cache.
+
+API: `GET /api/options`, `POST /api/design`, `POST /api/design/<id>/render`,
+`GET /api/design/<id>/status`, `GET /api/design/<id>/events`,
+`GET /stl/<id>`, `GET /scad/<id>`, `GET /file/<id>/<name>`.
 
 ## Code layout
 
@@ -98,7 +104,7 @@ is mounted into the container).
 | `trackball/assembly.py` | preview / section / placement views                        |
 | `build.py`              | CLI                                                        |
 | `demo.py`               | gallery of configurations                                  |
-| `web/app.py`            | Flask configurator (form -> photos -> SCAD/STL zip)        |
+| `web/app.py`            | JSON API + Alpine/Three.js configurator page                |
 
 ### Frames
 
