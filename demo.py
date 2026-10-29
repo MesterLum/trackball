@@ -17,42 +17,12 @@ from pathlib import Path
 from build import OUT, build_parser, camera_for, make_design, render_png, variant_name
 from trackball.assembly import assembly, section
 
-DEMOS: list[tuple[str, list[str]]] = [
-    ("EM06 style: 10° tilt, 2 x 1.5u MX in front, separate 40 mm palm rest, nice!nano + battery under the sensor",
-     ["--tilt", "10", "--switch-type", "mx", "--switches", "2", "--keycap-u", "1.5", "--palm", "40",
-      "--mcu", "nice-nano", "--battery", "50x34x5"]),
-    ("Default: 34 mm ball, 7.5 mm BTUs, Pico, 3 Choc buttons in front, padding 9", []),
-    ("Minimal: 34 mm ball, RP2040-Zero under the sensor, no buttons, padding 4",
-     ["--mcu", "rp2040-zero", "--mcu-place", "under", "--switches", "0", "--padding", "4"]),
-    ("Minimal with buttons: RP2040-Zero under, USB at the back, 2 x 1.5u Choc, front strip only",
-     ["--mcu", "rp2040-zero", "--mcu-place", "under", "--usb", "back", "--switches", "2",
-      "--keycap-u", "1.5", "--no-mirror"]),
-    ("Low profile: same as default but wires soldered to the sensor (--header-height 3), 6 mm lower",
-     ["--header-height", "3"]),
-    ("Flat paddles: 3 microswitch paddles in front, Pico, no tilt",
-     ["--switch-type", "micro"]),
-    ("MX 3 x 1.25u, Pico 2, 6° tilt, padding 12",
-     ["--switch-type", "mx", "--keycap-u", "1.25", "--mcu", "pico2", "--tilt", "6", "--padding", "12"]),
-    ("44 mm ball, Pico W under the sensor, 2 MX buttons on each side",
-     ["--ball", "44", "--mcu", "pico-w", "--mcu-place", "under", "--switch-type", "mx", "--switches", "2", "--buttons", "sides"]),
-    ("55 mm ball, ceramic bearings, RP2040-Zero, 3 Choc in front",
-     ["--ball", "55", "--support", "ceramic-3", "--mcu", "rp2040-zero"]),
-    ("Compact wireless: XIAO, 3 mm battery, 2 flat paddles",
-     ["--mcu", "xiao", "--battery", "40x25x3", "--switch-type", "micro", "--switches", "2"]),
-    ("Big wireless: 12° tilt, 60x40x6 battery, Supermini, 3 Choc, 50 mm palm rest with pad recess",
-     ["--tilt", "12", "--battery", "60x40x6", "--mcu", "supermini", "--palm", "50", "--palm-pad"]),
-    ("Tilt 8° + tent 6°, 4 Choc buttons in front, Supermini, padding 12",
-     ["--tilt", "8", "--tent", "6", "--switches", "4", "--mcu", "supermini", "--padding", "12"]),
-    ("Bearing rollers: 3 x MR63RS (3x6x2.5) on M3 screws from the outside, 2 mm gap between buttons",
-     ["--support", "mr63", "--switch-gap", "2"]),
-    ("Swapped sensor board: round PMW3389 module (guessed dimensions, measure yours), RP2040-Zero under",
-     ["--sensor-pcb", "pmw3389-round", "--mcu", "rp2040-zero", "--mcu-place", "under", "--switches", "2"]),
-    ("Left-handed cable: USB out of the left wall, thicker 4 mm walls, 12 mm feet",
-     ["--usb", "left", "--wall", "4", "--floor", "4", "--feet", "12"]),
+from trackball import options as _opt
+from trackball.presets import PRESETS
+
+DEMOS: list[tuple[str, list[str]]] = [(f"{p.title}: {p.blurb}", _opt.to_argv(p.values)) for p in PRESETS] + [
     ("Validator demo: 25 mm ball, no buttons, Pro Micro does NOT fit behind at padding 9 (rendered with --force)",
      ["--ball", "25", "--support", "btu-4.8", "--mcu", "pro-micro", "--switches", "0", "--force"]),
-    ("Same 25 mm ball with the Pro Micro under the sensor instead: body stays small, tray 8.5 mm taller",
-     ["--ball", "25", "--support", "btu-4.8", "--mcu", "pro-micro", "--switches", "0", "--mcu-place", "under"]),
 ]
 
 VIEWS = [("assembly", "iso", (55, 0, 25)), ("assembly", "top", (0, 0, 0)),

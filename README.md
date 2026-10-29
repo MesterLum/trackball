@@ -48,7 +48,7 @@ uv run build.py --png                # photos of every part + placement views
 uv run build.py --open png           # render photos and open the contact sheet
 uv run build.py --open               # generate, then open the assembly in OpenSCAD
 uv run build.py --explode 15 --open section   # exploded half-section
-uv run demo.py --open                # gallery of 15 configurations side by side
+uv run demo.py --open                # photo gallery of the 12 presets + validator demo
 ```
 
 Output goes to `out/<variant>/`:
@@ -68,29 +68,43 @@ Open any `.scad` in OpenSCAD and press F5 for a preview, F6 to render.
 OpenSCAD 2021.01 renders each part in 10 to 25 s at `$fn=96`. A 2025
 snapshot with Manifold is much faster if you iterate a lot.
 
-## Web configurator (Flask API + Alpine.js + Three.js)
+## Web configurator (FastAPI + Alpine.js + Three.js)
 
 ```sh
-docker compose up --build        # then open http://localhost:8321
+docker compose up --build              # http://localhost:8321  (API docs at /docs)
 # or without Docker (needs openscad on PATH):
-uv run flask --app web.app run   # http://127.0.0.1:5000
+uv run uvicorn web.main:app --reload   # http://127.0.0.1:8000
+uv run pytest                          # API + option tests (render test runs only if openscad exists)
 ```
 
-One page, no build step: Tailwind + daisyUI for the controls, Alpine.js
-for state, Three.js for the 3D view. The form is generated from
-`build.py`'s options. Every change calls `POST /api/design`, which
-validates and returns the summary instantly; if the design fits, the
-printable parts are queued (`POST /api/design/<id>/render`) and the page
-follows `GET /api/design/<id>/events` (server-sent events), swapping each
-STL into the viewer as OpenSCAD finishes it. STLs are cached per part by
-the hash of that part's SCAD text, so changing the tilt re-renders the
-tray and palm rest only. Download buttons give the STL and SCAD zips.
-Generated files land in `out/web/` (`./out/web` is mounted into the
-container); `out/web/cache/` holds the per-part STL cache.
+One page, no build step: Tailwind + daisyUI for the controls, Alpine.js for
+state, Three.js for the 3D view. Every change calls `POST /api/design`,
+which validates the values (pydantic, 422 with a per-field map) and the
+geometry (the "does not fit" list), and returns the summary instantly. If
+the design fits, its printable parts are queued (`POST /api/design/<id>/render`)
+and the page follows `GET /api/design/<id>/events` (server-sent events),
+swapping each STL into the viewer as OpenSCAD finishes it. STLs are cached
+per part by the hash of that part's SCAD text, so changing the tilt
+re-renders the tray and palm rest only, not the cup. The current design is
+mirrored into the URL, so a link reproduces it, and twelve proposed builds
+(`trackball/presets.py`) can be loaded with one click.
 
-API: `GET /api/options`, `POST /api/design`, `POST /api/design/<id>/render`,
-`GET /api/design/<id>/status`, `GET /api/design/<id>/events`,
-`GET /stl/<id>`, `GET /scad/<id>`, `GET /file/<id>/<name>`.
+Architecture:
+
+| piece                     | role                                                        |
+|---------------------------|-------------------------------------------------------------|
+| `trackball/options.py`    | declarative option registry: CLI parser and API schema are generated from it |
+| `trackball/presets.py`    | the proposed configurations (web gallery and `demo.py`)     |
+| `web/schemas.py`          | pydantic request/response models                            |
+| `web/services/designs.py` | values → validated `Design` → SCAD files + hashes           |
+| `web/services/render.py`  | OpenSCAD worker thread, per-part STL cache, status          |
+| `web/routers/api.py`      | `/api/options`, `/api/presets`, `/api/design…`, zips, SSE   |
+| `web/routers/pages.py`    | the page                                                    |
+| `web/static/`, `web/templates/` | `app.js` (Alpine), `viewer.js` (Three.js), styles, preset thumbnails |
+| `tests/`                  | pytest: options, presets, API, validation, render           |
+
+Generated files land in `out/web/<design id>/`; `out/web/cache/` holds the
+per-part STL cache. Both are inside the `./out/web` volume in Docker.
 
 ## Code layout
 
@@ -104,7 +118,7 @@ API: `GET /api/options`, `POST /api/design`, `POST /api/design/<id>/render`,
 | `trackball/assembly.py` | preview / section / placement views                        |
 | `build.py`              | CLI                                                        |
 | `demo.py`               | gallery of configurations                                  |
-| `web/app.py`            | JSON API + Alpine/Three.js configurator page                |
+| `web/`                  | FastAPI configurator (see Web configurator above)           |
 
 ### Frames
 

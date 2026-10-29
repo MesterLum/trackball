@@ -17,4 +17,4 @@ COPY web ./web
 
 VOLUME ["/data"]
 EXPOSE 5000
-CMD ["uv", "run", "--no-sync", "flask", "--app", "web.app", "run", "--host", "0.0.0.0", "--port", "5000"]
+CMD ["uv", "run", "--no-sync", "uvicorn", "web.main:app", "--host", "0.0.0.0", "--port", "5000"]

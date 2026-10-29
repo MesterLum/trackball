@@ -1,0 +1,21 @@
+[x-cloak] { display: none !important; }
+#viewer canvas { display: block; width: 100% !important; height: 100% !important; }
+
+/* brand mark: a ball in a cup */
+.logo { position: relative; display: inline-block; width: 30px; height: 30px; border-radius: 0 0 15px 15px;
+        background: linear-gradient(180deg, transparent 45%, oklch(var(--p)) 45%); }
+.logo-ball { position: absolute; left: 6px; top: 1px; width: 18px; height: 18px; border-radius: 50%;
+             background: radial-gradient(circle at 35% 30%, #ff8099, #c81e3c 60%, #7a0d22); }
+
+/* option rows */
+.opt { padding: 8px 10px; border-radius: 10px; border: 1px solid transparent; }
+.opt-changed { border-color: oklch(var(--p) / 0.35); background: oklch(var(--p) / 0.06); }
+.opt-error { border-color: oklch(var(--er) / 0.6); }
+
+/* viewer overlay chips */
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; font-size: 12px;
+        background: oklch(var(--b1) / 0.85); backdrop-filter: blur(6px); box-shadow: 0 1px 3px rgb(0 0 0 / .15);
+        border: 1px solid oklch(var(--bc) / 0.1); cursor: pointer; transition: opacity .15s; }
+.chip:hover { opacity: .85; }
+.chip-off { opacity: .4; text-decoration: line-through; }
+.dot { width: 9px; height: 9px; border-radius: 3px; display: inline-block; }

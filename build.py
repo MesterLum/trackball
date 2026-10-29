@@ -19,7 +19,6 @@
 from __future__ import annotations
 
 import argparse
-import dataclasses
 import os
 import shutil
 import subprocess
@@ -30,8 +29,9 @@ from pathlib import Path
 from trackball.assembly import (assembly, carrier_placement, cup_placement, section,
                                 tray_placement)
 from trackball.carrier import carrier
-from trackball.config import (MCUS, PLACEMENTS, SENSOR_PCBS, SWITCH_TYPES, Ball, Battery,
-                              Carrier, Cup, Deck, Design, SensorPCB, Switches, Tray)
+from trackball import options
+from trackball.config import MCUS, SENSOR_PCBS, SWITCH_TYPES, Design
+from trackball.options import OPTIONS, add_to_parser
 from trackball.cup import cup
 from trackball.palmrest import palmrest
 from trackball.supports import SUPPORTS
@@ -55,59 +55,12 @@ VIEWS: dict[str, tuple[str, list[tuple[str, float, float, float]]]] = {
 }
 
 
-def parse_battery(spec: str | None) -> Battery:
-    if not spec:
-        return Battery(enabled=False)
-    try:
-        l, w, t = (float(v) for v in spec.lower().split("x"))
-    except ValueError:
-        raise SystemExit(f"--battery expects LxWxT in mm, e.g. 50x34x5 (got {spec!r})")
-    return Battery(enabled=True, length=l, width=w, thickness=t)
-
-
 def make_design(args) -> Design:
-    support = dataclasses.replace(SUPPORTS[args.support])
-    return Design(
-        ball=Ball(diameter=args.ball),
-        cup=Cup(support=support, support_count=args.supports, support_polar_deg=args.polar),
-        carrier=Carrier(padding=args.padding),
-        pcb=dataclasses.replace(SENSOR_PCBS[args.sensor_pcb], header_height=args.header_height),
-        tray=Tray(mcu=MCUS[args.mcu], mcu_place=args.mcu_place,
-                  usb_exit="back" if args.usb == "back" else "side",
-                  usb_side=-1 if args.usb == "left" else 1,
-                  wall=args.wall, floor=args.floor, feet_dia=args.feet),
-        switches=Switches(type=SWITCH_TYPES[args.switch_type], count=args.switches, placement=args.buttons,
-                          keycap_u=args.keycap_u, gap=args.switch_gap, mirror=not args.no_mirror),
-        deck=Deck(tilt_deg=args.tilt, tent_deg=args.tent, palm_length=args.palm,
-                  palm_pad_recess=1.0 if args.palm_pad else 0.0),
-        battery=parse_battery(args.battery),
-        fn=args.fn,
-    )
+    return options.make_design(args_values(args))
 
 
 def variant_name(args) -> str:
-    bits = [f"ball{args.ball:g}", args.support, args.mcu]
-    if args.sensor_pcb != "bastardkb":
-        bits.append(args.sensor_pcb)
-    if args.padding != 9.0:
-        bits.append(f"pad{args.padding:g}")
-    if args.mcu_place == "under":
-        bits.append("under")
-    if args.usb != "right":
-        bits.append(f"usb{args.usb}")
-    if args.header_height != 9.0:
-        bits.append(f"hdr{args.header_height:g}")
-    if args.switches:
-        u = f"{args.keycap_u:g}u" if args.keycap_u != 1 else ""
-        g = f"gap{args.switch_gap:g}" if args.switch_gap else ""
-        bits.append(f"{args.switches}{args.switch_type}{u}{g}-{args.buttons}" + ("-nomirror" if args.no_mirror else ""))
-    if args.tilt or args.tent:
-        bits.append(f"tilt{args.tilt:g}" + (f"tent{args.tent:g}" if args.tent else ""))
-    if args.palm:
-        bits.append(f"palm{args.palm:g}")
-    if args.battery:
-        bits.append("bat" + args.battery.lower())
-    return "_".join(bits)
+    return options.variant_name(args_values(args))
 
 
 def find_openscad() -> str:
@@ -222,40 +175,8 @@ def open_in_openscad(path: Path) -> None:
 
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("--ball", type=float, default=34.0, help="ball diameter in mm")
-    p.add_argument("--support", choices=sorted(SUPPORTS), default="btu-7.5")
-    p.add_argument("--supports", type=int, default=3, help="number of ball supports")
-    p.add_argument("--polar", type=float, default=55.0, help="support angle from the downward axis, degrees")
-    p.add_argument("--mcu", choices=sorted(MCUS), default="pico")
-    p.add_argument("--switches", type=int, default=3, help="number of click switches per row (0 = none)")
-    p.add_argument("--switch-type", choices=sorted(SWITCH_TYPES), default="choc-v1")
-    p.add_argument("--buttons", choices=PLACEMENTS, default="front",
-                   help="where the button row goes: front (between you and the ball), left, right, sides")
-    p.add_argument("--keycap-u", type=float, default=1.0, metavar="U", help="keycap size in units: 1, 1.25, 1.5, 2")
-    p.add_argument("--switch-gap", type=float, default=0.0, metavar="MM", help="extra space between neighbouring buttons")
-    p.add_argument("--sensor-pcb", choices=sorted(SENSOR_PCBS), default="bastardkb",
-                   help="which sensor breakout the carrier is cut for")
-    p.add_argument("--no-mirror", action="store_true",
-                   help="front buttons: do not add the matching strip at the back (ball ends up off-centre)")
-    p.add_argument("--mcu-place", choices=("behind", "under"), default="behind",
-                   help="behind the sensor (default) or under it (tray gets taller, body stays ball + padding)")
-    p.add_argument("--usb", choices=("right", "left", "back"), default="right", help="which wall the USB exits")
-    p.add_argument("--header-height", type=float, default=9.0, metavar="MM",
-                   help="how far the sensor PCB's connector hangs below it: 9 for the vertical header, "
-                        "3 if you solder wires / use a right-angle header (lowers the whole module)")
-    p.add_argument("--wall", type=float, default=3.0, metavar="MM", help="tray wall thickness")
-    p.add_argument("--floor", type=float, default=3.0, metavar="MM", help="tray floor thickness")
-    p.add_argument("--feet", type=float, default=10.0, metavar="DIA", help="rubber-foot recess diameter (0 = none)")
-    p.add_argument("--palm-pad", action="store_true", help="1 mm recess on the palm rest for a leather/foam pad")
-    p.add_argument("--tilt", type=float, default=0.0, help="deck tilt in degrees; the back (far edge) rises")
-    p.add_argument("--tent", type=float, default=0.0, help="deck tenting in degrees; the -X side rises")
-    p.add_argument("--padding", type=float, default=9.0, metavar="MM",
-                   help="body = cup skirt + this on every side (default 9). The validator tells you when to raise it")
-    p.add_argument("--palm", type=float, default=0.0, metavar="MM",
-                   help="print a separate palm rest of this length for the front of the body")
+    add_to_parser(p)
     p.add_argument("--force", action="store_true", help="generate even if the validator reports problems")
-    p.add_argument("--battery", metavar="LxWxT", help="LiPo under the sensor, e.g. 50x34x5; tray grows by T+1")
-    p.add_argument("--fn", type=int, default=96, help="OpenSCAD $fn")
     p.add_argument("--explode", type=float, default=0.0, help="exploded view distance for assembly")
     p.add_argument("--stl", action="store_true", help="render STLs with openscad (slow on 2021.01)")
     p.add_argument("--png", action="store_true", help="render PNG photos of every part and placement view")
@@ -265,6 +186,11 @@ def build_parser() -> argparse.ArgumentParser:
                         "'png' renders the photos and opens the contact sheet instead")
     p.add_argument("--list", action="store_true")
     return p
+
+
+def args_values(args) -> dict:
+    """Option values from a parsed namespace."""
+    return {o.name: getattr(args, o.name) for o in OPTIONS}
 
 
 def main() -> int:
