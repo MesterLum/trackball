@@ -41,6 +41,7 @@ def cup(d: Design):
 
     # --- ball supports
     sup = c.support
+    sup.prepare(R, c.support_polar_deg, d.skirt_dia / 2)
     cutters = []
     for az, pol in support_frames(c.support_count, c.support_polar_deg, c.support_azimuth_deg):
         cutters.append(place_on_ball(sup.cutter(fn), R, sup.contact_height, az, pol))
@@ -65,6 +66,7 @@ def cup(d: Design):
 def supports_preview(d: Design):
     """Visual models of the supports in place (assembly view only)."""
     c = d.cup
+    c.support.prepare(d.ball.r, c.support_polar_deg, d.skirt_dia / 2)
     parts = []
     for az, pol in support_frames(c.support_count, c.support_polar_deg, c.support_azimuth_deg):
         p = c.support.preview(d.fn)

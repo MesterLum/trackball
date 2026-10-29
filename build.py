@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import argparse
 import dataclasses
+import os
 import shutil
 import subprocess
 import sys
@@ -29,8 +30,8 @@ from pathlib import Path
 from trackball.assembly import (assembly, carrier_placement, cup_placement, section,
                                 tray_placement)
 from trackball.carrier import carrier
-from trackball.config import (MCUS, PLACEMENTS, SWITCH_TYPES, Ball, Battery, Carrier, Cup,
-                              Deck, Design, SensorPCB, Switches, Tray)
+from trackball.config import (MCUS, PLACEMENTS, SENSOR_PCBS, SWITCH_TYPES, Ball, Battery,
+                              Carrier, Cup, Deck, Design, SensorPCB, Switches, Tray)
 from trackball.cup import cup
 from trackball.palmrest import palmrest
 from trackball.supports import SUPPORTS
@@ -70,13 +71,13 @@ def make_design(args) -> Design:
         ball=Ball(diameter=args.ball),
         cup=Cup(support=support, support_count=args.supports, support_polar_deg=args.polar),
         carrier=Carrier(padding=args.padding),
-        pcb=SensorPCB(header_height=args.header_height),
+        pcb=dataclasses.replace(SENSOR_PCBS[args.sensor_pcb], header_height=args.header_height),
         tray=Tray(mcu=MCUS[args.mcu], mcu_place=args.mcu_place,
                   usb_exit="back" if args.usb == "back" else "side",
                   usb_side=-1 if args.usb == "left" else 1,
                   wall=args.wall, floor=args.floor, feet_dia=args.feet),
         switches=Switches(type=SWITCH_TYPES[args.switch_type], count=args.switches, placement=args.buttons,
-                          keycap_u=args.keycap_u, mirror=not args.no_mirror),
+                          keycap_u=args.keycap_u, gap=args.switch_gap, mirror=not args.no_mirror),
         deck=Deck(tilt_deg=args.tilt, tent_deg=args.tent, palm_length=args.palm,
                   palm_pad_recess=1.0 if args.palm_pad else 0.0),
         battery=parse_battery(args.battery),
@@ -86,6 +87,8 @@ def make_design(args) -> Design:
 
 def variant_name(args) -> str:
     bits = [f"ball{args.ball:g}", args.support, args.mcu]
+    if args.sensor_pcb != "bastardkb":
+        bits.append(args.sensor_pcb)
     if args.padding != 9.0:
         bits.append(f"pad{args.padding:g}")
     if args.mcu_place == "under":
@@ -96,7 +99,8 @@ def variant_name(args) -> str:
         bits.append(f"hdr{args.header_height:g}")
     if args.switches:
         u = f"{args.keycap_u:g}u" if args.keycap_u != 1 else ""
-        bits.append(f"{args.switches}{args.switch_type}{u}-{args.buttons}" + ("-nomirror" if args.no_mirror else ""))
+        g = f"gap{args.switch_gap:g}" if args.switch_gap else ""
+        bits.append(f"{args.switches}{args.switch_type}{u}{g}-{args.buttons}" + ("-nomirror" if args.no_mirror else ""))
     if args.tilt or args.tent:
         bits.append(f"tilt{args.tilt:g}" + (f"tent{args.tent:g}" if args.tent else ""))
     if args.palm:
@@ -150,6 +154,9 @@ def render_png(scad: Path, png: Path, rot: tuple[float, float, float], size=(120
         cam = [f"--camera={tx},{ty},{tz},{rx},{ry},{rz},{dist}"]
     cmd = [find_openscad(), "-o", str(png), f"--imgsize={size[0]},{size[1]}", *cam,
            "--colorscheme=Tomorrow", str(scad)]
+    # headless Linux (CI, Docker): OpenSCAD needs a display for PNG export
+    if sys.platform.startswith("linux") and not os.environ.get("DISPLAY") and shutil.which("xvfb-run"):
+        cmd = ["xvfb-run", "-a", *cmd]
     r = subprocess.run(cmd, capture_output=True, text=True)
     if r.returncode != 0:
         print(r.stderr, file=sys.stderr)
@@ -225,6 +232,9 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--buttons", choices=PLACEMENTS, default="front",
                    help="where the button row goes: front (between you and the ball), left, right, sides")
     p.add_argument("--keycap-u", type=float, default=1.0, metavar="U", help="keycap size in units: 1, 1.25, 1.5, 2")
+    p.add_argument("--switch-gap", type=float, default=0.0, metavar="MM", help="extra space between neighbouring buttons")
+    p.add_argument("--sensor-pcb", choices=sorted(SENSOR_PCBS), default="bastardkb",
+                   help="which sensor breakout the carrier is cut for")
     p.add_argument("--no-mirror", action="store_true",
                    help="front buttons: do not add the matching strip at the back (ball ends up off-centre)")
     p.add_argument("--mcu-place", choices=("behind", "under"), default="behind",

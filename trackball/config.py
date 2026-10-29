@@ -61,6 +61,20 @@ class SensorPCB:
         return self.diameter / 2
 
 
+BASTARDKB_PMW3360 = SensorPCB()
+# Generic round "PMW3389 module" (AliExpress, silkscreen "PAW3360/3389-Module").
+# Same LM19-LSI lens as the PMW3360. Numbers are a first guess from the
+# product photo: MEASURE your board and adjust before printing.
+PMW3389_ROUND = SensorPCB(
+    name="pmw3389-round",
+    diameter=32.0, thickness=1.6,
+    hole_spacing=26.0, hole_dia=3.2,
+    header_center=(13.0, 0.0), header_pins=6, header_height=9.0,
+    fpc_center=(0.0, 0.0), fpc_size=(0.0, 0.0), fpc_height=0.0,
+)
+SENSOR_PCBS = {"bastardkb": BASTARDKB_PMW3360, "pmw3389-round": PMW3389_ROUND}
+
+
 @dataclass
 class Lens:
     """PMW3360 + LM19-LSI optics as seen from the PCB front face."""
@@ -253,11 +267,12 @@ class Switches:
     placement: str = "front"          # front | left | right | sides (left + right)
     gap_to_cup: float = 2.0           # button edge to cup skirt
     keycap_u: float = 1.0             # 1, 1.25, 1.5, 2 ... scales keycap width and pitch
+    gap: float = 0.0                  # extra space between neighbouring buttons
     mirror: bool = True               # front row: also add the strip at the back (keeps the ball centred)
 
     @property
     def pitch(self) -> float:
-        return self.type.pitch * self.keycap_u
+        return self.type.pitch * self.keycap_u + self.gap
 
     @property
     def size_across(self) -> float:

@@ -38,6 +38,8 @@ uv run build.py --padding 10                         # bigger body; the validato
 uv run build.py --mcu rp2040-zero --mcu-place under --switches 0 --padding 4   # smallest body
 uv run build.py --mcu rp2040-zero --mcu-place under --usb back --keycap-u 1.5 --switches 2 --no-mirror
 uv run build.py --header-height 3 --wall 4 --floor 4 --feet 12   # lower, thicker, bigger feet
+uv run build.py --support mr63 --switch-gap 2                     # bearing rollers, spaced buttons
+uv run build.py --sensor-pcb pmw3389-round                        # other sensor breakout
 uv run build.py --switch-type mx --buttons sides     # MX buttons left and right of the ball
 uv run build.py --switch-type micro  # flat paddles over Omron D2F microswitches
 uv run build.py --support ceramic-3 --polar 50
@@ -98,7 +100,8 @@ snapshot with Manifold is much faster if you iterate a lot.
   body stays symmetric and the ball centred; that strip is where the MCU
   lives. `--no-mirror` skips the back strip (smaller, ball off-centre).
   `left`, `right` and `sides` widen the body instead. `--keycap-u 1.5`
-  scales keycap width and pitch (Choc 18 mm/u, MX 19.05 mm/u).
+  scales keycap width and pitch (Choc 18 mm/u, MX 19.05 mm/u) and
+  `--switch-gap 2` adds space between neighbouring buttons.
 - **MCU placement**: `--mcu-place behind` (default) lies across behind the
   sensor; `--mcu-place under` puts it on the floor under the sensor so the
   body can stay ball + padding, and the tray grows by the board's stack
@@ -150,8 +153,16 @@ a friction pocket), USB size, tallest component, BOOTSEL position.
 - Sensor PCB: Bastardkb `charybdis-pmw-3360-sensor-pcb`, round Ø41.8 mm,
   two M3 holes 37 mm apart, header and sensor body on the back, lens
   through the front. Mounted lens-side up against the carrier.
-- Supports: 3x Veichu VCN310 7.5 mm BTUs, press fit (default), or 3 mm
-  ceramic balls (`ceramic-3`), or 4.8 mm BTUs (`btu-4.8`).
+- Supports: 3x Veichu VCN310 7.5 mm BTUs, press fit (default), 3 mm
+  ceramic balls (`ceramic-3`), 4.8 mm BTUs (`btu-4.8`), or small ball
+  bearings on M3 screws (`mr63` = MR63RS 3x6x2.5, `mr83`, `mr84`). The
+  bearing sits in a slot with its axle horizontal; the screw enters from
+  the outside of the cup skirt through a clearance hole and bites into a
+  thread-forming hole beyond the bearing.
+- Sensor board: `--sensor-pcb bastardkb` (default, measured from the KiCad
+  file) or `pmw3389-round` (generic round PMW3389 module, same lens;
+  dimensions are a guess from the photo, measure yours and edit
+  `PMW3389_ROUND` in `config.py`). The carrier is the only part that changes.
 - Screws: M3 heat-set inserts (Ø4 hole): 4 in the cup, 2 in the carrier,
   4 in the tray posts. M3x8 for cup and lid, M3x6 for the PCB.
   M2x6 self-tapping for Pico-style boards.
@@ -197,6 +208,11 @@ a friction pocket), USB size, tallest component, BOOTSEL position.
   from measuring a Bastardkb board. Check Figure 4/5 of the PMW3360
   datasheet or measure your lens. If tracking is poor, tune
   `lens_to_ball` in ±0.2 mm steps.
+- **Bearing rollers**: `RollerBearing` assumes an M3 screw as the axle
+  (3.3 mm clearance hole, 2.6 mm thread-forming hole). Check the screw
+  length: it is the skirt-to-bearing distance printed by the cup plus 6 mm.
+- **PMW3389 round module**: diameter, hole spacing and header position in
+  `PMW3389_ROUND` are placeholders.
 - **BTU envelope**: `PressFitBTU` defaults (Ø7.5 shaft, Ø9 flange, contact
   1.6 mm above the flange) were taken from Bastardkb's Veichu drop-in part,
   not from a VCN310 datasheet. Measure one unit: shaft diameter and length,

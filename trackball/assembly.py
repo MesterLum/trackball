@@ -35,11 +35,13 @@ def pcb_preview(d: Design):
     hx, hy = d.pcb.header_center
     header = cube([2.54, 2.54 * d.pcb.header_pins, d.pcb.header_height]).translate(
         [hx - 1.27, hy - 2.54 * d.pcb.header_pins / 2, z - d.pcb.thickness - d.pcb.header_height]).color("black")
+    parts = [pcb, lens, header]
     fx, fy = d.pcb.fpc_center
     fw, fl = d.pcb.fpc_size
-    fpc = cube([fw, fl, d.pcb.fpc_height]).translate(
-        [fx - fw / 2, fy - fl / 2, z - d.pcb.thickness - d.pcb.fpc_height]).color("tan")
-    return union()(pcb, lens, header, fpc)
+    if fw > 0 and fl > 0:
+        parts.append(cube([fw, fl, d.pcb.fpc_height]).translate(
+            [fx - fw / 2, fy - fl / 2, z - d.pcb.thickness - d.pcb.fpc_height]).color("tan"))
+    return union()(*parts)
 
 
 def switches_preview(d: Design):
