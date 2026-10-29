@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import warnings
 
-from solid2 import cylinder, hull, sphere, union
+from solid2 import cube, cylinder, hull, sphere, union
 
 from .common import (EPS, place_on_ball, polar, rounded_rect, support_frames,
                      support_lowest_z, zcyl)
@@ -23,16 +23,31 @@ def cup(d: Design):
     z_rim = -c.rim_below_center
     dome_r = d.cavity_r + c.wall
 
-    # --- outer body: hull of a wide base disk and the dome ring at the rim
-    # the straight skirt must be at least as tall as the insert holes
+    # --- outer body. The straight skirt must be at least as tall as the insert holes.
     base = zcyl(d.skirt_dia, z_bot, z_bot + c.insert_depth + 1.5, fn)
-    # the hull overshoots the rim by 1 mm so the opening cut leaves no coplanar faces
-    top = zcyl(2 * dome_r, -c.base_top_below_center, z_rim + 1.0, fn)
-    body = hull()(base, top)
+    if c.shape == "cone":
+        # hull of the skirt and a ring at the rim (overshoots 1 mm so the opening cut is clean)
+        top = zcyl(2 * dome_r, -c.base_top_below_center, z_rim + 1.0, fn)
+        body = hull()(base, top)
+    elif c.shape == "dome":
+        body = hull()(base, sphere(r=dome_r, _fn=fn))
+    else:  # block
+        side = 2 * dome_r
+        blk = rounded_rect(side, side, 7.0, (z_rim + 1.0) - z_bot, fn).up(z_bot)
+        body = hull()(base, blk)
 
-    # --- cavity + opening
+    # --- cavity + opening above the rim
     cavity = sphere(r=d.cavity_r, _fn=fn)
-    opening = zcyl(2 * d.cavity_r + 2 * c.wall + 2, z_rim, R + 10, fn)
+    big = 2 * d.skirt_dia
+    opening = cube([big, big, R + 20]).translate([-big / 2, -big / 2, z_rim])
+
+    # --- scoops: horizontal cylinders that lower the front/back (dome) or all four sides (block)
+    scoops = []
+    zc = c.scoop_floor() + c.saddle_r
+    for axis in c.scoop_axes:
+        cyl = cylinder(r=c.saddle_r, h=big, _fn=fn).translate([0, 0, -big / 2])
+        cyl = cyl.rotate([90, 0, 0]) if axis == "y" else cyl.rotate([0, 90, 0])
+        scoops.append(cyl.translate([0, 0, zc]))
 
     # --- lens window: open rectangle under the ball, straight through the floor
     ww, wl = lens_window_size(d)
@@ -43,7 +58,7 @@ def cup(d: Design):
     sup = c.support
     sup.prepare(R, c.support_polar_deg, d.skirt_dia / 2)
     cutters = []
-    for az, pol in support_frames(c.support_count, c.support_polar_deg, c.support_azimuth_deg):
+    for az, pol in support_frames(c.support_count, c.support_polar_deg, c.azimuth0):
         cutters.append(place_on_ball(sup.cutter(fn), R, sup.contact_height, az, pol))
     low = support_lowest_z(R, sup.contact_height, c.support_polar_deg,
                            sup.body_reach(), sup.body_radius())
@@ -60,7 +75,10 @@ def cup(d: Design):
         x, y = polar(c.screw_radius(R), ang)
         inserts.append(zcyl(c.insert_dia, z_bot - EPS, z_bot + c.insert_depth, fn).translate([x, y, 0]))
 
-    return body - cavity - opening - window - union()(*cutters) - union()(*inserts)
+    result = body - cavity - opening - window - union()(*cutters) - union()(*inserts)
+    if scoops:
+        result = result - union()(*scoops)
+    return result
 
 
 def supports_preview(d: Design):
@@ -68,7 +86,7 @@ def supports_preview(d: Design):
     c = d.cup
     c.support.prepare(d.ball.r, c.support_polar_deg, d.skirt_dia / 2)
     parts = []
-    for az, pol in support_frames(c.support_count, c.support_polar_deg, c.support_azimuth_deg):
+    for az, pol in support_frames(c.support_count, c.support_polar_deg, c.azimuth0):
         p = c.support.preview(d.fn)
         if p is not None:
             parts.append(place_on_ball(p, d.ball.r, c.support.contact_height, az, pol))

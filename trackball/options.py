@@ -49,6 +49,10 @@ OPTIONS: tuple[Option, ...] = (
     Option("support", "choice", "btu-7.5", "what the ball rolls on", "Ball & cup", choices=tuple(sorted(SUPPORTS))),
     Option("supports", "int", 3, "number of ball supports", "Ball & cup", min=3, max=4),
     Option("polar", "float", 55.0, "support angle from the downward axis", "Ball & cup", min=35, max=70, step=1, unit="°"),
+    Option("cup_shape", "choice", "cone", "cone: open all around; dome: side lobes, open front/back (Nano style); "
+           "block: square with four corner tabs", "Ball & cup", choices=("cone", "dome", "block")),
+    Option("cup_cut", "float", 6.0, "depth of the openings below the rim (dome / block)", "Ball & cup", min=0, max=20,
+           step=0.5, unit="mm", label="opening depth"),
     Option("ball_gap", "float", 0.8, "air between the ball and the cup cavity", "Ball & cup", min=0.4, max=2.0, step=0.1, unit="mm",
            label="ball clearance"),
     Option("cup_wall", "float", 3.0, "wall thickness of the cup dome", "Ball & cup", min=2, max=5, step=0.5, unit="mm"),
@@ -150,7 +154,7 @@ def make_design(values: dict[str, Any]) -> Design:
         ball=Ball(diameter=v["ball"]),
         cup=Cup(support=dataclasses.replace(SUPPORTS[v["support"]]), support_count=v["supports"],
                 support_polar_deg=v["polar"], gap=v["ball_gap"], wall=v["cup_wall"],
-                rim_below_center=v["rim"], skirt_extra=v["skirt"]),
+                rim_below_center=v["rim"], skirt_extra=v["skirt"], shape=v["cup_shape"], cut=v["cup_cut"]),
         pcb=dataclasses.replace(SENSOR_PCBS[v["sensor_pcb"]], header_height=v["header_height"]),
         carrier=Carrier(padding=v["padding"]),
         tray=Tray(mcu=MCUS[v["mcu"]], mcu_place=v["mcu_place"],
@@ -176,15 +180,23 @@ def autofit(values: dict[str, Any], max_rounds: int = 8) -> tuple[dict[str, Any]
         fixes: dict[str, float] = {}
         for pr in probs:
             for opt, val in pr["fix"].items():
-                fixes[opt] = max(fixes.get(opt, float("-inf")), val)
+                # the most restrictive suggestion wins: highest when raising, lowest when lowering
+                cur = v[opt]
+                prev = fixes.get(opt)
+                if prev is None:
+                    fixes[opt] = val
+                else:
+                    fixes[opt] = max(prev, val) if val > cur else min(prev, val)
         if not fixes:
             break
         for opt, val in fixes.items():
             o = BY_NAME[opt]
             if o.max is not None:
                 val = min(val, o.max)
-            if val <= v[opt]:
-                return v, changes          # cannot improve further (e.g. at the maximum)
+            if o.min is not None:
+                val = max(val, o.min)
+            if val == v[opt]:
+                return v, changes          # cannot improve further (at a limit)
             changes.append({"option": opt, "from": v[opt], "to": val,
                             "reason": "; ".join(pr["message"].split(":")[0] for pr in probs if opt in pr["fix"])})
             v[opt] = val
@@ -210,6 +222,8 @@ def variant_name(values: dict[str, Any]) -> str:
     """Short, file-system friendly name describing the non-default choices."""
     v = coerce(values)
     bits = [f"ball{v['ball']:g}", v["support"], v["mcu"]]
+    if v["cup_shape"] != "cone":
+        bits.append(v["cup_shape"])
     if v["sensor_pcb"] != "bastardkb":
         bits.append(v["sensor_pcb"])
     if v["padding"] != BY_NAME["padding"].default:

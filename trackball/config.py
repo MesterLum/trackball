@@ -113,6 +113,13 @@ class Cup:
     carrier_screw_angles: tuple[float, ...] = (65, 115, 245, 295)
     insert_dia: float = 4.0           # M3 heat-set insert hole
     insert_depth: float = 5.0
+    # shape of the part above the skirt:
+    #   cone  - straight cone from skirt to rim (openings all around)
+    #   dome  - spherical shell following the ball, scooped front and back -> two side lobes
+    #   block - rounded square block, scooped on all four sides -> four corner tabs
+    shape: str = "cone"
+    cut: float = 6.0                  # how far below the rim the scoops go (dome / block)
+    saddle_r: float = 16.0            # radius of the scoop cylinders (smaller = sharper lobes)
     # ball supports
     support: BallSupport = field(default_factory=PressFitBTU)
     support_count: int = 3
@@ -123,6 +130,30 @@ class Cup:
         if self.base_dia is not None:
             return self.base_dia
         return 2 * (ball_r + self.gap + self.wall) + self.skirt_extra
+
+    @property
+    def azimuth0(self) -> float:
+        """First support azimuth: under a lobe (dome) or a tab (block), else as configured."""
+        return {"dome": 0.0, "block": 45.0}.get(self.shape, self.support_azimuth_deg)
+
+    @property
+    def scoop_axes(self) -> tuple[str, ...]:
+        return {"dome": ("y",), "block": ("x", "y")}.get(self.shape, ())
+
+    def scoop_floor(self) -> float:
+        """Lowest point of the scoops (deck z, relative to the ball centre)."""
+        return -self.rim_below_center - self.cut
+
+    def cut_surface_z(self, x: float, y: float) -> float:
+        """Height of the cup surface after the scoops at plan position (x, y);
+        +inf where no scoop reaches."""
+        z = math.inf
+        zc = self.scoop_floor() + self.saddle_r
+        for axis in self.scoop_axes:
+            t = x if axis == "y" else y          # distance from the scoop cylinder's axis plane
+            if abs(t) < self.saddle_r:
+                z = min(z, zc - math.sqrt(self.saddle_r ** 2 - t ** 2))
+        return z
 
     def screw_radius(self, ball_r: float) -> float:
         return self.skirt_dia(ball_r) / 2 - 3.5
@@ -565,6 +596,24 @@ class Design:
             if my + 2.0 > inner_l:
                 add(f"MCU {m.name} needs {my + 2.0:.1f} mm front-to-back under the sensor but the inside is {inner_l:.1f} mm",
                     pad + (my + 2.0 - inner_l) / 2)
+        # cup scoops (dome / block) must stay above the ball-support pockets
+        cup = self.cup
+        if cup.scoop_axes:
+            sup = cup.support
+            dist = self.ball.r + sup.contact_height
+            th = math.radians(cup.support_polar_deg)
+            worst = 0.0
+            for i in range(cup.support_count):
+                az = math.radians(cup.azimuth0 + 360.0 * i / cup.support_count)
+                sx, sy = dist * math.sin(th) * math.cos(az), dist * math.sin(th) * math.sin(az)
+                pocket_top = -dist * math.cos(th) + sup.body_radius() * math.sin(th) + 1.0
+                zc = cup.cut_surface_z(sx, sy)
+                if zc < pocket_top:
+                    worst = max(worst, pocket_top - zc)
+            if worst > 0:
+                probs.append({"message": f"the cup scoops cut into the ball-support pockets: use --cup-cut "
+                                         f"{max(cup.cut - worst, 0):.1f} or less, or lower --polar / use smaller supports",
+                              "fix": {"cup_cut": round(max(cup.cut - worst - 0.25, 0.0), 1)}})
         # battery
         if self.battery.enabled:
             bl, bw = self.battery.outer
@@ -725,7 +774,7 @@ class Design:
         sw_line = f"{sw.count} x {sw.type.name} at the {sw.placement}" if sw.count else "none"
         lines = [
             f"ball Ø{self.ball.diameter}  support={self.cup.support.describe()} x{self.cup.support_count} @ {self.cup.support_polar_deg}°",
-            f"cup skirt Ø{self.skirt_dia:.1f}   ball centre {self.lens.ball_above_pcb:.2f} mm above PCB front",
+            f"cup {self.cup.shape}, skirt Ø{self.skirt_dia:.1f}   ball centre {self.lens.ball_above_pcb:.2f} mm above PCB front",
             f"deck tilt/tent                    : {self.deck.tilt_deg}° / {self.deck.tent_deg}°"
             + (f", separate palm rest {self.deck.palm_length:g} mm" if self.deck.palm_length else ""),
             f"body ({'ball centred' if self.footprint[3] == 0 else 'ball ' + format(-self.footprint[3], '.1f') + ' mm behind centre'}, "

@@ -19,6 +19,13 @@ PRESETS: tuple[Preset, ...] = (
     Preset("em06", "EM06 style", "10° tilt, two 1.5u MX keys in front, 40 mm palm rest, nice!nano with a battery under the sensor.",
            {"tilt": 10, "switch_type": "mx", "switches": 2, "keycap_u": 1.5, "palm": 40, "mcu": "nice-nano",
             "battery": "50x34x5"}, ("tilt", "wireless", "palm rest")),
+    Preset("nano-cradle", "Nano cradle", "Dome cup with side lobes and deep front/back openings, 3 mm ceramic bearings set low, "
+           "RP2040-Zero under the sensor, no buttons.",
+           {"cup_shape": "dome", "cup_cut": 9, "rim": 2, "support": "ceramic-3", "polar": 42, "mcu": "rp2040-zero",
+            "mcu_place": "under", "switches": 0, "padding": 5}, ("tiny", "cradle")),
+    Preset("block-cradle", "Block cradle", "Square cup with four corner tabs holding the ball, ceramic bearings, three Choc keys.",
+           {"cup_shape": "block", "cup_cut": 8, "rim": 2, "support": "ceramic-3", "supports": 4, "polar": 42},
+           ("cradle", "choc")),
     Preset("default", "Default", "34 mm ball on 7.5 mm BTUs, Raspberry Pi Pico behind the ball, three Choc buttons in front.",
            {}, ("wired", "choc")),
     Preset("minimal", "Minimal", "Just ball plus padding: RP2040-Zero under the sensor, no buttons, 4 mm padding.",
