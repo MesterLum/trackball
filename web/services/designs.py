@@ -67,13 +67,16 @@ class DesignService:
         """Validate (ValueError on bad values) and write SCAD files when the design fits.
         ``quality`` ("preview" / "final") overrides $fn with the configured tier."""
         v = options.coerce(values)
+        requested_fn = v["fn"]
         if quality in self.fn_tiers:
             v["fn"] = self.fn_tiers[quality]
         d = options.make_design(v)
         problems = d.validate()
         did = self.design_id(v)
         out = self.out / did
-        res = DesignResult(did, options.variant_name(v), v, d, problems, options.to_argv(v), out)
+        # the reproducible command keeps the user's $fn, not the preview tier's
+        argv = options.to_argv({**v, "fn": requested_fn})
+        res = DesignResult(did, options.variant_name(v), v, d, problems, argv, out)
         if write:
             out.mkdir(parents=True, exist_ok=True)
             (out / "design.json").write_text(json.dumps(v, indent=1, sort_keys=True))
