@@ -71,18 +71,20 @@ snapshot with Manifold is much faster if you iterate a lot.
 ## Web configurator (Flask + Docker)
 
 ```sh
-docker compose up --build        # then open http://localhost:5000
+docker compose up --build        # then open http://localhost:8321
 # or without Docker (needs openscad on PATH):
 uv run flask --app web.app run   # http://127.0.0.1:5000
 ```
 
 The form is generated from `build.py`'s options, so every CLI flag is
 there. "Generate photos" writes the SCAD files and renders eight preview
-images (about 20 s); the result page offers the SCAD files as a zip and a
-"Render + download STLs" button that runs OpenSCAD on the cup, carrier,
-tray and palm rest (1 to 2 minutes on OpenSCAD 2021). The validator runs
-first and shows what does not fit. Generated files land in `out/web/`
-(`./out/web` is mounted into the container).
+images (about 20 s). The result page then has a **3D view**: "Render 3D
+view" runs OpenSCAD on the cup, carrier, tray and palm rest (about a
+minute on OpenSCAD 2021) and shows them assembled in a Three.js viewer
+(orbit, zoom, explode slider, per-part toggles, translucent ball), plus
+download buttons for the STL and SCAD zips. The validator runs first and
+shows what does not fit. Generated files land in `out/web/` (`./out/web`
+is mounted into the container).
 
 ## Code layout
 

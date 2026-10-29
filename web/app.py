@@ -163,16 +163,134 @@ FORM = """<!doctype html><meta charset=utf-8><title>Trackball configurator</titl
 <span>Photos take ~20 s. STLs are rendered on request afterwards (1 to 2 min).</span></div>
 </form></main>"""
 
-RESULT = """<!doctype html><meta charset=utf-8><title>Trackball: {{vid}}</title><style>{{css}}</style>
+VIEWER_JS = """
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { STLLoader } from 'three/addons/loaders/STLLoader.js';
+
+const el = document.getElementById('viewer');
+const status = document.getElementById('viewer-status');
+const btn = document.getElementById('render3d');
+const explode = document.getElementById('explode');
+const toggles = document.getElementById('toggles');
+const VID = el.dataset.vid;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xf5f5f7);
+const camera = new THREE.PerspectiveCamera(40, 1, 1, 2000);
+camera.up.set(0, 0, 1);                     // OpenSCAD is Z-up
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(window.devicePixelRatio);
+el.appendChild(renderer.domElement);
+const controls = new OrbitControls(camera, renderer.domElement);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x667788, 1.1));
+const sun = new THREE.DirectionalLight(0xffffff, 1.2); sun.position.set(80, -120, 160); scene.add(sun);
+const sun2 = new THREE.DirectionalLight(0xffffff, 0.5); sun2.position.set(-100, 80, 60); scene.add(sun2);
+const grid = new THREE.GridHelper(300, 30, 0xbbbbbb, 0xdddddd).rotateX(Math.PI / 2); scene.add(grid);
+
+function resize() {
+  const w = el.clientWidth, h = Math.max(420, Math.round(w * 0.6));
+  renderer.setSize(w, h); camera.aspect = w / h; camera.updateProjectionMatrix();
+}
+window.addEventListener('resize', resize); resize();
+(function loop() { requestAnimationFrame(loop); controls.update(); renderer.render(scene, camera); })();
+
+const parts = {};        // name -> {mesh, frame, lift}
+let info = null;
+function placeAll() {
+  const e = parseFloat(explode.value);
+  for (const [name, p] of Object.entries(parts)) {
+    p.mesh.position.set(0, 0, p.lift * e);
+    p.mesh.visible = toggles.querySelector(`input[data-part="${name}"]`).checked;
+  }
+  if (parts.ball) parts.ball.mesh.position.z = 2 * e;
+}
+explode.addEventListener('input', placeAll);
+
+function frameCamera(box) {
+  const size = box.getSize(new THREE.Vector3()), c = box.getCenter(new THREE.Vector3());
+  const r = Math.max(size.x, size.y, size.z);
+  camera.position.set(c.x + r * 0.9, c.y - r * 1.3, c.z + r * 0.9);
+  controls.target.copy(c); camera.near = r / 100; camera.far = r * 20; camera.updateProjectionMatrix();
+}
+
+async function load() {
+  btn.disabled = true; status.textContent = 'Rendering STLs with OpenSCAD (about a minute) ...';
+  const r = await fetch(`/api/stl/${VID}`);
+  if (!r.ok) { status.textContent = 'STL rendering failed: ' + await r.text(); btn.disabled = false; return; }
+  info = await r.json();
+  grid.position.z = info.floor_z;        // desk level
+  const loader = new STLLoader();
+  const box = new THREE.Box3();
+  const tilt = THREE.MathUtils.degToRad(info.tilt), tent = THREE.MathUtils.degToRad(info.tent);
+  for (const part of info.parts) {
+    status.textContent = 'Loading ' + part.name + ' ...';
+    const geo = await loader.loadAsync(part.url);
+    geo.computeVertexNormals();
+    const mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: part.color, metalness: 0.05, roughness: 0.7 }));
+    if (part.frame === 'deck') {           // same as OpenSCAD rotate([tilt,0,0]) then rotate([0,tent,0])
+      mesh.rotation.order = 'YXZ'; mesh.rotation.x = tilt; mesh.rotation.y = tent;
+    }
+    scene.add(mesh); parts[part.name] = { mesh, frame: part.frame, lift: part.lift };
+    box.expandByObject(mesh);
+    const lab = document.createElement('label');
+    lab.innerHTML = `<input type=checkbox checked data-part="${part.name}"> <span style="color:${part.color}">&#9632;</span> ${part.name}`;
+    lab.querySelector('input').addEventListener('change', placeAll);
+    toggles.appendChild(lab);
+  }
+  const ball = new THREE.Mesh(new THREE.SphereGeometry(info.ball_r, 48, 32),
+    new THREE.MeshStandardMaterial({ color: 0xdc143c, transparent: true, opacity: 0.45, roughness: 0.3 }));
+  scene.add(ball); parts.ball = { mesh: ball, frame: 'world', lift: 2 };
+  const lab = document.createElement('label');
+  lab.innerHTML = '<input type=checkbox checked data-part="ball"> <span style="color:#dc143c">&#9632;</span> ball';
+  lab.querySelector('input').addEventListener('change', placeAll); toggles.appendChild(lab);
+  frameCamera(box); placeAll();
+  status.textContent = 'Drag to orbit, scroll to zoom, right-drag to pan.';
+  btn.disabled = true; btn.textContent = '3D view rendered';
+  document.getElementById('dl-stl').style.display = 'inline-block';
+}
+btn.addEventListener('click', load);
+if (el.dataset.ready === '1') load();
+"""
+
+RESULT = """<!doctype html><meta charset=utf-8><title>Trackball: {{vid}}</title><style>{{css}}
+#viewer{width:100%;border:1px solid #ddd;border-radius:8px;overflow:hidden;background:#fff}
+#toggles label{margin-right:14px;font-size:14px}
+.viewbar{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin:10px 0}
+</style>
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.1/build/three.module.js",
+"three/addons/":"https://unpkg.com/three@0.160.1/examples/jsm/"}}</script>
 <header><a href="/">Trackball module configurator</a></header><main>
 <p><a class="btn alt" href="/?{{query}}">&larr; change values</a>
-<a class=btn href="/stl/{{vid}}">Render + download STLs</a>
-<a class="btn alt" href="/scad/{{vid}}">Download SCAD files</a></p>
+<a class="btn alt" href="/scad/{{vid}}">Download SCAD files</a>
+<a class=btn id=dl-stl href="/stl/{{vid}}" style="display:{{ 'inline-block' if ready else 'none' }}">Download STLs</a></p>
 <code>uv run build.py {{cmd}}</code>
 <pre>{{summary}}</pre>
 {% for p in problems %}<p class=bad>PROBLEM (forced): {{p}}</p>{% endfor %}
+
+<h2>3D view</h2>
+<div class=viewbar>
+  <button id=render3d {% if ready %}disabled{% endif %}>Render 3D view (≈1 min)</button>
+  <label>explode <input id=explode type=range min=0 max=40 value=0 step=1></label>
+  <span id=toggles></span>
+  <span id=viewer-status>{{ 'Loading ...' if ready else 'Click to render the printable parts and show them assembled.' }}</span>
+</div>
+<div id=viewer data-vid="{{vid}}" data-ready="{{ '1' if ready else '0' }}"></div>
+<script type=module>{{viewer_js|safe}}</script>
+
+<h2>Photos</h2>
 <div class=row>{% for name, cap in photos %}<figure><img src="/file/{{vid}}/{{name}}"><figcaption>{{cap}}</figcaption></figure>{% endfor %}</div>
 </main>"""
+
+
+def viewer_parts(d, out: Path) -> list[dict]:
+    """Which STLs the viewer loads and how they sit in the assembled module.
+    Cup and carrier are printed flat in the deck frame (viewer rotates them);
+    tray and palm rest are already in the world frame."""
+    spec = [("cup", "#4682b4", "deck", 2.0), ("carrier", "#daa520", "deck", 1.0),
+            ("tray", "#808080", "world", 0.0), ("palmrest", "#cd853f", "world", 0.0)]
+    return [{"name": n, "url": f"/file/{out.name}/{n}.stl", "color": c, "frame": f, "lift": lift}
+            for n, c, f, lift in spec if (out / f"{n}.stl").exists()]
 
 
 # ---------------------------------------------------------------- routes
@@ -206,9 +324,25 @@ def result(vid: str):
     query = "&".join(f"{f['dest']}={html.escape(str(getattr(args, f['dest'])))}" for f in fields()
                      if f["kind"] != "flag" and getattr(args, f["dest"]) is not None)
     query += "".join(f"&{f['dest']}=1" for f in fields() if f["kind"] == "flag" and getattr(args, f["dest"]))
+    ready = all((out / f"{p}.stl").exists() for p in ("cup", "carrier", "tray"))
     return render_template_string(RESULT, css=BASE_CSS, vid=vid, cmd=" ".join(shlex.quote(a) for a in argv),
                                   summary=d.summary(), problems=d.validate() if args.force else [],
-                                  photos=photos, query=query)
+                                  photos=photos, query=query, ready=ready, viewer_js=VIEWER_JS)
+
+
+@app.get("/api/stl/<vid>")
+def api_stl(vid: str):
+    """Render the printable STLs (if needed) and describe them for the 3D viewer."""
+    out = OUT / vid
+    if not (out / "args.txt").exists():
+        abort(404)
+    stls = render_stls(out)
+    if not stls:
+        return "OpenSCAD produced no STL (is openscad installed?)", 500
+    args = build_parser().parse_args(shlex.split((out / "args.txt").read_text()))
+    d = make_design(args)
+    return {"parts": viewer_parts(d, out), "tilt": d.deck.tilt_deg, "tent": d.deck.tent_deg,
+            "ball_r": d.ball.r, "floor_z": d.z_floor_bottom}
 
 
 @app.get("/file/<vid>/<name>")

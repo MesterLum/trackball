@@ -2,7 +2,7 @@ FROM python:3.13-slim
 
 # OpenSCAD renders the STLs; xvfb gives it the display it needs for PNG previews.
 RUN apt-get update \
- && apt-get install -y --no-install-recommends openscad xvfb \
+ && apt-get install -y --no-install-recommends openscad xvfb xauth libgl1-mesa-dri \
  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

@@ -124,7 +124,7 @@ def find_openscad() -> str:
 
 
 def render_stl(scad: Path, stl: Path) -> bool:
-    cmd = [find_openscad(), "-o", str(stl), str(scad)]
+    cmd = [find_openscad(), "-o", str(stl), "--export-format", "binstl", str(scad)]
     print("  ", " ".join(cmd))
     r = subprocess.run(cmd, capture_output=True, text=True)
     if r.returncode != 0:
