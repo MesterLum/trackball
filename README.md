@@ -68,6 +68,22 @@ Open any `.scad` in OpenSCAD and press F5 for a preview, F6 to render.
 OpenSCAD 2021.01 renders each part in 10 to 25 s at `$fn=96`. A 2025
 snapshot with Manifold is much faster if you iterate a lot.
 
+## Web configurator (Flask + Docker)
+
+```sh
+docker compose up --build        # then open http://localhost:5000
+# or without Docker (needs openscad on PATH):
+uv run flask --app web.app run   # http://127.0.0.1:5000
+```
+
+The form is generated from `build.py`'s options, so every CLI flag is
+there. "Generate photos" writes the SCAD files and renders eight preview
+images (about 20 s); the result page offers the SCAD files as a zip and a
+"Render + download STLs" button that runs OpenSCAD on the cup, carrier,
+tray and palm rest (1 to 2 minutes on OpenSCAD 2021). The validator runs
+first and shows what does not fit. Generated files land in `out/web/`
+(`./out/web` is mounted into the container).
+
 ## Code layout
 
 | module                  | what it owns                                               |
@@ -79,6 +95,8 @@ snapshot with Manifold is much faster if you iterate a lot.
 | `trackball/tray.py`     | wedge tray, MCU mount, battery frame, USB and switch slots |
 | `trackball/assembly.py` | preview / section / placement views                        |
 | `build.py`              | CLI                                                        |
+| `demo.py`               | gallery of configurations                                  |
+| `web/app.py`            | Flask configurator (form -> photos -> SCAD/STL zip)        |
 
 ### Frames
 
