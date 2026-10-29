@@ -17,6 +17,7 @@ document.addEventListener('alpine:init', () => {
     toast: '',
     theme: localStorage.getItem('theme') || 'night',
     auto: boot.settings.auto_render,       // render previews as you edit
+    autofit: true,                         // let the server raise padding when something does not fit
     settings: boot.settings,
     finalizing: null,                      // {done, total} while the full-quality STLs render
     _abort: null, _es: null, _timer: null, _renderId: null,
@@ -81,7 +82,7 @@ document.addEventListener('alpine:init', () => {
       const ac = new AbortController(); this._abort = ac;
       let r;
       try {
-        r = await fetch('/api/design?quality=preview', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        r = await fetch(`/api/design?quality=preview&autofit=${this.autofit}`, { method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(this.cfg), signal: ac.signal });
       } catch (e) { if (e.name === 'AbortError') return; this.say('Server unreachable'); return; }
       if (ac !== this._abort) return;
@@ -90,6 +91,11 @@ document.addEventListener('alpine:init', () => {
       this.errors = {};
       const d = await r.json();
       this.design = d;
+      if (d.adjusted && d.adjusted.length) {          // reflect the auto-fit in the form, without re-sending
+        for (const c of d.adjusted) this.cfg[c.option] = c.to;
+        this.toURL();
+        this.say(d.adjusted.map((c) => `${c.option} ${c.from} → ${c.to}`).join(', '));
+      }
       viewer.setFrame({ tilt: d.tilt, tent: d.tent, ball_r: d.ball_r, floor_z: d.floor_z });
       if (d.fits && this.auto) this.render(d.id); else { this.stopEvents(); this.rendering = false; }
     },

@@ -97,11 +97,19 @@ def test_render_queue_produces_cached_stls(client):
 def test_quality_tiers_and_bom(client):
     p = client.post("/api/design?quality=preview", json={}).json()
     f = client.post("/api/design?quality=final", json={}).json()
-    assert p["fn"] == 32 and f["fn"] == 96 and p["id"] != f["id"]
+    assert p["fn"] == 48 and f["fn"] == 96 and p["id"] != f["id"]
     assert any("heat-set" in b["item"] for b in p["bom"])
-    assert client.get("/api/settings").json()["fn_preview"] == 32
+    assert client.get("/api/settings").json()["fn_preview"] == 48
 
 
 def test_cancel_endpoint_is_idempotent(client):
     d = client.post("/api/design", json={}).json()
     assert client.delete(f"/api/design/{d['id']}/render").json() == {"cancelled": 0}
+
+
+def test_autofit_raises_padding_instead_of_failing(client):
+    plain = client.post("/api/design", json={"switches": 4}).json()
+    assert not plain["fits"]
+    fit = client.post("/api/design?autofit=true", json={"switches": 4}).json()
+    assert fit["fits"] and fit["adjusted"] and fit["adjusted"][0]["option"] == "padding"
+    assert fit["values"]["padding"] > 9

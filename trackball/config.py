@@ -520,15 +520,20 @@ class Design:
             return (self.back_length - self.tray.wall - 1.0) - y_world
         return (self.bay_y0 - 1.0) - y_world
 
-    def validate(self) -> list[str]:
-        """Human-readable problems. Empty list = everything fits."""
-        probs: list[str] = []
+    def problems(self) -> list[dict]:
+        """Structured fit problems: {"message", "fix": {option: value}}.
+        ``fix`` is the smallest change that makes this problem go away."""
+        probs: list[dict] = []
         t = self.tray
         pad = self.carrier.padding
         inner_w = 2 * self.inner_half_width
 
-        def more(x: float) -> str:
-            return f"use --padding {pad + x / 2 + 0.25:.1f} or more"
+        def add(msg: str, padding_needed: float | None = None, alt: str = ""):
+            fix = {"padding": round(padding_needed + 0.25, 1)} if padding_needed is not None else {}
+            hint = f"use --padding {fix['padding']:g} or more" if fix else ""
+            if alt:
+                hint = f"{hint}, or {alt}" if hint else alt
+            probs.append({"message": f"{msg}: {hint}" if hint else msg, "fix": fix})
 
         # front button row: fits the width, and the front lid screws clear the cup skirt
         sw = self.switches
@@ -536,46 +541,44 @@ class Design:
         if sw.count and sw.placement == "front":
             limit = self.half_width - t.wall - 0.5
             if sw.row_half_width() > limit:
-                need = sw.row_half_width() - limit
-                probs.append(f"button row ({sw.count} x {sw.keycap_u:g}u {sw.type.name} = "
-                             f"{2 * sw.row_half_width():.1f} mm) is wider than the inside of the body: "
-                             f"use --padding {pad + need + 0.25:.1f} or more")
+                add(f"button row ({sw.count} x {sw.keycap_u:g}u {sw.type.name} = {2 * sw.row_half_width():.1f} mm) "
+                    f"is wider than the inside of the body", pad + (sw.row_half_width() - limit))
             x_screw = self.half_width - cr.lid_screw_inset
             min_x = self.skirt_dia / 2 + cr.screw_head_dia / 2 + 0.5
             if x_screw < min_x:
-                probs.append(f"the front lid screws (beside the cup) would hit the cup skirt: "
-                             f"use --padding {pad + (min_x - x_screw) + 0.25:.1f} or more")
+                add("the front lid screws (beside the cup) would hit the cup skirt", pad + (min_x - x_screw))
         # MCU
         m = t.mcu
         mx, my = self.mcu_xy_size
         if mx + 2.0 > inner_w:
-            probs.append(f"MCU {m.name} needs {mx + 2.0:.1f} mm across but the inside is {inner_w:.1f} mm wide: "
-                         f"{more(mx + 2.0 - inner_w)}")
+            add(f"MCU {m.name} needs {mx + 2.0:.1f} mm across but the inside is {inner_w:.1f} mm wide",
+                pad + (mx + 2.0 - inner_w) / 2)
         if t.mcu_place == "behind" and self.bay_depth > self.back_space:
-            short = self.bay_depth - self.back_space
-            probs.append(f"MCU {m.name} needs {self.bay_depth:.1f} mm behind the sensor but only "
-                         f"{max(self.back_space, 0.0):.1f} mm are free before the back posts: use --padding "
-                         f"{pad + short + 0.25:.1f} or more, or put it under the sensor with --mcu-place under")
+            add(f"MCU {m.name} needs {self.bay_depth:.1f} mm behind the sensor but only "
+                f"{max(self.back_space, 0.0):.1f} mm are free before the back posts",
+                pad + (self.bay_depth - self.back_space), "put it under the sensor with --mcu-place under")
         if t.usb_exit == "back" and mx / 2 + 0.5 > self.half_width - cr.lid_screw_inset - self.post_r:
-            need = mx / 2 + 0.5 - (self.half_width - cr.lid_screw_inset - self.post_r)
-            probs.append(f"MCU {m.name} (turned for a back USB) runs into the back corner posts: "
-                         f"use --padding {pad + need + 0.25:.1f} or more")
+            add(f"MCU {m.name} (turned for a back USB) runs into the back corner posts",
+                pad + (mx / 2 + 0.5 - (self.half_width - cr.lid_screw_inset - self.post_r)))
         if t.mcu_place == "under":
             inner_l = self.front_length + self.back_length - 2 * t.wall
             if my + 2.0 > inner_l:
-                probs.append(f"MCU {m.name} needs {my + 2.0:.1f} mm front-to-back under the sensor but the inside "
-                             f"is {inner_l:.1f} mm: {more(my + 2.0 - inner_l)}")
+                add(f"MCU {m.name} needs {my + 2.0:.1f} mm front-to-back under the sensor but the inside is {inner_l:.1f} mm",
+                    pad + (my + 2.0 - inner_l) / 2)
         # battery
         if self.battery.enabled:
             bl, bw = self.battery.outer
             if bl > inner_w - 2.0:
-                probs.append(f"battery {self.battery.length:g} mm long does not fit the {inner_w:.1f} mm wide inside: "
-                             f"{more(bl + 2.0 - inner_w)}")
+                add(f"battery {self.battery.length:g} mm long does not fit the {inner_w:.1f} mm wide inside",
+                    pad + (bl + 2.0 - inner_w) / 2)
             if bw > self.front_space:
-                probs.append(f"battery {self.battery.width:g} mm wide needs {bw:.1f} mm under the sensor but only "
-                             f"{self.front_space:.1f} mm are free before the MCU: use --padding "
-                             f"{pad + (bw - self.front_space) + 0.25:.1f} or more")
+                add(f"battery {self.battery.width:g} mm wide needs {bw:.1f} mm under the sensor but only "
+                    f"{self.front_space:.1f} mm are free before the MCU", pad + (bw - self.front_space))
         return probs
+
+    def validate(self) -> list[str]:
+        """Human-readable problems. Empty list = everything fits."""
+        return [p["message"] for p in self.problems()]
 
     # ---- world frame Z levels ----
     @property

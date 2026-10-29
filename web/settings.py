@@ -1,7 +1,7 @@
 """Runtime settings, all overridable through environment variables.
 
     TRACKBALL_OUT          where generated designs, caches and bundles go (default ./out/web)
-    TRACKBALL_FN_PREVIEW   $fn for the live preview renders (default 32)
+    TRACKBALL_FN_PREVIEW   $fn for the live preview renders (default 48)
     TRACKBALL_FN_FINAL     $fn for downloadable / printable STLs (default 96)
     TRACKBALL_WORKERS      parallel OpenSCAD processes (default min(3, cpu count))
     TRACKBALL_AUTO_RENDER  1 = render previews as you edit, 0 = only on request (default 1)
@@ -26,7 +26,7 @@ def _int(name: str, default: int) -> int:
 @dataclass(frozen=True)
 class Settings:
     out: Path = field(default_factory=lambda: Path(os.environ.get("TRACKBALL_OUT", ROOT / "out" / "web")))
-    fn_preview: int = field(default_factory=lambda: _int("TRACKBALL_FN_PREVIEW", 32))
+    fn_preview: int = field(default_factory=lambda: _int("TRACKBALL_FN_PREVIEW", 48))
     fn_final: int = field(default_factory=lambda: _int("TRACKBALL_FN_FINAL", 96))
     workers: int = field(default_factory=lambda: _int("TRACKBALL_WORKERS", min(3, os.cpu_count() or 1)))
     auto_render: bool = field(default_factory=lambda: os.environ.get("TRACKBALL_AUTO_RENDER", "1") not in ("0", "false", "no"))

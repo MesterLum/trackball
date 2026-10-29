@@ -177,6 +177,7 @@ def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     add_to_parser(p)
     p.add_argument("--force", action="store_true", help="generate even if the validator reports problems")
+    p.add_argument("--autofit", action="store_true", help="raise the padding automatically until everything fits")
     p.add_argument("--explode", type=float, default=0.0, help="exploded view distance for assembly")
     p.add_argument("--stl", action="store_true", help="render STLs with openscad (slow on 2021.01)")
     p.add_argument("--png", action="store_true", help="render PNG photos of every part and placement view")
@@ -203,6 +204,12 @@ def main() -> int:
         print("views        :", ", ".join(VIEWS))
         return 0
 
+    if args.autofit:
+        fitted, changes = options.autofit(args_values(args))
+        for c in changes:
+            print(f"autofit: {c['option']} {c['from']:g} -> {c['to']:g} ({c['reason']})")
+        for k, v in fitted.items():
+            setattr(args, k, v)
     d = make_design(args)
     print(d.summary())
     problems = d.validate()

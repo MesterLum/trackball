@@ -49,6 +49,13 @@ OPTIONS: tuple[Option, ...] = (
     Option("support", "choice", "btu-7.5", "what the ball rolls on", "Ball & cup", choices=tuple(sorted(SUPPORTS))),
     Option("supports", "int", 3, "number of ball supports", "Ball & cup", min=3, max=4),
     Option("polar", "float", 55.0, "support angle from the downward axis", "Ball & cup", min=35, max=70, step=1, unit="°"),
+    Option("ball_gap", "float", 0.8, "air between the ball and the cup cavity", "Ball & cup", min=0.4, max=2.0, step=0.1, unit="mm",
+           label="ball clearance"),
+    Option("cup_wall", "float", 3.0, "wall thickness of the cup dome", "Ball & cup", min=2, max=5, step=0.5, unit="mm"),
+    Option("rim", "float", 5.0, "how far below the ball's equator the cup opening sits (more = ball sits deeper)",
+           "Ball & cup", min=0, max=12, step=0.5, unit="mm", label="rim depth"),
+    Option("skirt", "float", 14.0, "extra width of the cup skirt around the dome (room for the supports and screws)",
+           "Ball & cup", min=8, max=30, step=1, unit="mm", label="skirt width"),
     Option("sensor_pcb", "choice", "bastardkb", "which sensor breakout the carrier is cut for", "Ball & cup",
            choices=tuple(sorted(SENSOR_PCBS)), label="sensor PCB"),
     Option("header_height", "float", 9.0, "how far the sensor connector hangs below the PCB: 9 for the vertical "
@@ -79,7 +86,10 @@ OPTIONS: tuple[Option, ...] = (
     # ---- deck
     Option("tilt", "float", 0.0, "deck tilt; the far edge rises", "Deck", min=-20, max=25, step=1, unit="°"),
     Option("tent", "float", 0.0, "deck tenting; the left (-X) side rises", "Deck", min=-20, max=20, step=1, unit="°"),
-    Option("palm", "float", 0.0, "separate palm rest of this length in front (0 = none)", "Deck", min=0, max=100, step=5, unit="mm"),
+    Option("palm", "float", 0.0, "separate palm rest of this length in front (0 = none)", "Deck", min=0, max=100, step=5, unit="mm",
+           label="palm rest length"),
+    Option("palm_drop", "float", 2.0, "how far the palm rest top sits below the deck", "Deck", min=0, max=15, step=0.5, unit="mm",
+           label="palm rest drop"),
     Option("palm_pad", "bool", False, "1 mm recess on the palm rest for a leather/foam pad", "Deck", label="pad recess"),
 )
 BY_NAME = {o.name: o for o in OPTIONS}
@@ -139,7 +149,8 @@ def make_design(values: dict[str, Any]) -> Design:
     return Design(
         ball=Ball(diameter=v["ball"]),
         cup=Cup(support=dataclasses.replace(SUPPORTS[v["support"]]), support_count=v["supports"],
-                support_polar_deg=v["polar"]),
+                support_polar_deg=v["polar"], gap=v["ball_gap"], wall=v["cup_wall"],
+                rim_below_center=v["rim"], skirt_extra=v["skirt"]),
         pcb=dataclasses.replace(SENSOR_PCBS[v["sensor_pcb"]], header_height=v["header_height"]),
         carrier=Carrier(padding=v["padding"]),
         tray=Tray(mcu=MCUS[v["mcu"]], mcu_place=v["mcu_place"],
@@ -148,11 +159,36 @@ def make_design(values: dict[str, Any]) -> Design:
                   wall=v["wall"], floor=v["floor"], feet_dia=v["feet"]),
         switches=Switches(type=SWITCH_TYPES[v["switch_type"]], count=v["switches"], placement=v["buttons"],
                           keycap_u=v["keycap_u"], gap=v["switch_gap"], mirror=not v["no_mirror"]),
-        deck=Deck(tilt_deg=v["tilt"], tent_deg=v["tent"], palm_length=v["palm"],
+        deck=Deck(tilt_deg=v["tilt"], tent_deg=v["tent"], palm_length=v["palm"], palm_drop=v["palm_drop"],
                   palm_pad_recess=1.0 if v["palm_pad"] else 0.0),
         battery=parse_battery(v["battery"]),
         fn=v["fn"],
     )
+
+
+def autofit(values: dict[str, Any], max_rounds: int = 8) -> tuple[dict[str, Any], list[dict]]:
+    """Apply the validator's own suggested fixes (today: raise padding) until the
+    design fits or nothing more can be done. Returns (values, changes)."""
+    v = coerce(values)
+    changes: list[dict] = []
+    for _ in range(max_rounds):
+        probs = make_design(v).problems()
+        fixes: dict[str, float] = {}
+        for pr in probs:
+            for opt, val in pr["fix"].items():
+                fixes[opt] = max(fixes.get(opt, float("-inf")), val)
+        if not fixes:
+            break
+        for opt, val in fixes.items():
+            o = BY_NAME[opt]
+            if o.max is not None:
+                val = min(val, o.max)
+            if val <= v[opt]:
+                return v, changes          # cannot improve further (e.g. at the maximum)
+            changes.append({"option": opt, "from": v[opt], "to": val,
+                            "reason": "; ".join(pr["message"].split(":")[0] for pr in probs if opt in pr["fix"])})
+            v[opt] = val
+    return v, changes
 
 
 def to_argv(values: dict[str, Any]) -> list[str]:

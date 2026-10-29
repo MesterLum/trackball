@@ -93,6 +93,7 @@ class DesignResponse(BaseModel):
     values: dict[str, Any]
     fn: int
     bom: list[BomItem]
+    adjusted: list[dict[str, Any]] = []     # auto-fit changes: {option, from, to, reason}
 
 
 class SettingsResponse(BaseModel):

@@ -28,6 +28,10 @@
         <span class="loading loading-spinner loading-xs" x-show="rendering"></span>
         <span x-text="rendering ? 'rendering' : (design ? (fits ? 'fits' : 'does not fit') : '…')"></span>
       </span>
+      <label class="label cursor-pointer gap-2 py-0" title="when a choice needs a bigger body, raise the padding automatically">
+        <span class="label-text text-xs">auto-fit</span>
+        <input type="checkbox" class="toggle toggle-secondary toggle-sm" x-model="autofit" @change="update()">
+      </label>
       <label class="label cursor-pointer gap-2 py-0" title="render the preview while you edit">
         <span class="label-text text-xs">live</span>
         <input type="checkbox" class="toggle toggle-primary toggle-sm" x-model="auto" @change="auto && renderNow()">
@@ -178,6 +182,17 @@
           </div>
         </div>
       </section>
+
+      <!-- auto-fit notice -->
+      <template x-if="design && design.adjusted.length">
+        <div class="alert alert-info shadow text-sm">
+          <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <div>
+            <span class="font-semibold">Adjusted to fit:</span>
+            <template x-for="c in design.adjusted"><span class="ml-1"><span x-text="c.option"></span> <span class="font-mono" x-text="c.from + ' → ' + c.to"></span> <span class="opacity-70" x-text="'(' + c.reason + ')'"></span></span></template>
+          </div>
+        </div>
+      </template>
 
       <!-- problems -->
       <template x-if="design && !fits">

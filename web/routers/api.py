@@ -53,10 +53,11 @@ def get_presets(request: Request):
              summary="Validate a configuration and prepare its SCAD files (instant)")
 def post_design(body: DesignRequest, request: Request,  # type: ignore[valid-type]
                 quality: Literal["preview", "final", "custom"] = Query(
-                    "custom", description="preview/final override $fn with the server's tiers; custom keeps the request's fn")):
+                    "custom", description="preview/final override $fn with the server's tiers; custom keeps the request's fn"),
+                autofit: bool = Query(False, description="apply the validator's suggested fixes (more padding) automatically")):
     designs, _ = _svc(request)
     try:
-        res = designs.prepare(body.model_dump(), quality=quality)
+        res = designs.prepare(body.model_dump(), quality=quality, autofit=autofit)
     except ValueError as e:
         # options.coerce reports "name: message"
         name, _, msg = str(e).partition(": ")

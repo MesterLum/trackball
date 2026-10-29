@@ -29,6 +29,7 @@ class DesignResult:
     problems: list[str]
     argv: list[str]
     dir: Path
+    adjusted: list[dict] | None = None
 
     @property
     def fits(self) -> bool:
@@ -42,7 +43,7 @@ class DesignResult:
             "tilt": d.deck.tilt_deg, "tent": d.deck.tent_deg, "ball_r": d.ball.r,
             "floor_z": d.z_floor_bottom, "footprint": tuple(round(x, 1) for x in d.footprint[:2]),
             "height": round(d.ball.r - d.z_floor_bottom, 1), "values": self.values,
-            "fn": self.values["fn"], "bom": d.bom(),
+            "fn": self.values["fn"], "bom": d.bom(), "adjusted": self.adjusted or [],
         }
 
 
@@ -63,10 +64,15 @@ class DesignService:
             return None
         return self.prepare(json.loads(p.read_text()), write=False)
 
-    def prepare(self, values: dict[str, Any], write: bool = True, quality: str | None = None) -> DesignResult:
+    def prepare(self, values: dict[str, Any], write: bool = True, quality: str | None = None,
+                autofit: bool = False) -> DesignResult:
         """Validate (ValueError on bad values) and write SCAD files when the design fits.
-        ``quality`` ("preview" / "final") overrides $fn with the configured tier."""
+        ``quality`` ("preview" / "final") overrides $fn with the configured tier.
+        ``autofit`` applies the validator's suggested fixes (e.g. more padding) first."""
         v = options.coerce(values)
+        adjusted: list[dict] = []
+        if autofit:
+            v, adjusted = options.autofit(v)
         requested_fn = v["fn"]
         if quality in self.fn_tiers:
             v["fn"] = self.fn_tiers[quality]
@@ -77,6 +83,7 @@ class DesignService:
         # the reproducible command keeps the user's $fn, not the preview tier's
         argv = options.to_argv({**v, "fn": requested_fn})
         res = DesignResult(did, options.variant_name(v), v, d, problems, argv, out)
+        res.adjusted = adjusted
         if write:
             out.mkdir(parents=True, exist_ok=True)
             (out / "design.json").write_text(json.dumps(v, indent=1, sort_keys=True))

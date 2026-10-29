@@ -79,7 +79,7 @@ docker run --rm -v "$PWD/out:/data" trackball-web build --tilt 10 --palm 40 --st
 docker run --rm trackball-web test                           # pytest inside the image
 ```
 
-Environment variables (see `docker-compose.yml`): `TRACKBALL_FN_PREVIEW` (32, curve
+Environment variables (see `docker-compose.yml`): `TRACKBALL_FN_PREVIEW` (48, curve
 resolution of the live preview), `TRACKBALL_FN_FINAL` (96, printable STLs),
 `TRACKBALL_WORKERS` (parallel OpenSCAD processes), `TRACKBALL_AUTO_RENDER`
 (0 = render previews only when you press the button), `TRACKBALL_OUT`, `TRACKBALL_PRESETS`.
@@ -177,10 +177,13 @@ per-part STL cache. Both are inside the `./out/web` volume in Docker.
   height (about 8.5 mm). `--usb back` turns the board so the cable leaves
   the back wall instead of the side; for a Pico that needs a lot of padding
   behind, for small boards it is free.
-- **Electronics never grow the body.** `Design.validate()` checks that the
-  MCU fits behind the sensor, that the battery fits under it and that the
-  button row fits the width. If not, `build.py` stops and prints the
-  `--padding` value that makes it fit (`--force` overrides).
+- **Electronics never grow the body by themselves.** `Design.validate()`
+  checks that the MCU fits behind the sensor, that the battery fits under it
+  and that the button row fits the width. Each problem carries its own fix;
+  with `--autofit` (CLI) or the auto-fit toggle (web, on by default) the
+  padding is raised to the smallest value that fits and the change is shown.
+  Without it, `build.py` stops and prints the `--padding` value (`--force`
+  overrides).
 - **Battery** lies flat on the floor under the sensor (`L` along X, `W`
   along Y); the tray grows by the cell thickness + 1 mm, nothing else moves.
 - **Palm rest** (`--palm MM`) is a separate printed block in front of the
