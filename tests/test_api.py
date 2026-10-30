@@ -11,7 +11,9 @@ from web.main import create_app
 
 
 @pytest.fixture()
-def client(tmp_path):
+def client(tmp_path, monkeypatch):
+    monkeypatch.setenv("TRACKBALL_FN_PREVIEW", "48")      # the tests assume these tiers, whatever the image sets
+    monkeypatch.setenv("TRACKBALL_FN_FINAL", "96")
     app = create_app(out_dir=tmp_path)
     with TestClient(app) as c:
         yield c

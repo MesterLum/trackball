@@ -180,7 +180,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--force", action="store_true", help="generate even if the validator reports problems")
     p.add_argument("--autofit", action="store_true", help="raise the padding automatically until everything fits")
     p.add_argument("--explode", type=float, default=0.0, help="exploded view distance for assembly")
-    p.add_argument("--stl", action="store_true", help="render STLs with openscad (slow on 2021.01)")
+    p.add_argument("--stl", action="store_true", help="render STLs with openscad (seconds with Manifold, minutes on 2021.01)")
     p.add_argument("--png", action="store_true", help="render PNG photos of every part and placement view")
     p.add_argument("--open", nargs="?", const="assembly",
                    choices=sorted(VIEWS) + ["png"],

@@ -70,8 +70,10 @@ Output goes to `out/<variant>/`:
 | `png/index.html`          | contact sheet of all rendered views (`--png`)        |
 
 Open any `.scad` in OpenSCAD and press F5 for a preview, F6 to render.
-OpenSCAD 2021.01 renders each part in 10 to 25 s at `$fn=96`. A 2025
-snapshot with Manifold is much faster if you iterate a lot.
+The Docker image ships OpenSCAD 2026.10 with the Manifold geometry engine:
+a part renders in well under a second, so the web preview runs at `$fn=96`
+and downloads at 128. A local OpenSCAD 2021.01 (CGAL) takes one to two
+minutes per part at the same `$fn`; the code works with both.
 
 ## Run it from Docker (recommended)
 
