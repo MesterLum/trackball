@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import math
 
-from solid2 import cube, cylinder, linear_extrude, offset, square
+from solid2 import cube, cylinder, hull, linear_extrude, offset, sphere, square
 
 EPS = 0.01
 
@@ -15,6 +15,28 @@ def rounded_rect(w: float, l: float, r: float, h: float, fn: int, center_z: bool
         offset(r=r, _fn=fn)(square([w - 2 * r, l - 2 * r], center=True))
     )
     return prism.down(h / 2) if center_z else prism
+
+
+def rounded_slab(w: float, l: float, corner_r: float, h: float, edge_r: float, fn: int):
+    """Rounded-rectangle slab from z=0 to h whose TOP perimeter edge is rounded
+    with ``edge_r`` (hull of four cylinders and four spheres). edge_r=0 gives
+    a plain rounded_rect."""
+    if edge_r <= 0:
+        return rounded_rect(w, l, corner_r, h, fn)
+    r = max(corner_r, edge_r + 0.5)
+    r = min(r, w / 2 - EPS, l / 2 - EPS)
+    e = min(edge_r, h - EPS, r - EPS)
+    parts = []
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            cx, cy = sx * (w / 2 - r), sy * (l / 2 - r)
+            parts.append(cylinder(r=r, h=h - e, _fn=fn).translate([cx, cy, 0]))
+            # a ring of the corner radius at the top, rounded by the sphere radius
+            parts.append(cylinder(r=r - e, h=EPS, _fn=fn).translate([cx, cy, h - EPS]))
+            for k in range(0, 360, 30):
+                a = math.radians(k)
+                parts.append(sphere(r=e, _fn=max(12, fn // 4)).translate([cx + (r - e) * math.cos(a), cy + (r - e) * math.sin(a), h - e]))
+    return hull()(*parts)
 
 
 def zcyl(d: float, z0: float, z1: float, fn: int):

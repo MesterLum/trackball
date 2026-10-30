@@ -39,6 +39,8 @@ uv run build.py --mcu rp2040-zero --mcu-place under --switches 0 --padding 4   #
 uv run build.py --mcu rp2040-zero --mcu-place under --usb back --keycap-u 1.5 --switches 2 --no-mirror
 uv run build.py --header-height 3 --wall 4 --floor 4 --feet 12   # lower, thicker, bigger feet
 uv run build.py --support mr63 --switch-gap 2                     # bearing rollers, spaced buttons
+uv run build.py --cup-shape dome --cup-cut 9 --support ceramic-3 --polar 42 --rim 2   # Nano-style cradle
+uv run build.py --cup-round 0 --edge-round 0                      # sharp edges (faster renders)
 uv run build.py --sensor-pcb pmw3389-round                        # other sensor breakout
 uv run build.py --switch-type mx --buttons sides     # MX buttons left and right of the ball
 uv run build.py --switch-type micro  # flat paddles over Omron D2F microswitches
@@ -195,6 +197,20 @@ per-part STL cache. Both are inside the `./out/web` volume in Docker.
   header + air + floor ...). The one soft number is the sensor header:
   `--header-height 3` for soldered wires or a right-angle header lowers
   the module by up to 6 mm.
+- **Cup shape** (`--cup-shape`): `cone` is a plain cone from skirt to rim,
+  open all around. `dome` is a spherical shell that follows the ball, with the
+  front and back scooped away so two side lobes cradle the ball (Ploopy Nano
+  look). `block` is a rounded square scooped on all four sides, leaving four
+  corner tabs. `--cup-cut` is how deep the scoops go below the rim; `--rim`
+  (how far below the ball centre the rim sits) sets how much ball shows. The
+  scoops must stay above the ball-support pockets, so deep cradles need
+  small supports set low on the ball (`--support ceramic-3 --polar 42`); with
+  7.5 mm BTUs the cut is limited to about 3 mm and auto-fit trims it.
+- **Soft edges**: `--cup-round` rounds the cup rim, `--edge-round` rounds the
+  top edges of the lid and the palm rest (both 2 mm by default, 0 = sharp).
+  They are built from hulls and lathed profiles, not `minkowski`, so renders
+  stay fast. Surface smoothness itself is `$fn` (`--fn`, or the preview /
+  final tiers in the web app).
 - **Walls**: tray wall and floor 3 mm (`--wall`, `--floor`), lid 5 mm, cup 3 mm.
 - **Feet**: four rubber-foot recesses in the bottom, `--feet DIA` (default
   10 mm, 1 mm deep, 0 = none). They follow the leaning walls.

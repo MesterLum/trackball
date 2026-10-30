@@ -13,7 +13,7 @@ from __future__ import annotations
 
 from solid2 import cube, cylinder, union
 
-from .common import EPS, polar, rounded_rect, zcyl
+from .common import EPS, polar, rounded_rect, rounded_slab, zcyl
 from .config import Design
 from .cup import lens_window_size
 from .tray import bootsel_deck_xy, lid_screw_points
@@ -114,7 +114,7 @@ def carrier(d: Design):
     z0, z1 = d.z_pcb_face, d.z_carrier_top
     w, l, cx, cy = d.footprint
 
-    plate = rounded_rect(w, l, cr.corner_r, z1 - z0, fn).up(z0).translate([cx, cy, 0])
+    plate = rounded_slab(w, l, cr.corner_r, z1 - z0, cr.edge_round, fn).up(z0).translate([cx, cy, 0])
 
     cuts = []
     # lens opening (same outline as the cup window, straight through)

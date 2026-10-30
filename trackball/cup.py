@@ -3,9 +3,9 @@ from __future__ import annotations
 
 import warnings
 
-from solid2 import cube, cylinder, hull, sphere, union
+from solid2 import circle, cube, cylinder, hull, intersection, offset, rotate_extrude, sphere, square, union
 
-from .common import (EPS, place_on_ball, polar, rounded_rect, support_frames,
+from .common import (EPS, place_on_ball, polar, rounded_rect, rounded_slab, support_frames,
                      support_lowest_z, zcyl)
 from .config import Design
 
@@ -25,15 +25,25 @@ def cup(d: Design):
 
     # --- outer body. The straight skirt must be at least as tall as the insert holes.
     base = zcyl(d.skirt_dia, z_bot, z_bot + c.insert_depth + 1.5, fn)
+    rr = min(c.round, c.wall - 0.5) if c.round > 0 else 0.0
     if c.shape == "cone":
-        # hull of the skirt and a ring at the rim (overshoots 1 mm so the opening cut is clean)
-        top = zcyl(2 * dome_r, -c.base_top_below_center, z_rim + 1.0, fn)
-        body = hull()(base, top)
+        if rr > 0:
+            # torus whose top is tangent to the rim plane: the cone's top edge comes out rounded
+            ring = rotate_extrude(_fn=fn)(circle(r=rr, _fn=fn // 2).translate([dome_r - rr, z_rim - rr]))
+            body = hull()(base, ring)
+        else:
+            top = zcyl(2 * dome_r, -c.base_top_below_center, z_rim + 1.0, fn)
+            body = hull()(base, top)
     elif c.shape == "dome":
-        body = hull()(base, sphere(r=dome_r, _fn=fn))
+        # lathe of the shell profile (radial x, height y) clipped at the rim, outer top corner rounded
+        big = 4 * dome_r
+        prof = intersection()(circle(r=dome_r, _fn=fn), square([big, big]).translate([0, z_rim - big]))
+        if rr > 0:
+            prof = offset(r=rr, _fn=fn // 2)(offset(r=-rr, _fn=fn // 2)(prof))
+        body = hull()(base, rotate_extrude(_fn=fn)(prof))
     else:  # block
         side = 2 * dome_r
-        blk = rounded_rect(side, side, 7.0, (z_rim + 1.0) - z_bot, fn).up(z_bot)
+        blk = rounded_slab(side, side, 7.0, z_rim - z_bot, rr, fn).up(z_bot)
         body = hull()(base, blk)
 
     # --- cavity + opening above the rim

@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import math
 
-from .common import half_space_above, rounded_rect, to_world
+from .common import half_space_above, rounded_rect, rounded_slab, to_world
 from .config import Design
 
 
@@ -26,7 +26,7 @@ def palmrest(d: Design):
 
     sag = (w + L + 2 * d.half_length) * (math.sin(math.radians(abs(dk.tilt_deg))) + math.sin(math.radians(abs(dk.tent_deg))))
     tall = (z_top - zf_bot) + sag + 10.0
-    block = rounded_rect(w, L, d.carrier.corner_r, tall, fn).up(z_top - tall).translate([0, cy, 0])
+    block = rounded_slab(w, L, d.carrier.corner_r, tall, dk.palm_round, fn).up(z_top - tall).translate([0, cy, 0])
     if dk.palm_pad_recess > 0:
         pad = rounded_rect(w - 2 * dk.palm_pad_inset, L - 2 * dk.palm_pad_inset, 4.0,
                            dk.palm_pad_recess + 1, fn).up(z_top - dk.palm_pad_recess).translate([0, cy, 0])

@@ -118,6 +118,7 @@ class Cup:
     #   dome  - spherical shell following the ball, scooped front and back -> two side lobes
     #   block - rounded square block, scooped on all four sides -> four corner tabs
     shape: str = "cone"
+    round: float = 2.0                # round-over radius of the rim edge
     cut: float = 6.0                  # how far below the rim the scoops go (dome / block)
     saddle_r: float = 16.0            # radius of the scoop cylinders (smaller = sharper lobes)
     # ball supports
@@ -165,6 +166,7 @@ class Cup:
 @dataclass
 class Carrier:
     thickness: float = 5.0
+    edge_round: float = 2.0           # round-over of the lid's top edge
     padding: float = 9.0              # body = cup skirt + padding on every side (the one size knob)
     corner_r: float = 8.0
     pcb_insert_dia: float = 4.0       # M3 insert, pressed from below
@@ -187,6 +189,7 @@ class Deck:
     # the deck plane (same width, same lean), 0 = none
     palm_length: float = 0.0
     palm_drop: float = 2.0            # its top sits this far below the deck
+    palm_round: float = 2.0           # round-over of its top edge
     palm_pad_recess: float = 0.0      # shallow pocket for a leather/foam pad (0 = plain top)
     palm_pad_inset: float = 5.0
 
