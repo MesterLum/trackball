@@ -212,8 +212,8 @@ fails when a catalog misses a string or breaks a `{placeholder}`.
 - **Battery** lies flat on the floor under the sensor (`L` along X, `W`
   along Y); the tray grows by the cell thickness + 1 mm, nothing else moves.
 - **Palm rest** (`--palm MM`) is a separate printed block in front of the
-  body: same width, same lean, top 2 mm below the deck plane. `--palm-pad`
-  adds a 1 mm recess for a leather/foam pad. It does not change the body.
+  body: same width, same lean, top 2 mm below the deck plane. `--palm-pad MM`
+  adds a recess of that depth for a leather/foam pad. It does not change the body.
 - The tray floor height is computed from everything under the lid: sensor
   header, switch bodies, MCU. With tilt the back gets taller automatically.
   The summary prints the breakdown (ball radius + 6 mm optics + PCB and

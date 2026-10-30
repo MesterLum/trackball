@@ -23,7 +23,7 @@ PRESETS: tuple[Preset, ...] = (
             "battery": "50x34x5"}, ("tilt", "wireless", "palm rest")),
     Preset("em06-tiles", N_("EM06 tiles"), N_("Eight sculpted keys filling the deck around the ball over microswitches, "
            "10° tilt, 45 mm palm rest with a pad recess, nice!nano with a battery under the sensor."),
-           {"buttons": "tiles", "switches": 8, "padding": 26, "tilt": 10, "palm": 45, "palm_pad": True,
+           {"buttons": "tiles", "switches": 8, "padding": 26, "tilt": 10, "palm": 45, "palm_pad": 1.5,
             "mcu": "nice-nano", "battery": "50x34x5"}, ("tiles", "tilt", "wireless", "palm rest")),
     Preset("four-tiles", N_("Four tiles"), N_("One big key on each side of the ball, printed into the lid over microswitches; "
            "RP2040-Zero under the sensor, no palm rest."),
@@ -55,7 +55,7 @@ PRESETS: tuple[Preset, ...] = (
     Preset("compact-wireless", N_("Compact wireless"), N_("XIAO nRF52840, a 3 mm battery, two flat paddles."),
            {"mcu": "xiao", "battery": "40x25x3", "switch_type": "micro", "switches": 2}, ("wireless", "tiny")),
     Preset("big-wireless", N_("Big wireless"), N_("12° tilt, 60x40x6 battery, Supermini, three Choc keys, 50 mm padded palm rest."),
-           {"tilt": 12, "battery": "60x40x6", "mcu": "supermini", "palm": 50, "palm_pad": True},
+           {"tilt": 12, "battery": "60x40x6", "mcu": "supermini", "palm": 50, "palm_pad": 1},
            ("tilt", "wireless", "palm rest")),
     Preset("tented", N_("Tilted and tented"), N_("8° tilt plus 6° tent, four Choc keys, Supermini, 12 mm padding."),
            {"tilt": 8, "tent": 6, "switches": 4, "mcu": "supermini", "padding": 12}, ("tilt", "choc")),

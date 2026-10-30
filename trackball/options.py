@@ -117,7 +117,8 @@ OPTIONS: tuple[Option, ...] = (
            label=N_("palm rest length")),
     Option("palm_drop", "float", 2.0, N_("how far the palm rest top sits below the deck"), N_("Deck"), min=0, max=15, step=0.5, unit="mm",
            label=N_("palm rest drop")),
-    Option("palm_pad", "bool", False, N_("1 mm recess on the palm rest for a leather/foam pad"), N_("Deck"), label=N_("pad recess")),
+    Option("palm_pad", "float", 0.0, N_("depth of the recess on the palm rest for a leather/foam pad (0 = none)"), N_("Deck"),
+           min=0, max=6, step=0.5, unit="mm", label=N_("pad recess")),
 )
 BY_NAME = {o.name: o for o in OPTIONS}
 GROUPS = tuple(dict.fromkeys(o.group for o in OPTIONS))
@@ -191,7 +192,7 @@ def make_design(values: dict[str, Any]) -> Design:
                           keycap_u=v["keycap_u"], gap=v["switch_gap"], mirror=not v["no_mirror"],
                           tile_gap=v["tile_gap"], tile_frame=v["tile_frame"]),
         deck=Deck(tilt_deg=v["tilt"], tent_deg=v["tent"], palm_length=v["palm"], palm_drop=v["palm_drop"],
-                  palm_round=v["edge_round"], palm_pad_recess=1.0 if v["palm_pad"] else 0.0),
+                  palm_round=v["edge_round"], palm_pad_recess=v["palm_pad"]),
         battery=parse_battery(v["battery"]),
         fn=v["fn"],
     )

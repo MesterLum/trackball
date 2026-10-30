@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: trackball 0.3\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-29 23:21-0700\n"
+"POT-Creation-Date: 2026-10-29 23:24-0700\n"
 "PO-Revision-Date: 2026-10-29 21:44-0700\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: es\n"
@@ -43,9 +43,6 @@ msgstr ", reposamanos separado de {l:g} mm"
 #, python-brace-format
 msgid ", {u:g}u caps"
 msgstr ", teclas de {u:g}u"
-
-msgid "1 mm recess on the palm rest for a leather/foam pad"
-msgstr "rebaje de 1 mm en el reposamanos para una almohadilla de cuero o espuma"
 
 msgid "10° tilt, two 1.5u MX keys in front, 40 mm palm rest, nice!nano with a battery under the sensor."
 msgstr "10° de inclinación, dos teclas MX de 1.5u al frente, reposamanos de 40 mm, nice!nano con batería bajo el sensor."
@@ -523,6 +520,9 @@ msgstr "reducir"
 msgid "depth of the openings below the rim (dome / block)"
 msgstr "profundidad de las aberturas bajo el borde (domo / bloque)"
 
+msgid "depth of the recess on the palm rest for a leather/foam pad (0 = none)"
+msgstr "profundidad del rebaje en el reposamanos para una almohadilla de cuero o espuma (0 = ninguno)"
+
 msgid "does not fit"
 msgstr "no cabe"
 
@@ -905,4 +905,7 @@ msgstr "el lado {sign}X"
 #, python-brace-format
 msgid "{switch} switches"
 msgstr "interruptores {switch}"
+
+#~ msgid "1 mm recess on the palm rest for a leather/foam pad"
+#~ msgstr "rebaje de 1 mm en el reposamanos para una almohadilla de cuero o espuma"
 

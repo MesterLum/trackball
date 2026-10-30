@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: trackball 0.3\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-29 23:21-0700\n"
+"POT-Creation-Date: 2026-10-29 23:24-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -43,9 +43,6 @@ msgstr ""
 
 #, python-brace-format
 msgid ", {u:g}u caps"
-msgstr ""
-
-msgid "1 mm recess on the palm rest for a leather/foam pad"
 msgstr ""
 
 msgid ""
@@ -542,6 +539,9 @@ msgid "decrease"
 msgstr ""
 
 msgid "depth of the openings below the rim (dome / block)"
+msgstr ""
+
+msgid "depth of the recess on the palm rest for a leather/foam pad (0 = none)"
 msgstr ""
 
 msgid "does not fit"

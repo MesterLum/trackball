@@ -35,5 +35,5 @@ def test_every_preset_validates():
 
 def test_cli_parser_matches_registry():
     from build import build_parser
-    args = build_parser().parse_args(["--ball", "44", "--mcu-place", "under", "--palm-pad"])
-    assert args.ball == 44.0 and args.mcu_place == "under" and args.palm_pad is True
+    args = build_parser().parse_args(["--ball", "44", "--mcu-place", "under", "--palm-pad", "2"])
+    assert args.ball == 44.0 and args.mcu_place == "under" and args.palm_pad == 2.0
