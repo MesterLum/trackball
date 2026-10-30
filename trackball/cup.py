@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import warnings
 
-from solid2 import circle, cube, cylinder, hull, intersection, offset, rotate_extrude, sphere, square, union
+from solid2 import circle, cube, cylinder, hull, intersection, offset, polygon, rotate_extrude, sphere, square, union
 
 from .common import (EPS, place_on_ball, polar, rounded_rect, rounded_slab, support_frames,
                      support_lowest_z, zcyl)
@@ -28,9 +28,15 @@ def cup(d: Design):
     rr = min(c.round, c.wall - 0.5) if c.round > 0 else 0.0
     if c.shape == "cone":
         if rr > 0:
-            # torus whose top is tangent to the rim plane: the cone's top edge comes out rounded
-            ring = rotate_extrude(_fn=fn)(circle(r=rr, _fn=fn // 2).translate([dome_r - rr, z_rim - rr]))
-            body = hull()(base, ring)
+            # lathe of the skirt + cone profile; the profile is extended past the axis and below
+            # the bottom so offset() rounds only the exposed corners (rim edge, skirt shoulder)
+            z_sk = z_bot + c.insert_depth + 1.5
+            ext = 3 * rr
+            prof = polygon([[-ext, z_bot - ext], [d.skirt_dia / 2, z_bot - ext], [d.skirt_dia / 2, z_sk],
+                            [dome_r, z_rim], [-ext, z_rim]])
+            prof = offset(r=rr, _fn=fn // 2)(offset(r=-rr, _fn=fn // 2)(prof))
+            prof = intersection()(prof, square([dome_r + ext, z_rim - z_bot + 1]).translate([0, z_bot]))
+            body = rotate_extrude(_fn=fn)(prof)
         else:
             top = zcyl(2 * dome_r, -c.base_top_below_center, z_rim + 1.0, fn)
             body = hull()(base, top)
