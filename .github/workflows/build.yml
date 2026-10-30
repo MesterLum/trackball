@@ -75,7 +75,7 @@ jobs:
           files: out/presets/*/*.zip
           body: |
             Prebuilt STL bundles for every preset (STLs, photos, BOM, command).
-            Run the configurator: `docker run -p 8321:5000 ${{ env.IMAGE }}:${{ github.ref_name }}`
+            Run the configurator: `docker run -p 8000:5000 ${{ env.IMAGE }}:${{ github.ref_name }}`
       - name: Upload gallery for Pages
         if: startsWith(github.ref, 'refs/tags/v')
         uses: actions/upload-pages-artifact@v3

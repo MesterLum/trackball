@@ -80,7 +80,7 @@ minutes per part at the same `$fn`; the code works with both.
 One image does everything; `./out` holds the results.
 
 ```sh
-docker compose up --build                                    # configurator at http://localhost:8321 (API docs at /docs)
+docker compose up --build                                    # configurator at http://localhost:8000 (API docs at /docs)
 docker run --rm -v "$PWD/out:/data" trackball-web presets     # prebuilt bundles for all 16 presets + gallery
 docker run --rm -v "$PWD/out:/data" trackball-web build --tilt 10 --palm 40 --stl   # CLI, same flags as build.py
 docker run --rm trackball-web test                           # pytest inside the image

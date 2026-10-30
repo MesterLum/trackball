@@ -1,6 +1,6 @@
 #!/bin/sh
 # One image, several jobs:
-#   docker run -p 8321:5000 -v $PWD/out:/data trackball            # web configurator (default: serve)
+#   docker run -p 8000:5000 -v $PWD/out:/data trackball            # web configurator (default: serve)
 #   docker run -v $PWD/out:/data trackball build --tilt 10 --stl    # CLI, same flags as build.py
 #   docker run -v $PWD/out:/data trackball presets [keys...]        # prebuilt bundles + gallery
 #   docker run -v $PWD/out:/data trackball demo                     # photo gallery of the presets

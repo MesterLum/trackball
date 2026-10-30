@@ -1,7 +1,7 @@
 """FastAPI application.
 
     uv run uvicorn web.main:app --reload     # http://127.0.0.1:8000 (docs at /docs)
-    docker compose up --build                # http://localhost:8321
+    docker compose up --build                # http://localhost:8000
 """
 from __future__ import annotations
 
