@@ -41,6 +41,8 @@ uv run build.py --header-height 3 --wall 4 --floor 4 --feet 12   # lower, thicke
 uv run build.py --support mr63 --switch-gap 2                     # bearing rollers, spaced buttons
 uv run build.py --cup-shape dome --cup-cut 9 --support ceramic-3 --polar 42 --rim 2   # Nano-style cradle
 uv run build.py --cup-round 0 --edge-round 0                      # sharp edges (faster renders)
+uv run build.py --buttons tiles --switches 8 --padding 26         # EM06-style sculpted keys around the ball
+LANGUAGE=es uv run build.py --help                                # CLI, summary and validator in Spanish
 uv run build.py --sensor-pcb pmw3389-round                        # other sensor breakout
 uv run build.py --switch-type mx --buttons sides     # MX buttons left and right of the ball
 uv run build.py --switch-type micro  # flat paddles over Omron D2F microswitches
@@ -137,6 +139,27 @@ Architecture:
 Generated files land in `out/web/<design id>/`; `out/web/cache/` holds the
 per-part STL cache. Both are inside the `./out/web` volume in Docker.
 
+## Languages
+
+Every user-facing string (web page, API labels and help, validator messages,
+summary, bill of materials, CLI help) goes through GNU gettext. English is the
+source; Spanish ships in `trackball/locale/es/LC_MESSAGES/trackball.po`. The
+web app picks the language from `?lang=`, then the `lang` cookie, then the
+browser's `Accept-Language`; the header has a switcher. The CLI follows
+`LANGUAGE` / `LC_ALL` / `LANG`. Catalogs are compiled in memory at startup, so
+editing the `.po` file is all it takes.
+
+To add or update a language (Babel):
+
+```bash
+uv run pybabel extract -F babel.cfg -k N_ --no-location --sort-output -o trackball/locale/trackball.pot .
+uv run pybabel update -i trackball/locale/trackball.pot -d trackball/locale -D trackball      # existing languages
+uv run pybabel init   -i trackball/locale/trackball.pot -d trackball/locale -D trackball -l fr # a new one
+```
+
+Then add the code to `LANGUAGES` in `trackball/i18n.py`. `tests/test_i18n.py`
+fails when a catalog misses a string or breaks a `{placeholder}`.
+
 ## Code layout
 
 | module                  | what it owns                                               |
@@ -206,6 +229,18 @@ per-part STL cache. Both are inside the `./out/web` volume in Docker.
   scoops must stay above the ball-support pockets, so deep cradles need
   small supports set low on the ball (`--support ceramic-3 --polar 42`); with
   7.5 mm BTUs the cut is limited to about 3 mm and auto-fit trims it.
+- **Tiles** (`--buttons tiles --switches 2|4|6|8`): instead of a row of
+  key switches, the lid top is divided into large wedge keys that fill the
+  deck around the ball, ProtoArc EM06 style: one per side (4), the front and
+  back split in two (6) or three (8), or only the two sides (2). Each tile is
+  a flexure paddle printed into the lid, hinged along the body edge, with an
+  Omron D2F microswitch in a holder block that hangs from the ring around the
+  cup, so the click point is near the ball where the finger lands. The solid
+  spokes between the tiles run to the corner screw bosses and keep the lid
+  stiff. `--tile-gap` is the visible gap between keys, `--tile-frame` the
+  solid rim where they hinge. Tiles need about 25 mm of padding (the
+  validator says how much); with the MCU behind the sensor the tray grows a
+  few mm so the back tile's holder clears the board. Print the lid in PETG.
 - **Soft edges**: `--cup-round` rounds the cup rim, `--edge-round` rounds the
   top edges of the lid and the palm rest (both 2 mm by default, 0 = sharp).
   They are built from hulls and lathed profiles, not `minkowski`, so renders

@@ -46,7 +46,7 @@ def key_switch_cutters(d: Design):
     sw, st = d.switches, d.switches.type
     z0, z1 = d.z_pcb_face, d.z_carrier_top
     cuts = []
-    for x, y, _ in sw.positions(d.skirt_dia):
+    for x, y, _ in d.switch_positions():
         hole = cube([st.cutout, st.cutout, z1 - z0 + 2], center=True).translate([x, y, (z0 + z1) / 2])
         pocket = _box(-st.pocket / 2, st.pocket / 2, -st.pocket / 2, st.pocket / 2,
                       z0 - 1, z1 - st.plate_t).translate([x, y, 0])
@@ -99,7 +99,7 @@ def micro_geometry_local(d: Design):
 
 def micro_switch_parts(d: Design):
     before, bars, after = [], [], []
-    for x, y, ang in d.switches.positions(d.skirt_dia):
+    for x, y, ang in d.switch_positions():
         b, bar, a = micro_geometry_local(d)
         before.append(_place(b, x, y, ang))
         bars.append(_place(bar, x, y, ang))
@@ -143,7 +143,11 @@ def carrier(d: Design):
 
     body = plate - union()(*cuts)
 
-    if d.switches.count:
+    if d.switches.is_tiles:
+        from .tiles import tile_cutters
+        before, bars, after = tile_cutters(d)
+        body = (body - before) + bars - after
+    elif d.switches.count:
         if d.switches.type.kind == "key":
             body = body - key_switch_cutters(d)
         else:

@@ -19,6 +19,7 @@ ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from web.i18n import LanguageMiddleware  # noqa: E402
 from web.routers import api, pages  # noqa: E402
 from web.services.designs import DesignService  # noqa: E402
 from web.services.render import RenderQueue  # noqa: E402
@@ -37,6 +38,7 @@ def create_app(out_dir: Path | None = None, settings: Settings | None = None) ->
     app = FastAPI(title="Trackball module configurator", version="0.3.0",
                   description="Parametric, printable trackball module (PMW3360 / PMW3389 sensor boards). "
                               "Validate a configuration, render the printable parts, download STLs.")
+    app.add_middleware(LanguageMiddleware)
     app.state.settings = settings
     app.state.designs = DesignService(out, {"preview": settings.fn_preview, "final": settings.fn_final})
     app.state.render = RenderQueue(out, workers=settings.workers)

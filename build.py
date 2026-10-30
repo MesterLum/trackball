@@ -31,6 +31,7 @@ from trackball.assembly import (assembly, carrier_placement, cup_placement, sect
 from trackball.carrier import carrier
 from trackball import options
 from trackball.config import MCUS, SENSOR_PCBS, SWITCH_TYPES, Design
+from trackball.i18n import from_environment, set_language
 from trackball.options import OPTIONS, add_to_parser
 from trackball.cup import cup
 from trackball.palmrest import palmrest
@@ -195,6 +196,7 @@ def args_values(args) -> dict:
 
 
 def main() -> int:
+    set_language(from_environment())
     args = build_parser().parse_args()
 
     if args.list:

@@ -51,7 +51,7 @@ def switches_preview(d: Design):
     st = sw.type
     z1 = d.z_carrier_top
     parts = []
-    for x, y, ang in sw.positions(d.skirt_dia):
+    for x, y, ang in d.switch_positions():
         # local frame: ball toward +X
         if st.kind == "key":
             housing = cube([st.pocket - 0.2, st.pocket - 0.2, st.above_plate + st.plate_t]).translate(
@@ -63,7 +63,7 @@ def switches_preview(d: Design):
             local = housing + below + cap
         else:
             # microswitch body sitting in the holder bar under the paddle tip
-            x_p = st.size_in / 2 - st.plunger_inset
+            x_p = 0.0 if sw.is_tiles else st.size_in / 2 - st.plunger_inset   # tiles: position = plunger
             bl, bw, bh = st.body
             body_top = z1 - st.paddle_t - st.plunger_h
             body_cy = -(bl / 2 - st.plunger_from_end)

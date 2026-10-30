@@ -30,6 +30,8 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass, field
 
+from .i18n import _
+
 from .supports import BallSupport, PressFitBTU
 
 
@@ -291,7 +293,7 @@ MX = SwitchType("mx", "key", size_in=18.0, size_across=18.0, pitch=19.05,
 MICRO = SwitchType("micro", "micro", size_in=24.0, size_across=16.0, pitch=18.0)
 SWITCH_TYPES = {s.name: s for s in (CHOC_V1, MX, MICRO)}
 
-PLACEMENTS = ("front", "left", "right", "sides")
+PLACEMENTS = ("front", "left", "right", "sides", "tiles")
 
 
 @dataclass
@@ -303,6 +305,15 @@ class Switches:
     keycap_u: float = 1.0             # 1, 1.25, 1.5, 2 ... scales keycap width and pitch
     gap: float = 0.0                  # extra space between neighbouring buttons
     mirror: bool = True               # front row: also add the strip at the back (keeps the ball centred)
+    # --- "tiles": sculpted wedge keys around the ball (count = 2, 4, 6 or 8 tiles in total)
+    tile_gap: float = 3.5             # visible gap between neighbouring tiles (solid spoke + two slots)
+    tile_frame: float = 4.0           # full-thickness rim around the lid; the hinge line sits here
+    tile_ring: float = 3.0            # solid ring between the cup skirt and the tiles
+    tile_slot: float = 0.6            # through slot freeing a tile
+
+    @property
+    def is_tiles(self) -> bool:
+        return self.placement == "tiles" and self.count > 0
 
     @property
     def pitch(self) -> float:
@@ -315,7 +326,7 @@ class Switches:
     @property
     def rows(self) -> tuple[float, ...]:
         """Inward direction (degrees, pointing at the ball) of every row."""
-        if not self.count:
+        if not self.count or self.placement == "tiles":
             return ()
         return {"front": (90.0,), "left": (0.0,), "right": (180.0,), "sides": (0.0, 180.0)}[self.placement]
 
@@ -469,6 +480,13 @@ class Design:
     def post_r(self) -> float:
         return self.tray.post_dia / 2
 
+    def switch_positions(self) -> list[tuple[float, float, float]]:
+        """(x, y, inward angle) of every button: row buttons or tile plungers."""
+        if self.switches.is_tiles:
+            from .tiles import positions
+            return positions(self)
+        return self.switches.positions(self.skirt_dia)
+
     def lid_screw_points(self) -> list[tuple[float, float]]:
         """Deck-frame XY of the four lid screws / tray posts. With a front
         button row the front pair sits just inside that strip, beside the
@@ -490,7 +508,7 @@ class Design:
     def button_strip(self) -> float:
         """Extra length a front button row needs (gap + button depth)."""
         sw = self.switches
-        if not sw.count:
+        if not sw.count or sw.is_tiles:
             return 0.0
         return sw.gap_to_cup + sw.type.size_in
 
@@ -498,7 +516,7 @@ class Design:
     def half_width(self) -> float:
         hw = self.skirt_dia / 2 + self.carrier.padding
         sw = self.switches
-        if sw.count and sw.placement != "front":
+        if sw.count and sw.placement not in ("front", "tiles"):
             hw += sw.gap_to_cup + sw.type.size_in
         return hw
 
@@ -564,9 +582,9 @@ class Design:
 
         def add(msg: str, padding_needed: float | None = None, alt: str = ""):
             fix = {"padding": round(padding_needed + 0.25, 1)} if padding_needed is not None else {}
-            hint = f"use --padding {fix['padding']:g} or more" if fix else ""
+            hint = _("use --padding {value:g} or more").format(value=fix["padding"]) if fix else ""
             if alt:
-                hint = f"{hint}, or {alt}" if hint else alt
+                hint = _("{hint}, or {alternative}").format(hint=hint, alternative=alt) if hint else alt
             probs.append({"message": f"{msg}: {hint}" if hint else msg, "fix": fix})
 
         # front button row: fits the width, and the front lid screws clear the cup skirt
@@ -575,30 +593,44 @@ class Design:
         if sw.count and sw.placement == "front":
             limit = self.half_width - t.wall - 0.5
             if sw.row_half_width() > limit:
-                add(f"button row ({sw.count} x {sw.keycap_u:g}u {sw.type.name} = {2 * sw.row_half_width():.1f} mm) "
-                    f"is wider than the inside of the body", pad + (sw.row_half_width() - limit))
+                add(_("button row ({count} x {u:g}u {switch} = {width:.1f} mm) is wider than the inside of the body").format(
+                    count=sw.count, u=sw.keycap_u, switch=sw.type.name, width=2 * sw.row_half_width()),
+                    pad + (sw.row_half_width() - limit))
             x_screw = self.half_width - cr.lid_screw_inset
             min_x = self.skirt_dia / 2 + cr.screw_head_dia / 2 + 0.5
             if x_screw < min_x:
-                add("the front lid screws (beside the cup) would hit the cup skirt", pad + (min_x - x_screw))
+                add(_("the front lid screws (beside the cup) would hit the cup skirt"), pad + (min_x - x_screw))
+        # tiles: a valid count, and room between the ring and the hinge for the finger and the switch
+        if sw.is_tiles:
+            from .tiles import TILE_COUNTS, TILE_DEPTH_MIN, tile_depth
+            if sw.count not in TILE_COUNTS:
+                near = min(TILE_COUNTS, key=lambda n: (abs(n - sw.count), n))
+                probs.append({"message": _("tiles come in {counts}: use --switches {near}").format(
+                    counts=", ".join(map(str, TILE_COUNTS)), near=near), "fix": {"switches": near}})
+            else:
+                depth = tile_depth(self)
+                if depth < TILE_DEPTH_MIN - 0.05:
+                    add(_("the tiles are only {depth:.1f} mm deep between the cup ring and the hinge "
+                          "({needed:g} mm needed for the finger and the microswitch)").format(depth=depth, needed=TILE_DEPTH_MIN),
+                        pad + (TILE_DEPTH_MIN - depth))
         # MCU
         m = t.mcu
         mx, my = self.mcu_xy_size
         if mx + 2.0 > inner_w:
-            add(f"MCU {m.name} needs {mx + 2.0:.1f} mm across but the inside is {inner_w:.1f} mm wide",
-                pad + (mx + 2.0 - inner_w) / 2)
+            add(_("MCU {mcu} needs {needed:.1f} mm across but the inside is {inside:.1f} mm wide").format(
+                mcu=m.name, needed=mx + 2.0, inside=inner_w), pad + (mx + 2.0 - inner_w) / 2)
         if t.mcu_place == "behind" and self.bay_depth > self.back_space:
-            add(f"MCU {m.name} needs {self.bay_depth:.1f} mm behind the sensor but only "
-                f"{max(self.back_space, 0.0):.1f} mm are free before the back posts",
-                pad + (self.bay_depth - self.back_space), "put it under the sensor with --mcu-place under")
+            add(_("MCU {mcu} needs {needed:.1f} mm behind the sensor but only {free:.1f} mm are free before the back posts").format(
+                mcu=m.name, needed=self.bay_depth, free=max(self.back_space, 0.0)),
+                pad + (self.bay_depth - self.back_space), _("put it under the sensor with --mcu-place under"))
         if t.usb_exit == "back" and mx / 2 + 0.5 > self.half_width - cr.lid_screw_inset - self.post_r:
-            add(f"MCU {m.name} (turned for a back USB) runs into the back corner posts",
+            add(_("MCU {mcu} (turned for a back USB) runs into the back corner posts").format(mcu=m.name),
                 pad + (mx / 2 + 0.5 - (self.half_width - cr.lid_screw_inset - self.post_r)))
         if t.mcu_place == "under":
             inner_l = self.front_length + self.back_length - 2 * t.wall
             if my + 2.0 > inner_l:
-                add(f"MCU {m.name} needs {my + 2.0:.1f} mm front-to-back under the sensor but the inside is {inner_l:.1f} mm",
-                    pad + (my + 2.0 - inner_l) / 2)
+                add(_("MCU {mcu} needs {needed:.1f} mm front-to-back under the sensor but the inside is {inside:.1f} mm").format(
+                    mcu=m.name, needed=my + 2.0, inside=inner_l), pad + (my + 2.0 - inner_l) / 2)
         # cup scoops (dome / block) must stay above the ball-support pockets
         cup = self.cup
         if cup.scoop_axes:
@@ -614,18 +646,18 @@ class Design:
                 if zc < pocket_top:
                     worst = max(worst, pocket_top - zc)
             if worst > 0:
-                probs.append({"message": f"the cup scoops cut into the ball-support pockets: use --cup-cut "
-                                         f"{max(cup.cut - worst, 0):.1f} or less, or lower --polar / use smaller supports",
+                probs.append({"message": _("the cup scoops cut into the ball-support pockets: use --cup-cut {value:.1f} or less, "
+                                           "or lower --polar / use smaller supports").format(value=max(cup.cut - worst, 0)),
                               "fix": {"cup_cut": round(max(cup.cut - worst - 0.25, 0.0), 1)}})
         # battery
         if self.battery.enabled:
             bl, bw = self.battery.outer
             if bl > inner_w - 2.0:
-                add(f"battery {self.battery.length:g} mm long does not fit the {inner_w:.1f} mm wide inside",
-                    pad + (bl + 2.0 - inner_w) / 2)
+                add(_("battery {length:g} mm long does not fit the {inside:.1f} mm wide inside").format(
+                    length=self.battery.length, inside=inner_w), pad + (bl + 2.0 - inner_w) / 2)
             if bw > self.front_space:
-                add(f"battery {self.battery.width:g} mm wide needs {bw:.1f} mm under the sensor but only "
-                    f"{self.front_space:.1f} mm are free before the MCU", pad + (bw - self.front_space))
+                add(_("battery {width:g} mm wide needs {needed:.1f} mm under the sensor but only {free:.1f} mm are free before the MCU").format(
+                    width=self.battery.width, needed=bw, free=self.front_space), pad + (bw - self.front_space))
         return probs
 
     def validate(self) -> list[str]:
@@ -645,16 +677,30 @@ class Design:
         if self.switches.count:
             dsw = self.switches.depth_below_lid(self.carrier.thickness) + t.clearance
             s = max(self.switches.type.size_in, self.switches.size_across) / 2
-            for x, y, _ in self.switches.positions(self.skirt_dia):
+            for x, y, _ang in self.switch_positions():
                 for sx in (-1, 1):
                     for sy in (-1, 1):
                         needs.append(((x + sx * s, y + sy * s), dsw))
         if t.mcu_place == "behind":
             hw = self.mcu_xy_size[0] / 2
+            stack = self.mcu_stack + self.holder_over_mcu()
             for y in (self.bay_y0, self.bay_y0 + self.bay_depth):
                 for x in (-hw, hw):
-                    needs.append(((x, y), self.mcu_stack))
+                    needs.append(((x, y), stack))
         return min(self.deck_to_world((x, y, z0))[2] - depth for (x, y), depth in needs)
+
+    def holder_over_mcu(self) -> float:
+        """Extra depth the MCU bay needs when a tile's switch holder hangs above the board."""
+        if not self.switches.is_tiles or self.tray.mcu_place != "behind":
+            return 0.0
+        from .tiles import holder_boxes
+        mx, my = self.mcu_xy_size
+        cxm, cym = self.mcu_center()
+        bx0, bx1, by0, by1 = cxm - mx / 2, cxm + mx / 2, cym - my / 2, cym + my / 2
+        for x0, x1, y0, y1 in holder_boxes(self):
+            if x0 < bx1 and x1 > bx0 and y0 < by1 and y1 > by0:
+                return self.switches.depth_below_lid(self.carrier.thickness) + self.tray.clearance
+        return 0.0
 
     @property
     def z_floor_top(self) -> float:
@@ -702,7 +748,7 @@ class Design:
         """World XY where the deck-frame vertical through (xd, yd) meets the
         tray bottom plane (the walls lean with tilt/tent)."""
         zd = self.z_pcb_face
-        for _ in range(8):
+        for _i in range(8):
             w = self.deck_to_world((xd, yd, zd))
             zd += self.z_floor_bottom - w[2]
         w = self.deck_to_world((xd, yd, zd))
@@ -718,16 +764,16 @@ class Design:
 
     def height_breakdown(self) -> str:
         t = self.tray
-        parts = [f"ball r {self.ball.r:g}", f"optics {self.lens.ball_above_pcb:g}",
-                 f"PCB+header {self.pcb.thickness + self.pcb.header_height:g}", f"air {t.clearance:g}",
-                 f"floor {t.floor:g}"]
+        parts = [_("ball r {v:g}").format(v=self.ball.r), _("optics {v:g}").format(v=self.lens.ball_above_pcb),
+                 _("PCB+header {v:g}").format(v=self.pcb.thickness + self.pcb.header_height),
+                 _("air {v:g}").format(v=t.clearance), _("floor {v:g}").format(v=t.floor)]
         if self.battery.enabled:
-            parts.append(f"battery {self.battery.extra_height:g}")
+            parts.append(_("battery {v:g}").format(v=self.battery.extra_height))
         if t.mcu_place == "under":
-            parts.append(f"MCU under {self.mcu_stack:g}")
+            parts.append(_("MCU under {v:g}").format(v=self.mcu_stack))
         note = ""
         if t.mcu_place == "behind" and self.mcu_stack > self.pcb.thickness + self.pcb.header_height + t.clearance:
-            note = f"; the MCU stack ({self.mcu_stack:g} mm) sets the floor, not the header"
+            note = _("; the MCU stack ({v:g} mm) sets the floor, not the header").format(v=self.mcu_stack)
         return " + ".join(parts) + note
 
     # ---- palm rest (separate part, deck frame outline) ----
@@ -740,59 +786,77 @@ class Design:
         """Bill of materials: everything that is not printed."""
         sw, t, b = self.switches, self.tray, self.battery
         items: list[dict] = [
-            {"item": f"Trackball Ø{self.ball.diameter:g} mm", "qty": 1, "note": "a two-colour or speckled ball tracks best"},
-            {"item": f"Sensor board: {self.pcb.name}", "qty": 1, "note": "PMW3360 / PMW3389 with the LM19-LSI lens"},
-            {"item": f"Controller: {t.mcu.name}", "qty": 1, "note": ("wireless capable" if t.mcu.wireless else "USB") +
-             (", on 4x M2x6 self-tapping screws" if t.mcu.holes else ", friction pocket (dab of glue)")},
+            {"item": _("Trackball Ø{d:g} mm").format(d=self.ball.diameter), "qty": 1,
+             "note": _("a two-colour or speckled ball tracks best")},
+            {"item": _("Sensor board: {name}").format(name=self.pcb.name), "qty": 1,
+             "note": _("PMW3360 / PMW3389 with the LM19-LSI lens")},
+            {"item": _("Controller: {name}").format(name=t.mcu.name), "qty": 1,
+             "note": (_("wireless capable") if t.mcu.wireless else "USB") +
+             (_(", on 4x M2x6 self-tapping screws") if t.mcu.holes else _(", friction pocket (dab of glue)"))},
         ]
-        sup = self.cup.support.describe()
-        items.append({"item": f"Ball support: {sup}", "qty": self.cup.support_count,
-                      "note": "press fit" if "BTU" in sup else ("plus one M3x25 screw each as axle" if "bearing" in sup
-                                                                else "snap into the printed sockets")})
+        sup = self.cup.support
+        kind = sup.kind
+        items.append({"item": _("Ball support: {support}").format(support=sup.describe()), "qty": self.cup.support_count,
+                      "note": _("press fit") if kind == "btu" else (_("plus one M3x25 screw each as axle") if kind == "bearing"
+                                                                    else _("snap into the printed sockets"))})
         if sw.count:
-            n = sw.count * (2 if sw.placement == "sides" else 1)
+            n = sw.count if sw.is_tiles else sw.count * (2 if sw.placement == "sides" else 1)
             if sw.type.kind == "key":
-                items.append({"item": f"{sw.type.name} switches", "qty": n, "note": "wired GPIO to GND, internal pull-up"})
-                items.append({"item": f"keycaps {sw.keycap_u:g}u", "qty": n, "note": "any profile"})
+                items.append({"item": _("{switch} switches").format(switch=sw.type.name), "qty": n,
+                              "note": _("wired GPIO to GND, internal pull-up")})
+                items.append({"item": _("keycaps {u:g}u").format(u=sw.keycap_u), "qty": n, "note": _("any profile")})
             else:
-                items.append({"item": "Omron D2F / Kailh GM microswitches", "qty": n, "note": "pushed into the holder bars"})
+                items.append({"item": _("Omron D2F / Kailh GM microswitches"), "qty": n,
+                              "note": _("pushed into the holder blocks under the tiles") if sw.is_tiles else _("pushed into the holder bars")})
         if b.enabled:
-            items.append({"item": f"LiPo {b.length:g}x{b.width:g}x{b.thickness:g} mm", "qty": 1,
-                          "note": "plus a slide switch for the side-wall slot"})
+            items.append({"item": _("LiPo {l:g}x{w:g}x{t:g} mm").format(l=b.length, w=b.width, t=b.thickness), "qty": 1,
+                          "note": _("plus a slide switch for the side-wall slot")})
         items += [
-            {"item": "M3 heat-set inserts (Ø4 x 5 mm)", "qty": 10, "note": "4 cup, 2 sensor PCB, 4 tray posts"},
-            {"item": "M3x8 screws", "qty": 8, "note": "cup to carrier (4), lid to tray (4)"},
-            {"item": "M3x6 screws", "qty": 2, "note": "sensor PCB to carrier"},
-            {"item": f"Rubber feet Ø{t.feet_dia:g} mm", "qty": 4 if t.feet_dia > 0 else 0, "note": "self-adhesive"},
-            {"item": "Wire (6 for the sensor SPI, 2 per switch)", "qty": 1, "note": "JST or direct solder"},
+            {"item": _("M3 heat-set inserts (Ø4 x 5 mm)"), "qty": 10, "note": _("4 cup, 2 sensor PCB, 4 tray posts")},
+            {"item": _("M3x8 screws"), "qty": 8, "note": _("cup to carrier (4), lid to tray (4)")},
+            {"item": _("M3x6 screws"), "qty": 2, "note": _("sensor PCB to carrier")},
+            {"item": _("Rubber feet Ø{d:g} mm").format(d=t.feet_dia), "qty": 4 if t.feet_dia > 0 else 0, "note": _("self-adhesive")},
+            {"item": _("Wire (6 for the sensor SPI, 2 per switch)"), "qty": 1, "note": _("JST or direct solder")},
         ]
         return [i for i in items if i["qty"]]
 
     def summary(self) -> str:
-        w, l, _, _ = self.footprint
+        w, l, _cx, _cy = self.footprint
         sw = self.switches
         corners = [(sx * w / 2, sy * l / 2) for sx in (-1, 1) for sy in (-1, 1)]
         top = max(self.deck_to_world((x, y, self.z_carrier_top))[2] for x, y in corners)
         top = max(top, self.ball.r)
-        sw_line = f"{sw.count} x {sw.type.name} at the {sw.placement}" if sw.count else "none"
+        if sw.is_tiles:
+            sw_line = _("{n} tiles around the ball over microswitches").format(n=sw.count)
+        elif sw.count:
+            sw_line = _("{n} x {switch} at the {placement}").format(n=sw.count, switch=sw.type.name, placement=_(sw.placement))
+        else:
+            sw_line = _("none")
+        centred = (_("ball centred") if self.footprint[3] == 0
+                   else _("ball {d:.1f} mm behind centre").format(d=-self.footprint[3]))
+        usb = _("back") if self.tray.usb_exit == "back" else _("{sign}X side").format(sign="+" if self.tray.usb_side > 0 else "-")
         lines = [
-            f"ball Ø{self.ball.diameter}  support={self.cup.support.describe()} x{self.cup.support_count} @ {self.cup.support_polar_deg}°",
-            f"cup {self.cup.shape}, skirt Ø{self.skirt_dia:.1f}   ball centre {self.lens.ball_above_pcb:.2f} mm above PCB front",
-            f"deck tilt/tent                    : {self.deck.tilt_deg}° / {self.deck.tent_deg}°"
-            + (f", separate palm rest {self.deck.palm_length:g} mm" if self.deck.palm_length else ""),
-            f"body ({'ball centred' if self.footprint[3] == 0 else 'ball ' + format(-self.footprint[3], '.1f') + ' mm behind centre'}, "
-            f"padding {self.carrier.padding:g}) : {w:.1f} x {l:.1f} mm; "
-            f"free behind sensor {self.back_space:.1f} mm, MCU needs {self.bay_depth:.1f}",
-            f"height: floor -> ball top / back  : {self.ball.r - self.z_floor_bottom:.1f} / {top - self.z_floor_bottom:.1f} mm"
-            f"  ({self.height_breakdown()})",
-            f"walls: tray {self.tray.wall:g}, floor {self.tray.floor:g}, lid {self.carrier.thickness:g}, cup {self.cup.wall:g} mm"
-            + (f"; {len(self.feet_xy())} feet Ø{self.tray.feet_dia:g}" if self.tray.feet_dia > 0 else ""),
-            f"MCU                               : {self.tray.mcu.name} {self.tray.mcu_place} the sensor, USB out the "
-            + ("back" if self.tray.usb_exit == "back" else ('+X' if self.tray.usb_side > 0 else '-X') + " side")
-            + (f" (+{self.mcu_stack:g} mm height)" if self.tray.mcu_place == "under" else "")
-            + (f"; battery {self.battery.length:g}x{self.battery.width:g}x{self.battery.thickness:g} under the sensor (+{self.battery.extra_height:g} mm)" if self.battery.enabled else ""),
-            f"switches                          : {sw_line}"
-            + (f", {sw.keycap_u:g}u caps" if sw.count and sw.keycap_u != 1 else "")
-            + (", front strip only" if sw.count and sw.placement == "front" and not sw.mirror else ""),
+            _("ball Ø{d}  support={support} x{n} @ {polar}°").format(
+                d=self.ball.diameter, support=self.cup.support.describe(), n=self.cup.support_count, polar=self.cup.support_polar_deg),
+            _("cup {shape}, skirt Ø{skirt:.1f}   ball centre {h:.2f} mm above PCB front").format(
+                shape=self.cup.shape, skirt=self.skirt_dia, h=self.lens.ball_above_pcb),
+            _("deck tilt/tent                    : {tilt}° / {tent}°").format(tilt=self.deck.tilt_deg, tent=self.deck.tent_deg)
+            + (_(", separate palm rest {l:g} mm").format(l=self.deck.palm_length) if self.deck.palm_length else ""),
+            _("body ({centred}, padding {pad:g}) : {w:.1f} x {l:.1f} mm; free behind sensor {free:.1f} mm, MCU needs {need:.1f}").format(
+                centred=centred, pad=self.carrier.padding, w=w, l=l, free=self.back_space, need=self.bay_depth),
+            _("height: floor -> ball top / back  : {a:.1f} / {b:.1f} mm  ({breakdown})").format(
+                a=self.ball.r - self.z_floor_bottom, b=top - self.z_floor_bottom, breakdown=self.height_breakdown()),
+            _("walls: tray {wall:g}, floor {floor:g}, lid {lid:g}, cup {cup:g} mm").format(
+                wall=self.tray.wall, floor=self.tray.floor, lid=self.carrier.thickness, cup=self.cup.wall)
+            + (_("; {n} feet Ø{d:g}").format(n=len(self.feet_xy()), d=self.tray.feet_dia) if self.tray.feet_dia > 0 else ""),
+            _("MCU                               : {mcu} {place} the sensor, USB out the {usb}").format(
+                mcu=self.tray.mcu.name, place=_(self.tray.mcu_place), usb=usb)
+            + (_(" (+{h:g} mm height)").format(h=self.mcu_stack) if self.tray.mcu_place == "under" else "")
+            + (_("; battery {l:g}x{w:g}x{t:g} under the sensor (+{h:g} mm)").format(
+                l=self.battery.length, w=self.battery.width, t=self.battery.thickness, h=self.battery.extra_height)
+               if self.battery.enabled else ""),
+            _("switches                          : {line}").format(line=sw_line)
+            + (_(", {u:g}u caps").format(u=sw.keycap_u) if sw.count and sw.keycap_u != 1 else "")
+            + (_(", front strip only") if sw.count and sw.placement == "front" and not sw.mirror else ""),
         ]
         return "\n".join(lines)

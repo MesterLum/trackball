@@ -6,11 +6,12 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, create_model, field_validator
 
+from trackball.i18n import _
 from trackball.options import BATTERY_RE, GROUPS, OPTIONS, Option
 
 
 def _field(o: Option):
-    desc = o.help
+    desc = o.help                   # OpenAPI docs stay in English
     if o.kind == "float":
         return float, Field(o.default, ge=o.min, le=o.max, description=desc)
     if o.kind == "int":
@@ -53,7 +54,8 @@ class OptionSchema(BaseModel):
 
 
 class OptionGroup(BaseModel):
-    name: str
+    name: str                       # translated title
+    key: str                        # stable English name
     options: list[OptionSchema]
 
 
@@ -125,8 +127,8 @@ class RenderStatus(BaseModel):
 def options_response() -> OptionsResponse:
     groups = []
     for g in GROUPS:
-        opts = [OptionSchema(name=o.name, label=o.title, kind=o.kind, default=o.default, help=o.help,
+        opts = [OptionSchema(name=o.name, label=o.title, kind=o.kind, default=o.default, help=o.help_text,
                              choices=list(o.choices), min=o.min, max=o.max, step=o.step, unit=o.unit,
                              flag=o.cli_flag) for o in OPTIONS if o.group == g]
-        groups.append(OptionGroup(name=g, options=opts))
+        groups.append(OptionGroup(name=_(g), key=g, options=opts))
     return OptionsResponse(groups=groups)

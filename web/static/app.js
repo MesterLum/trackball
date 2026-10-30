@@ -8,7 +8,7 @@ document.addEventListener('alpine:init', () => {
     options: {},            // name -> option spec
     cfg: {},                // current values
     errors: {},             // name -> message (422)
-    tab: boot.options.groups[0].name,
+    tab: boot.options.groups[0].key,
     design: null,           // last DesignResponse
     parts: [],              // PartStatus[]
     rendering: false,
@@ -19,6 +19,7 @@ document.addEventListener('alpine:init', () => {
     auto: boot.settings.auto_render,       // render previews as you edit
     autofit: true,                         // let the server raise padding when something does not fit
     settings: boot.settings,
+    i18n: boot.i18n || {},                 // English -> current language, for strings built in JS
     finalizing: null,                      // {done, total} while the full-quality STLs render
     _abort: null, _es: null, _timer: null, _renderId: null,
 
@@ -62,7 +63,7 @@ document.addEventListener('alpine:init', () => {
       const url = location.pathname + (q.toString() ? '?' + q : '');
       if (url !== location.pathname + location.search) history.replaceState(null, '', url);
     },
-    loadPreset(p) { this.cfg = this.defaultsWith(p.values); this.update(); this.say(`Loaded "${p.title}"`); },
+    loadPreset(p) { this.cfg = this.defaultsWith(p.values); this.update(); this.say(this.t('Loaded "{title}"', { title: p.title })); },
     reset() { this.cfg = this.defaults(); this.update(); },
     nudge(name, dir) {
       const o = this.options[name]; const step = o.step || 1;
@@ -84,10 +85,10 @@ document.addEventListener('alpine:init', () => {
       try {
         r = await fetch(`/api/design?quality=preview&autofit=${this.autofit}`, { method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(this.cfg), signal: ac.signal });
-      } catch (e) { if (e.name === 'AbortError') return; this.say('Server unreachable'); return; }
+      } catch (e) { if (e.name === 'AbortError') return; this.say(this.t('Server unreachable')); return; }
       if (ac !== this._abort) return;
       if (r.status === 422) { const b = await r.json(); this.errors = b.fields || {}; return; }
-      if (!r.ok) { this.say('Server error ' + r.status); return; }
+      if (!r.ok) { this.say(this.t('Server error {status}', { status: r.status })); return; }
       this.errors = {};
       const d = await r.json();
       this.design = d;
@@ -128,7 +129,7 @@ document.addEventListener('alpine:init', () => {
     async downloadFinal() {
       if (!this.design || !this.design.fits || this.finalizing) return;
       const r = await fetch('/api/design?quality=final', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(this.cfg) });
-      if (!r.ok) { this.say('Could not prepare the final design'); return; }
+      if (!r.ok) { this.say(this.t('Could not prepare the final design')); return; }
       const d = await r.json();
       let st = await (await fetch(`/api/design/${d.id}/render`, { method: 'POST' })).json();
       const total = st.parts.length;
@@ -143,7 +144,7 @@ document.addEventListener('alpine:init', () => {
         });
       }
       this.finalizing = null;
-      if (!st.ok) { this.say('Final render failed'); return; }
+      if (!st.ok) { this.say(this.t('Final render failed')); return; }
       location.href = `/api/design/${d.id}/stl.zip`;
     },
 
@@ -151,9 +152,12 @@ document.addEventListener('alpine:init', () => {
     toggle(name) { this.visible[name] = !this.visible[name]; viewer.setVisible(name, this.visible[name]); },
     setTheme(t) { this.theme = t; localStorage.setItem('theme', t); document.documentElement.dataset.theme = t; },
     copy(text, msg) { navigator.clipboard.writeText(text); this.say(msg); },
-    share() { this.copy(location.href, 'Link copied'); },
+    share() { this.copy(location.href, this.t('Link copied')); },
     say(msg) { this.toast = msg; clearTimeout(this._toast); this._toast = setTimeout(() => (this.toast = ''), 1800); },
     stateClass(s) { return { queued: 'badge-ghost', rendering: 'badge-warning', done: 'badge-success', error: 'badge-error' }[s] || ''; },
+    /** translate a UI string; {name} placeholders are filled from vars */
+    t(s, vars) { let out = this.i18n[s] || s; for (const k in (vars || {})) out = out.split('{' + k + '}').join(vars[k]); return out; },
+    setLang(l) { const u = new URL(location.href); u.searchParams.set('lang', l); location.href = u.toString(); },
     fmt(v, o) { return (o.kind === 'float' || o.kind === 'int') ? `${Number(v)}${o.unit ? ' ' + o.unit : ''}` : v; },
   }));
 });

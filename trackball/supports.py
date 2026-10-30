@@ -17,11 +17,14 @@ from dataclasses import dataclass
 
 from solid2 import cylinder, sphere, union, color
 
+from .i18n import _
+
 BIG = 60.0  # "cut all the way" length
 
 
 class BallSupport:
     contact_height: float = 0.0
+    kind: str = "other"               # btu | ceramic | bearing (machine-readable, for the BOM)
 
     def prepare(self, ball_r: float, polar_deg: float, r_out: float) -> None:
         """Called by the cup before cutter(): where on the cup the support sits."""
@@ -88,8 +91,10 @@ class PressFitBTU(BallSupport):
         ball = sphere(d=ball_d, _fn=fn).up(self.ball_top_above_flange - ball_d / 2)
         return color("silver")(shaft + flange + ball)
 
+    kind: str = "btu"
+
     def describe(self) -> str:
-        return f"BTU Ø{self.shaft_dia} press-fit"
+        return _("BTU Ø{d} press-fit").format(d=self.shaft_dia)
 
 
 @dataclass
@@ -122,8 +127,10 @@ class StaticBearing(BallSupport):
     def preview(self, fn: int):
         return color("white")(sphere(d=self.ball_dia, _fn=fn))
 
+    kind: str = "ceramic"
+
     def describe(self) -> str:
-        return f"static ceramic Ø{self.ball_dia}"
+        return _("static ceramic Ø{d}").format(d=self.ball_dia)
 
 
 @dataclass
@@ -181,8 +188,10 @@ class RollerBearing(BallSupport):
             .translate([0, self._exit, 0])
         return color("silver")(ring) + color("dimgray")(screw)
 
+    kind: str = "bearing"
+
     def describe(self) -> str:
-        return f"bearing {self.bore:g}x{self.od:g}x{self.width:g} on M3"
+        return _("bearing {bore:g}x{od:g}x{w:g} on M3").format(bore=self.bore, od=self.od, w=self.width)
 
 
 # Presets -------------------------------------------------------------------

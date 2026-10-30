@@ -12,6 +12,7 @@ from typing import Literal
 from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 
+from trackball.i18n import _
 from trackball.presets import PRESETS
 from web.schemas import (DesignRequest, DesignResponse, OptionsResponse, PresetSchema, RenderStatus,
                          SettingsResponse, options_response)
@@ -38,7 +39,7 @@ def preset_entries(app) -> list[dict]:
     bundles = Path(app.state.settings.presets_dir)
     out = []
     for p in PRESETS:
-        out.append({"key": p.key, "title": p.title, "blurb": p.blurb, "tags": list(p.tags), "values": p.values,
+        out.append({"key": p.key, "title": _(p.title), "blurb": _(p.blurb), "tags": list(p.tags), "values": p.values,
                     "thumb": f"/static/presets/{p.key}.jpg" if (static / f"{p.key}.jpg").exists() else None,
                     "bundle": f"/presets/{p.key}/{p.key}.zip" if (bundles / p.key / f"{p.key}.zip").exists() else None})
     return out
