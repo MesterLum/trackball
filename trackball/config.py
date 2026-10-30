@@ -122,7 +122,9 @@ class Cup:
     shape: str = "cone"
     round: float = 2.0                # round-over radius of the rim edge
     cut: float = 6.0                  # how far below the rim the scoops go (dome / block)
-    saddle_r: float = 16.0            # radius of the scoop cylinders (smaller = sharper lobes)
+    saddle_r: float = 16.0            # radius of the round scoops (smaller = narrower lobes)
+    peak: str = "round"               # round: cylindrical scoops; sharp: V scoops, the lobes end in points
+    tip_flat: float = 1.0             # width of the flat on a sharp lobe tip (printable, not painful)
     # ball supports
     support: BallSupport = field(default_factory=PressFitBTU)
     support_count: int = 3
@@ -147,15 +149,28 @@ class Cup:
         """Lowest point of the scoops (deck z, relative to the ball centre)."""
         return -self.rim_below_center - self.cut
 
-    def cut_surface_z(self, x: float, y: float) -> float:
+    def rim_half_width(self, ball_r: float) -> float:
+        """Half-width of a scoop where it meets the rim plane."""
+        if self.peak == "sharp":
+            # the V walls reach the outer surface at the rim, leaving only the tip flat
+            z_rim = -self.rim_below_center
+            r_out = math.sqrt(max((ball_r + self.gap + self.wall) ** 2 - z_rim ** 2, 1.0))
+            return max(r_out - self.tip_flat, 2.0)
+        r = self.saddle_r
+        return math.sqrt(max(r ** 2 - (r - self.cut) ** 2, 0.0)) if self.cut < r else r
+
+    def cut_surface_z(self, x: float, y: float, ball_r: float) -> float:
         """Height of the cup surface after the scoops at plan position (x, y);
         +inf where no scoop reaches."""
         z = math.inf
-        zc = self.scoop_floor() + self.saddle_r
+        zf = self.scoop_floor()
         for axis in self.scoop_axes:
-            t = x if axis == "y" else y          # distance from the scoop cylinder's axis plane
-            if abs(t) < self.saddle_r:
-                z = min(z, zc - math.sqrt(self.saddle_r ** 2 - t ** 2))
+            t = abs(x if axis == "y" else y)     # distance from the scoop's axis plane
+            if self.peak == "sharp":
+                w = self.rim_half_width(ball_r)
+                z = min(z, zf + t * self.cut / w)
+            elif t < self.saddle_r:
+                z = min(z, zf + self.saddle_r - math.sqrt(self.saddle_r ** 2 - t ** 2))
         return z
 
     def screw_radius(self, ball_r: float) -> float:
@@ -642,7 +657,7 @@ class Design:
                 az = math.radians(cup.azimuth0 + 360.0 * i / cup.support_count)
                 sx, sy = dist * math.sin(th) * math.cos(az), dist * math.sin(th) * math.sin(az)
                 pocket_top = -dist * math.cos(th) + sup.body_radius() * math.sin(th) + 1.0
-                zc = cup.cut_surface_z(sx, sy)
+                zc = cup.cut_surface_z(sx, sy, self.ball.r)
                 if zc < pocket_top:
                     worst = max(worst, pocket_top - zc)
             if worst > 0:

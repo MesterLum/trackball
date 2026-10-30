@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: trackball 0.3\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-29 23:24-0700\n"
+"POT-Creation-Date: 2026-10-30 00:04-0700\n"
 "PO-Revision-Date: 2026-10-29 21:44-0700\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: es\n"
@@ -156,6 +156,13 @@ msgstr ""
 "Copa en domo con lóbulos laterales y aberturas profundas delante y detrás, bolas cerámicas de 3 mm colocadas bajas, "
 "RP2040-Zero bajo el sensor, sin botones."
 
+msgid ""
+"Dome cup with two pointed side lobes rising to the ball's equator, V scoops front and back, sharp edges, 3 mm ceramic"
+" bearings set low, RP2040-Zero under the sensor, no buttons."
+msgstr ""
+"Copa en domo con dos lóbulos laterales en punta que suben hasta el ecuador de la bola, aberturas en V delante y "
+"detrás, bordes vivos, bolas cerámicas de 3 mm colocadas bajas, RP2040-Zero bajo el sensor, sin botones."
+
 msgid "Download STLs"
 msgstr "Descargar STL"
 
@@ -278,6 +285,9 @@ msgstr "Mínimo con botones"
 
 msgid "Nano cradle"
 msgstr "Cuna Nano"
+
+msgid "Nano pikes"
+msgstr "Picos Nano"
 
 msgid "Omron D2F / Kailh GM microswitches"
 msgstr "Microinterruptores Omron D2F / Kailh GM"
@@ -630,6 +640,9 @@ msgstr "izquierda"
 msgid "live"
 msgstr "en vivo"
 
+msgid "lobe peaks"
+msgstr "puntas de los lóbulos"
+
 msgid "mm, ball at the centre"
 msgstr "mm, bola en el centro"
 
@@ -700,6 +713,9 @@ msgstr "cant."
 msgid "queued"
 msgstr "en cola"
 
+msgid "radius of the round scoops (smaller = narrower lobes)"
+msgstr "radio de las aberturas redondas (menor = lóbulos más estrechos)"
+
 msgid "redo (Shift+Ctrl/Cmd+Z)"
 msgstr "rehacer (Mayús+Ctrl/Cmd+Z)"
 
@@ -724,11 +740,17 @@ msgstr "redondeo de los bordes superiores de la tapa y el reposamanos"
 msgid "round-over radius of the cup rim edge"
 msgstr "radio de redondeo del borde de la copa"
 
+msgid "round: cylindrical scoops; sharp: V scoops so the lobes end in points (Ploopy Nano look)"
+msgstr "round: aberturas cilíndricas; sharp: aberturas en V para que los lóbulos acaben en punta (estilo Ploopy Nano)"
+
 msgid "rubber-foot recess diameter (0 = none)"
 msgstr "diámetro del rebaje para los pies de goma (0 = ninguno)"
 
 msgid "save PNG"
 msgstr "guardar PNG"
+
+msgid "scoop radius"
+msgstr "radio de la abertura"
 
 msgid "self-adhesive"
 msgstr "autoadhesivos"

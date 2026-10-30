@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: trackball 0.3\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-29 23:24-0700\n"
+"POT-Creation-Date: 2026-10-30 00:04-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -163,6 +163,12 @@ msgid ""
 "bearings set low, RP2040-Zero under the sensor, no buttons."
 msgstr ""
 
+msgid ""
+"Dome cup with two pointed side lobes rising to the ball's equator, V "
+"scoops front and back, sharp edges, 3 mm ceramic bearings set low, "
+"RP2040-Zero under the sensor, no buttons."
+msgstr ""
+
 msgid "Download STLs"
 msgstr ""
 
@@ -290,6 +296,9 @@ msgid "Minimal with buttons"
 msgstr ""
 
 msgid "Nano cradle"
+msgstr ""
+
+msgid "Nano pikes"
 msgstr ""
 
 msgid "Omron D2F / Kailh GM microswitches"
@@ -653,6 +662,9 @@ msgstr ""
 msgid "live"
 msgstr ""
 
+msgid "lobe peaks"
+msgstr ""
+
 msgid "mm, ball at the centre"
 msgstr ""
 
@@ -723,6 +735,9 @@ msgstr ""
 msgid "queued"
 msgstr ""
 
+msgid "radius of the round scoops (smaller = narrower lobes)"
+msgstr ""
+
 msgid "redo (Shift+Ctrl/Cmd+Z)"
 msgstr ""
 
@@ -747,10 +762,18 @@ msgstr ""
 msgid "round-over radius of the cup rim edge"
 msgstr ""
 
+msgid ""
+"round: cylindrical scoops; sharp: V scoops so the lobes end in points "
+"(Ploopy Nano look)"
+msgstr ""
+
 msgid "rubber-foot recess diameter (0 = none)"
 msgstr ""
 
 msgid "save PNG"
+msgstr ""
+
+msgid "scoop radius"
 msgstr ""
 
 msgid "self-adhesive"

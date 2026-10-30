@@ -66,6 +66,10 @@ OPTIONS: tuple[Option, ...] = (
            "block: square with four corner tabs"), N_("Ball & cup"), choices=("cone", "dome", "block"), label=N_("cup shape")),
     Option("cup_cut", "float", 6.0, N_("depth of the openings below the rim (dome / block)"), N_("Ball & cup"), min=0, max=20,
            step=0.5, unit="mm", label=N_("opening depth")),
+    Option("cup_scoop", "float", 16.0, N_("radius of the round scoops (smaller = narrower lobes)"), N_("Ball & cup"), min=8, max=30,
+           step=1, unit="mm", label=N_("scoop radius")),
+    Option("cup_peak", "choice", "round", N_("round: cylindrical scoops; sharp: V scoops so the lobes end in points (Ploopy Nano look)"),
+           N_("Ball & cup"), choices=("round", "sharp"), label=N_("lobe peaks")),
     Option("cup_round", "float", 2.0, N_("round-over radius of the cup rim edge"), N_("Ball & cup"), min=0, max=4, step=0.5, unit="mm",
            label=N_("rim round-over")),
     Option("ball_gap", "float", 0.8, N_("air between the ball and the cup cavity"), N_("Ball & cup"), min=0.4, max=2.0, step=0.1, unit="mm",
@@ -181,7 +185,7 @@ def make_design(values: dict[str, Any]) -> Design:
         cup=Cup(support=dataclasses.replace(SUPPORTS[v["support"]]), support_count=v["supports"],
                 support_polar_deg=v["polar"], gap=v["ball_gap"], wall=v["cup_wall"],
                 rim_below_center=v["rim"], skirt_extra=v["skirt"], shape=v["cup_shape"], cut=v["cup_cut"],
-                round=v["cup_round"]),
+                round=v["cup_round"], saddle_r=v["cup_scoop"], peak=v["cup_peak"]),
         pcb=dataclasses.replace(SENSOR_PCBS[v["sensor_pcb"]], header_height=v["header_height"]),
         carrier=Carrier(padding=v["padding"], edge_round=v["edge_round"]),
         tray=Tray(mcu=MCUS[v["mcu"]], mcu_place=v["mcu_place"],
@@ -251,7 +255,7 @@ def variant_name(values: dict[str, Any]) -> str:
     v = coerce(values)
     bits = [f"ball{v['ball']:g}", v["support"], v["mcu"]]
     if v["cup_shape"] != "cone":
-        bits.append(v["cup_shape"])
+        bits.append(v["cup_shape"] + ("-sharp" if v["cup_peak"] == "sharp" else ""))
     if v["sensor_pcb"] != "bastardkb":
         bits.append(v["sensor_pcb"])
     if v["padding"] != BY_NAME["padding"].default:

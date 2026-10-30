@@ -30,7 +30,7 @@ def test_presets_all_fit(client):
     r = client.get("/api/presets")
     assert r.status_code == 200
     presets = r.json()
-    assert 10 <= len(presets) <= 20
+    assert 10 <= len(presets) <= 30
     for p in presets:
         d = client.post("/api/design", json=p["values"]).json()
         assert d["fits"], (p["key"], d["problems"])

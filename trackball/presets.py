@@ -32,6 +32,10 @@ PRESETS: tuple[Preset, ...] = (
            "RP2040-Zero under the sensor, no buttons."),
            {"cup_shape": "dome", "cup_cut": 9, "rim": 2, "support": "ceramic-3", "polar": 42, "mcu": "rp2040-zero",
             "mcu_place": "under", "switches": 0, "padding": 5}, ("tiny", "cradle")),
+    Preset("nano-pikes", N_("Nano pikes"), N_("Dome cup with two pointed side lobes rising to the ball's equator, V scoops front and "
+           "back, sharp edges, 3 mm ceramic bearings set low, RP2040-Zero under the sensor, no buttons."),
+           {"cup_shape": "dome", "cup_peak": "sharp", "cup_cut": 10, "rim": 0, "cup_round": 0, "support": "ceramic-3",
+            "polar": 42, "mcu": "rp2040-zero", "mcu_place": "under", "switches": 0, "padding": 5}, ("tiny", "cradle")),
     Preset("block-cradle", N_("Block cradle"), N_("Square cup with four corner tabs holding the ball, ceramic bearings, three Choc keys."),
            {"cup_shape": "block", "cup_cut": 8, "rim": 2, "support": "ceramic-3", "supports": 4, "polar": 42},
            ("cradle", "choc")),

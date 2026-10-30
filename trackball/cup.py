@@ -3,7 +3,8 @@ from __future__ import annotations
 
 import warnings
 
-from solid2 import circle, cube, cylinder, hull, intersection, offset, polygon, rotate_extrude, sphere, square, union
+from solid2 import (circle, cube, cylinder, hull, intersection, linear_extrude, offset, polygon, rotate_extrude,
+                    sphere, square, union)
 
 from .common import (EPS, place_on_ball, polar, rounded_rect, rounded_slab, support_frames,
                      support_lowest_z, zcyl)
@@ -57,13 +58,21 @@ def cup(d: Design):
     big = 2 * d.skirt_dia
     opening = cube([big, big, R + 20]).translate([-big / 2, -big / 2, z_rim])
 
-    # --- scoops: horizontal cylinders that lower the front/back (dome) or all four sides (block)
+    # --- scoops: troughs along Y (dome: lowers front and back, leaves side lobes) or along both
+    # axes (block: four corner tabs). Round = cylinder; sharp = V wedge whose walls reach the outer
+    # surface at the rim, so each lobe ends in a point.
     scoops = []
-    zc = c.scoop_floor() + c.saddle_r
+    zf = c.scoop_floor()
     for axis in c.scoop_axes:
-        cyl = cylinder(r=c.saddle_r, h=big, _fn=fn).translate([0, 0, -big / 2])
-        cyl = cyl.rotate([90, 0, 0]) if axis == "y" else cyl.rotate([0, 90, 0])
-        scoops.append(cyl.translate([0, 0, zc]))
+        if c.peak == "sharp":
+            w = c.rim_half_width(R)
+            h = 4 * R
+            prof = polygon([[0, zf], [w * h / c.cut, zf + h], [-w * h / c.cut, zf + h]])
+            trough = linear_extrude(big)(prof).translate([0, 0, -big / 2]).rotate([90, 0, 0])   # along Y
+        else:
+            trough = cylinder(r=c.saddle_r, h=big, _fn=fn).translate([0, 0, -big / 2]).rotate([90, 0, 0])
+            trough = trough.translate([0, 0, zf + c.saddle_r])
+        scoops.append(trough if axis == "y" else trough.rotate([0, 0, 90]))
 
     # --- lens window: open rectangle under the ball, straight through the floor
     ww, wl = lens_window_size(d)

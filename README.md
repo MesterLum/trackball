@@ -42,6 +42,7 @@ uv run build.py --support mr63 --switch-gap 2                     # bearing roll
 uv run build.py --cup-shape dome --cup-cut 9 --support ceramic-3 --polar 42 --rim 2   # Nano-style cradle
 uv run build.py --cup-round 0 --edge-round 0                      # sharp edges (faster renders)
 uv run build.py --buttons tiles --switches 8 --padding 26         # EM06-style sculpted keys around the ball
+uv run build.py --cup-shape dome --cup-peak sharp --cup-cut 10 --rim 0 --support ceramic-3 --polar 42   # Nano pikes
 LANGUAGE=es uv run build.py --help                                # CLI, summary and validator in Spanish
 uv run build.py --sensor-pcb pmw3389-round                        # other sensor breakout
 uv run build.py --switch-type mx --buttons sides     # MX buttons left and right of the ball
@@ -229,6 +230,11 @@ fails when a catalog misses a string or breaks a `{placeholder}`.
   scoops must stay above the ball-support pockets, so deep cradles need
   small supports set low on the ball (`--support ceramic-3 --polar 42`); with
   7.5 mm BTUs the cut is limited to about 3 mm and auto-fit trims it.
+  `--cup-scoop` is the radius of the round scoops (narrower lobes with a
+  smaller one). `--cup-peak sharp` replaces them with V-shaped scoops whose
+  walls reach the outer surface at the rim, so each lobe ends in a point
+  (1 mm flat) like the Ploopy Nano; with `--rim 0` the points sit at the
+  ball's equator, the highest they can go while the ball still drops in.
 - **Tiles** (`--buttons tiles --switches 2|4|6|8`): instead of a row of
   key switches, the lid top is divided into large wedge keys that fill the
   deck around the ball, ProtoArc EM06 style: one per side (4), the front and
