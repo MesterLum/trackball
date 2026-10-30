@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: trackball 0.3\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-29 22:56-0700\n"
+"POT-Creation-Date: 2026-10-29 23:21-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -102,6 +102,9 @@ msgid "; {n} feet Ø{d:g}"
 msgstr ""
 
 msgid "Adjusted to fit:"
+msgstr ""
+
+msgid "Auto-fit undone and switched off"
 msgstr ""
 
 #, python-brace-format
@@ -321,6 +324,9 @@ msgid ""
 "strip only."
 msgstr ""
 
+msgid "Redo"
+msgstr ""
+
 msgid "Render preview"
 msgstr ""
 
@@ -393,6 +399,9 @@ msgid "USB exit"
 msgstr ""
 
 msgid "USB out of the left wall, 4 mm walls and floor, 12 mm feet."
+msgstr ""
+
+msgid "Undo"
 msgstr ""
 
 msgid "Wire (6 for the sensor SPI, 2 per switch)"
@@ -714,6 +723,9 @@ msgstr ""
 msgid "queued"
 msgstr ""
 
+msgid "redo (Shift+Ctrl/Cmd+Z)"
+msgstr ""
+
 msgid "render the preview while you edit"
 msgstr ""
 
@@ -845,6 +857,9 @@ msgid "tray wall thickness"
 msgstr ""
 
 msgid "under"
+msgstr ""
+
+msgid "undo (Ctrl/Cmd+Z)"
 msgstr ""
 
 #, python-brace-format

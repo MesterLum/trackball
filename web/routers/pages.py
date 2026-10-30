@@ -27,6 +27,7 @@ JS_STRINGS = [
     N_("Could not prepare the final design"), N_("Final render failed"), N_("Link copied"), N_("Command copied"),
     N_("Loaded \"{title}\""), N_("toggle {part}"), N_("ball"), N_("full quality ($fn {fn}), rendered on request"),
     N_("behind"), N_("under"), N_("{place} the sensor"), N_(", battery {battery}"),
+    N_("Undo"), N_("Auto-fit undone and switched off"),
 ]
 
 

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: trackball 0.3\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-29 22:56-0700\n"
+"POT-Creation-Date: 2026-10-29 23:21-0700\n"
 "PO-Revision-Date: 2026-10-29 21:44-0700\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: es\n"
@@ -94,6 +94,9 @@ msgstr "; {n} pies Ø{d:g}"
 
 msgid "Adjusted to fit:"
 msgstr "Ajustado para que quepa:"
+
+msgid "Auto-fit undone and switched off"
+msgstr "Autoajuste deshecho y desactivado"
 
 #, python-brace-format
 msgid "BTU Ø{d} press-fit"
@@ -308,6 +311,9 @@ msgstr "Diseños propuestos"
 msgid "RP2040-Zero under the sensor, USB at the back, two 1.5u Choc keys, front strip only."
 msgstr "RP2040-Zero bajo el sensor, USB detrás, dos teclas Choc de 1.5u, solo la franja delantera."
 
+msgid "Redo"
+msgstr "Rehacer"
+
 msgid "Render preview"
 msgstr "Renderizar vista previa"
 
@@ -375,6 +381,9 @@ msgstr "salida USB"
 
 msgid "USB out of the left wall, 4 mm walls and floor, 12 mm feet."
 msgstr "USB por la pared izquierda, paredes y suelo de 4 mm, pies de 12 mm."
+
+msgid "Undo"
+msgstr "Deshacer"
 
 msgid "Wire (6 for the sensor SPI, 2 per switch)"
 msgstr "Cable (6 para el SPI del sensor, 2 por interruptor)"
@@ -691,6 +700,9 @@ msgstr "cant."
 msgid "queued"
 msgstr "en cola"
 
+msgid "redo (Shift+Ctrl/Cmd+Z)"
+msgstr "rehacer (Mayús+Ctrl/Cmd+Z)"
+
 msgid "render the preview while you edit"
 msgstr "renderizar la vista previa mientras editas"
 
@@ -827,6 +839,9 @@ msgstr "grosor de las paredes de la bandeja"
 
 msgid "under"
 msgstr "debajo"
+
+msgid "undo (Ctrl/Cmd+Z)"
+msgstr "deshacer (Ctrl/Cmd+Z)"
 
 #, python-brace-format
 msgid "use --padding {value:g} or more"

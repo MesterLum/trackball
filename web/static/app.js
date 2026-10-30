@@ -15,6 +15,8 @@ document.addEventListener('alpine:init', () => {
     explode: 0,
     visible: { cup: true, carrier: true, tray: true, palmrest: true, ball: true },
     toast: '',
+    toastAction: null,      // {label, run} shown as a button in the toast
+    _past: [], _future: [], _committed: '',   // undo / redo stacks of cfg snapshots (JSON)
     theme: localStorage.getItem('theme') || 'night',
     auto: boot.settings.auto_render,       // render previews as you edit
     autofit: true,                         // let the server raise padding when something does not fit
@@ -28,9 +30,11 @@ document.addEventListener('alpine:init', () => {
       for (const g of this.groups) for (const o of g.options) this.options[o.name] = o;
       document.documentElement.dataset.theme = this.theme;
       this.cfg = this.fromURL();
+      this._committed = JSON.stringify(this.cfg);
       this.update(true);
       this.$watch('explode', (v) => viewer.setExplode(v));
       addEventListener('popstate', () => { this.cfg = this.fromURL(); this.update(true); });
+      addEventListener('keydown', (e) => this.onKey(e));
     },
     get fits() { return this.design && this.design.fits; },
     get problems() { return this.design ? this.design.problems : []; },
@@ -53,7 +57,7 @@ document.addEventListener('alpine:init', () => {
       for (const [k, v] of q.entries()) if (k in this.options) base[k] = this.options[k].kind === 'bool' ? v === '1' || v === 'true' : v;
       return base;
     },
-    toURL() {
+    toURL(push = false) {
       const q = new URLSearchParams();
       for (const o of Object.values(this.options)) {
         const v = this.cfg[o.name];
@@ -61,7 +65,7 @@ document.addEventListener('alpine:init', () => {
         q.set(o.name, o.kind === 'bool' ? '1' : v);
       }
       const url = location.pathname + (q.toString() ? '?' + q : '');
-      if (url !== location.pathname + location.search) history.replaceState(null, '', url);
+      if (url !== location.pathname + location.search) (push ? history.pushState : history.replaceState).call(history, null, '', url);
     },
     loadPreset(p) { this.cfg = this.defaultsWith(p.values); this.update(); this.say(this.t('Loaded "{title}"', { title: p.title })); },
     reset() { this.cfg = this.defaults(); this.update(); },
@@ -77,8 +81,49 @@ document.addEventListener('alpine:init', () => {
       clearTimeout(this._timer);
       this._timer = setTimeout(() => this.send(), immediate ? 0 : 350);
     },
+    /** record the state about to be sent as one undo step (slider bursts collapse into one) */
+    commit() {
+      const now = JSON.stringify(this.cfg);
+      if (now === this._committed) return false;
+      this._past.push(this._committed); if (this._past.length > 100) this._past.shift();
+      this._future = [];
+      this._committed = now;
+      return true;
+    },
+    get canUndo() { return this._past.length > 0; },
+    get canRedo() { return this._future.length > 0; },
+    undo() {
+      if (!this.canUndo) return;
+      this._future.push(this._committed);
+      this._committed = this._past.pop();
+      this.cfg = JSON.parse(this._committed);
+      this.update(true);
+    },
+    redo() {
+      if (!this.canRedo) return;
+      this._past.push(this._committed);
+      this._committed = this._future.pop();
+      this.cfg = JSON.parse(this._committed);
+      this.update(true);
+    },
+    /** undo the server's auto-fit: restore the values you typed and stop auto-fit from redoing it */
+    undoAutofit() {
+      this.autofit = false;
+      this.undo();
+      this.say(this.t('Auto-fit undone and switched off'));
+    },
+    onKey(e) {
+      const mod = e.metaKey || e.ctrlKey;
+      if (!mod) return;
+      const tag = (e.target && e.target.tagName) || '';
+      if ((tag === 'INPUT' && !['range', 'checkbox'].includes(e.target.type)) || tag === 'TEXTAREA' || tag === 'SELECT') return;
+      const k = e.key.toLowerCase();
+      if (k === 'z' && !e.shiftKey) { e.preventDefault(); this.undo(); }
+      else if ((k === 'z' && e.shiftKey) || k === 'y') { e.preventDefault(); this.redo(); }
+    },
     async send() {
-      this.toURL();
+      const stepped = this.commit();
+      this.toURL(stepped);
       if (this._abort) this._abort.abort();
       const ac = new AbortController(); this._abort = ac;
       let r;
@@ -92,10 +137,11 @@ document.addEventListener('alpine:init', () => {
       this.errors = {};
       const d = await r.json();
       this.design = d;
-      if (d.adjusted && d.adjusted.length) {          // reflect the auto-fit in the form, without re-sending
+      if (d.adjusted && d.adjusted.length) {          // reflect the auto-fit in the form, as its own undo step
         for (const c of d.adjusted) this.cfg[c.option] = c.to;
+        this.commit();
         this.toURL();
-        this.say(d.adjusted.map((c) => `${c.option} ${c.from} → ${c.to}`).join(', '));
+        this.say(d.adjusted.map((c) => `${c.option} ${c.from} → ${c.to}`).join(', '), { label: this.t('Undo'), run: () => this.undoAutofit() });
       }
       viewer.setFrame({ tilt: d.tilt, tent: d.tent, ball_r: d.ball_r, floor_z: d.floor_z });
       if (d.fits && this.auto) this.render(d.id); else { this.stopEvents(); this.rendering = false; }
@@ -153,7 +199,10 @@ document.addEventListener('alpine:init', () => {
     setTheme(t) { this.theme = t; localStorage.setItem('theme', t); document.documentElement.dataset.theme = t; },
     copy(text, msg) { navigator.clipboard.writeText(text); this.say(msg); },
     share() { this.copy(location.href, this.t('Link copied')); },
-    say(msg) { this.toast = msg; clearTimeout(this._toast); this._toast = setTimeout(() => (this.toast = ''), 1800); },
+    say(msg, action = null) {
+      this.toast = msg; this.toastAction = action;
+      clearTimeout(this._toast); this._toast = setTimeout(() => { this.toast = ''; this.toastAction = null; }, action ? 6000 : 1800);
+    },
     stateClass(s) { return { queued: 'badge-ghost', rendering: 'badge-warning', done: 'badge-success', error: 'badge-error' }[s] || ''; },
     /** translate a UI string; {name} placeholders are filled from vars */
     t(s, vars) { let out = this.i18n[s] || s; for (const k in (vars || {})) out = out.split('{' + k + '}').join(vars[k]); return out; },
