@@ -38,7 +38,8 @@ from trackball.palmrest import palmrest
 from trackball.supports import SUPPORTS
 from trackball.tray import tray
 
-OUT = Path(__file__).parent / "out"
+# CLI output: ./out next to the code, or <TRACKBALL_OUT>/../cli inside the Docker image (the /data volume)
+OUT = (Path(os.environ["TRACKBALL_OUT"]).parent / "cli") if os.environ.get("TRACKBALL_OUT") else Path(__file__).parent / "out"
 
 # name -> (caption, list of (view name, rot_x, rot_y, rot_z))
 VIEWS: dict[str, tuple[str, list[tuple[str, float, float, float]]]] = {
@@ -52,7 +53,7 @@ VIEWS: dict[str, tuple[str, list[tuple[str, float, float, float]]]] = {
                           [("top", 55, 0, 25), ("bottom", 235, 0, 25)]),
     "tray": ("Print: base tray", [("top", 55, 0, 25), ("bottom", 235, 0, 25)]),
     "tray_placement": ("Tray with the MCU on its standoffs", [("top", 55, 0, 25), ("usb-side", 60, 0, 60)]),
-    "palmrest": ("Print: separate palm rest (only with --palm)", [("top", 55, 0, 25)]),
+    "palmrest": ("Print: separate palm rest (only with --palm)", [("top", 55, 0, 25), ("bottom", 235, 0, 25)]),
 }
 
 

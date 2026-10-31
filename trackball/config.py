@@ -777,6 +777,17 @@ class Design:
                for yy in (-(self.front_length - i), self.back_length - i)]
         return [self.floor_xy(x, y) for x, y in pts]
 
+    def palm_feet_xy(self) -> list[tuple[float, float]]:
+        """Rubber-foot recesses under the palm rest: same feet as the tray, one per corner
+        (two if the rest is too short for four)."""
+        if self.tray.feet_dia <= 0 or self.deck.palm_length <= 0:
+            return []
+        i = self.tray.feet_inset
+        y0, y1 = self.palm_y_range
+        ys = [y0 + i, y1 - i] if (y1 - y0) >= 2 * i + self.tray.feet_dia else [(y0 + y1) / 2]
+        pts = [(sx * (self.half_width - i), y) for sx in (-1, 1) for y in ys]
+        return [self.floor_xy(x, y) for x, y in pts]
+
     def height_breakdown(self) -> str:
         t = self.tray
         parts = [_("ball r {v:g}").format(v=self.ball.r), _("optics {v:g}").format(v=self.lens.ball_above_pcb),
@@ -830,7 +841,8 @@ class Design:
             {"item": _("M3 heat-set inserts (Ø4 x 5 mm)"), "qty": 10, "note": _("4 cup, 2 sensor PCB, 4 tray posts")},
             {"item": _("M3x8 screws"), "qty": 8, "note": _("cup to carrier (4), lid to tray (4)")},
             {"item": _("M3x6 screws"), "qty": 2, "note": _("sensor PCB to carrier")},
-            {"item": _("Rubber feet Ø{d:g} mm").format(d=t.feet_dia), "qty": 4 if t.feet_dia > 0 else 0, "note": _("self-adhesive")},
+            {"item": _("Rubber feet Ø{d:g} mm").format(d=t.feet_dia), "qty": len(self.feet_xy()) + len(self.palm_feet_xy()),
+             "note": _("self-adhesive; 4 under the tray, the rest under the palm rest")},
             {"item": _("Wire (6 for the sensor SPI, 2 per switch)"), "qty": 1, "note": _("JST or direct solder")},
         ]
         return [i for i in items if i["qty"]]
@@ -863,7 +875,8 @@ class Design:
                 a=self.ball.r - self.z_floor_bottom, b=top - self.z_floor_bottom, breakdown=self.height_breakdown()),
             _("walls: tray {wall:g}, floor {floor:g}, lid {lid:g}, cup {cup:g} mm").format(
                 wall=self.tray.wall, floor=self.tray.floor, lid=self.carrier.thickness, cup=self.cup.wall)
-            + (_("; {n} feet Ø{d:g}").format(n=len(self.feet_xy()), d=self.tray.feet_dia) if self.tray.feet_dia > 0 else ""),
+            + (_("; {n} feet Ø{d:g}").format(n=len(self.feet_xy()) + len(self.palm_feet_xy()), d=self.tray.feet_dia)
+               if self.tray.feet_dia > 0 else ""),
             _("MCU                               : {mcu} {place} the sensor, USB out the {usb}").format(
                 mcu=self.tray.mcu.name, place=_(self.tray.mcu_place), usb=usb)
             + (_(" (+{h:g} mm height)").format(h=self.mcu_stack) if self.tray.mcu_place == "under" else "")

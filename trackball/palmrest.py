@@ -8,7 +8,9 @@ from __future__ import annotations
 
 import math
 
-from .common import half_space_above, rounded_rect, rounded_slab, to_world
+from solid2 import union
+
+from .common import half_space_above, rounded_rect, rounded_slab, to_world, zcyl
 from .config import Design
 
 
@@ -32,4 +34,8 @@ def palmrest(d: Design):
                            dk.palm_pad_recess + 1, fn).up(z_top - dk.palm_pad_recess).translate([0, cy, 0])
         block = block - pad
     keep = half_space_above(zf_bot, (w + 2 * sag + 20, L + 2 * sag + 20), (0, cy), tall)
-    return to_world(block, dk) * keep
+    body = to_world(block, dk) * keep
+    # rubber-foot recesses in the bottom, same feet as the tray (world frame, flat floor)
+    feet = [zcyl(d.tray.feet_dia, zf_bot - 1, zf_bot + d.tray.feet_depth, fn).translate([fx, fy, 0])
+            for fx, fy in d.palm_feet_xy()]
+    return body - union()(*feet) if feet else body

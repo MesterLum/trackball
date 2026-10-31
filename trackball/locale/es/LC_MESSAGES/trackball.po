@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: trackball 0.3\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-30 00:04-0700\n"
+"POT-Creation-Date: 2026-10-30 00:38-0700\n"
 "PO-Revision-Date: 2026-10-29 21:44-0700\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: es\n"
@@ -752,8 +752,8 @@ msgstr "guardar PNG"
 msgid "scoop radius"
 msgstr "radio de la abertura"
 
-msgid "self-adhesive"
-msgstr "autoadhesivos"
+msgid "self-adhesive; 4 under the tray, the rest under the palm rest"
+msgstr "autoadhesivos; 4 bajo la bandeja, el resto bajo el reposamanos"
 
 msgid "sensor PCB"
 msgstr "PCB del sensor"
@@ -930,4 +930,7 @@ msgstr "interruptores {switch}"
 
 #~ msgid "1 mm recess on the palm rest for a leather/foam pad"
 #~ msgstr "rebaje de 1 mm en el reposamanos para una almohadilla de cuero o espuma"
+
+#~ msgid "self-adhesive"
+#~ msgstr "autoadhesivos"
 

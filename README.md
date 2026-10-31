@@ -77,7 +77,8 @@ minutes per part at the same `$fn`; the code works with both.
 
 ## Run it from Docker (recommended)
 
-One image does everything; `./out` holds the results.
+One image does everything; `./out` holds the results (`out/cli/<variant>/` for
+`build`, `out/presets/` for the bundles, `out/web/` for the configurator).
 
 ```sh
 docker compose up --build                                    # configurator at http://localhost:8000 (API docs at /docs)
@@ -256,7 +257,8 @@ fails when a catalog misses a string or breaks a `{placeholder}`.
   final tiers in the web app).
 - **Walls**: tray wall and floor 3 mm (`--wall`, `--floor`), lid 5 mm, cup 3 mm.
 - **Feet**: four rubber-foot recesses in the bottom, `--feet DIA` (default
-  10 mm, 1 mm deep, 0 = none). They follow the leaning walls.
+  10 mm, 1 mm deep, 0 = none). They follow the leaning walls. The palm rest
+  gets the same feet, four of them (two when it is too short).
 - **USB**: `--usb right|left|back` picks the wall the cable leaves.
 
 ### Adding a rolling option
