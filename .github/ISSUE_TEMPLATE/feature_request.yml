@@ -1,0 +1,20 @@
+name: Feature request
+description: Suggest a new option, part or improvement
+labels: [enhancement]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like?
+      description: For new hardware (controller, sensor, switch, support), include a datasheet or product link.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why
+      description: The build or problem this would help with.
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you considered
