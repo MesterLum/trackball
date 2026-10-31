@@ -26,6 +26,7 @@ PART_STYLE = {  # name -> (colour, frame, explode lift)
     "carrier": ("#daa520", "deck", 1.0),
     "tray": ("#808080", "world", 0.0),
     "palmrest": ("#cd853f", "world", 0.0),
+    "palm_key": ("#008080", "world", 0.0),
 }
 
 

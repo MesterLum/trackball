@@ -22,7 +22,7 @@ rendered by OpenSCAD. Three printed parts, every dimension in one place.
   Also carries the click buttons and the optional hand-rest pad recess.
 - **tray**: wedge base holding the MCU (behind the ball) and the battery
   (flat under the sensor), posts for the lid screws.
-- **palm rest** (optional): separate block in front, continues the deck plane.
+- **palm rest** (optional): separate, anchored or fused to the tray; continues the deck plane.
 
 ## Usage
 
@@ -63,7 +63,8 @@ Output goes to `out/<variant>/`:
 | `cup.scad`                | print (flat, deck frame)                             |
 | `carrier.scad`            | print (flat, deck frame)                             |
 | `tray.scad`               | print (floor down, world frame)                      |
-| `palmrest.scad`           | print (only with `--palm`), separate block           |
+| `palmrest.scad`           | separate or anchored rest (fused rest is in tray)    |
+| `palm_key.scad`           | underside retaining key (anchored mode only)         |
 | `assembly.scad`           | preview with ball, PCB, lens, MCU, battery, switches |
 | `section.scad`            | assembly cut at X=0 to inspect the sensor stack      |
 | `*_placement.scad`        | one part plus the hardware that goes in it           |
@@ -86,6 +87,21 @@ docker run --rm -v "$PWD/out:/data" trackball-web presets     # prebuilt bundles
 docker run --rm -v "$PWD/out:/data" trackball-web build --tilt 10 --palm 40 --stl   # CLI, same flags as build.py
 docker run --rm trackball-web test                           # pytest inside the image
 ```
+
+Local development automatically loads `docker-compose.override.yml`: source
+folders are mounted into the container, Uvicorn restarts for Python/catalog
+changes, and the open page refreshes for code, template and static-file edits.
+After adding this configuration, run `docker compose up -d web` once and refresh
+an already-open browser tab once. Later saves update automatically, preserving
+the configuration in the page URL. Dependency or Dockerfile changes still need
+`docker compose up -d --build`. Source bind mounts use the installed container
+Python environment; they do not replace it with the host `.venv`.
+
+For deployment, use `docker compose -f docker-compose.yml up -d` to omit the
+local development override. The built image defaults to no browser refresh.
+CAD source revisions are included in design IDs, so editing geometry produces
+fresh models instead of reusing old SCAD/STLs for the same settings. Existing
+saved download URLs continue to use their original generated files.
 
 Environment variables (see `docker-compose.yml`): `TRACKBALL_FN_PREVIEW` (48, curve
 resolution of the live preview), `TRACKBALL_FN_FINAL` (96, printable STLs),
@@ -206,6 +222,19 @@ fails when a catalog misses a string or breaks a `{placeholder}`.
   height (about 8.5 mm). `--usb back` turns the board so the cable leaves
   the back wall instead of the side; for a Pico that needs a lot of padding
   behind, for small boards it is free.
+- **USB fit**: `--usb-type auto` (default) selects Micro-USB for Pico / Pico W /
+  Pico 2 / original Pro Micro, and USB-C for the other controllers. Use
+  `--usb-type micro-usb` or `--usb-type usb-c` for a connector variant; the
+  same selector appears under Electronics in the web editor. The socket opening
+  follows the board position: a rounded USB-C slot or chamfered Micro-B profile,
+  with 0.3 mm clearance per side and an outer recess for the cable housing
+  (at least 12 × 7 mm). Extra-large cable mouldings may need a larger recess.
+  PCB and printed supports stop 0.3 mm from the actual inside USB wall,
+  accounting for tilt and tenting. Screw standoffs or the sloping wall can
+  determine the limit before the PCB edge does. Small-board pockets are open
+  at the USB end. Fit checks include the rounded walls and lid posts.
+  Changing connector type changes the socket envelope and opening, not the PCB
+  outline or the connector overhang of a particular manufacturer's variant.
 - **Electronics never grow the body by themselves.** `Design.validate()`
   checks that the MCU fits behind the sensor, that the battery fits under it
   and that the button row fits the width. Each problem carries its own fix;
@@ -217,7 +246,22 @@ fails when a catalog misses a string or breaks a `{placeholder}`.
   along Y); the tray grows by the cell thickness + 1 mm, nothing else moves.
 - **Palm rest** (`--palm MM`) is a separate printed block in front of the
   body: same width, same lean, top 2 mm below the deck plane. `--palm-pad MM`
-  adds a recess of that depth for a leather/foam pad. It does not change the body.
+  adds a recess of that depth for a leather/foam pad.
+  `--palm-attachment separate` keeps it freely positioned (default);
+  `anchored` adds two alignment tongues and a replaceable underside snap key;
+  `fused` combines the palm rest and base into `tray.stl`, keeping the lid removable.
+  Its joint has a square rear edge and straight side walls through the seam;
+  only the exterior front corners remain rounded. The palm height/drop setting
+  still controls its top relative to the lid.
+  In the web editor the attachment selector appears after enabling the palm rest.
+  Anchored mode needs at least 18 mm palm length and 2.5 mm floor thickness;
+  auto-fit can apply these adjustments. Slide the rest toward the body, then
+  press `palm_key.stl` into the underside pockets. Remove the key before pulling
+  the rest away. Both pieces retain their rubber feet so palm loads go into the
+  desk. Print the key flat in PETG and test its snap fit before a full print;
+  the joint has 0.25 mm tongue clearance per side and 0.2 mm at the key mouth.
+  Fused mode produces a larger single print; check the total size against the
+  printer bed. The rest follows the actual front edge, including `--no-mirror`.
 - The tray floor height is computed from everything under the lid: sensor
   header, switch bodies, MCU. With tilt the back gets taller automatically.
   The summary prints the breakdown (ball radius + 6 mm optics + PCB and
@@ -299,6 +343,23 @@ a friction pocket), USB size, tallest component, BOOTSEL position.
 - Screws: M3 heat-set inserts (Ø4 hole): 4 in the cup, 2 in the carrier,
   4 in the tray posts. M3x8 for cup and lid, M3x6 for the PCB.
   M2x6 self-tapping for Pico-style boards.
+- MCU dimension references (L along USB × W, mm):
+  [Pico physical drawing](https://datasheets.raspberrypi.com/pico/pico-product-brief.pdf)
+  confirms 51 × 21 and 47 × 11.4 mounting-hole spacing;
+  [Seeed XIAO nRF52840](https://wiki.seeedstudio.com/XIAO_BLE/) specifies
+  21 × 17.8 (updated from 17.5);
+  [SparkFun original Pro Micro](https://learn.sparkfun.com/tutorials/pro-micro--fio-v3-hookup-guide/all)
+  specifies 1.30 × 0.70 inches, or 33.02 × 17.78 (updated from 33 × 18).
+  [Waveshare RP2040-Zero](https://www.waveshare.com/wiki/RP2040-Zero)
+  uses USB-C; its existing 23.5 × 18 envelope is retained.
+  [nice!nano](https://nicekeyboards.com/docs/nice-nano/) documents a mid-mount
+  USB-C connector; its 33 × 18 outline and the
+  [Supermini](https://www.nologo.tech/en/product/otherboard/NRF52840.html)
+  33.5 × 18 outline remain nominal presets. Socket overhangs, shell dimensions,
+  and the nice!nano socket vertical offset are approximations; check the actual
+  board revision before printing. Adjust `MCU` in `trackball/config.py` for
+  different outlines, connector overhang or mid-mount offsets. A connector-type
+  override alone cannot describe every clone's mechanical differences.
 - MCU presets: `pico`, `pico-w`, `pico2`, `rp2040-zero`, `xiao`,
   `nice-nano`, `supermini`, `pro-micro`. Boards without mounting holes get
   a friction pocket; add a dab of glue or tape.

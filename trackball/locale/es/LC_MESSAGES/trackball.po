@@ -934,3 +934,36 @@ msgstr "interruptores {switch}"
 #~ msgid "self-adhesive"
 #~ msgstr "autoadhesivos"
 
+
+msgid "USB connector"
+msgstr "Conector USB"
+
+msgid "socket shape: auto uses the controller default; override for board variants"
+msgstr "forma del conector: auto usa el valor del controlador; cámbialo para otras variantes de la placa"
+
+msgid "MCU {mcu} mount needs more clearance from the walls, sensor or lid posts"
+msgstr "el soporte del MCU {mcu} necesita más espacio respecto a las paredes, el sensor o los postes de la tapa"
+
+msgid "separate"
+msgstr "separado"
+
+msgid "anchored"
+msgstr "anclado"
+
+msgid "fused"
+msgstr "fusionado"
+
+msgid "palm-rest attachment"
+msgstr "unión del reposamanos"
+
+msgid "separate, removable with alignment tongues and an underside key, or fused to the tray"
+msgstr "separado, desmontable con lengüetas de alineación y una llave inferior, o fusionado con la bandeja"
+
+msgid "anchored palm rest needs at least 18 mm length"
+msgstr "el reposamanos anclado necesita al menos 18 mm de longitud"
+
+msgid "anchored palm rest needs at least 2.5 mm floor thickness"
+msgstr "el reposamanos anclado necesita un piso de al menos 2.5 mm de grosor"
+
+msgid ", palm rest {l:g} mm ({attachment})"
+msgstr ", reposamanos de {l:g} mm ({attachment})"

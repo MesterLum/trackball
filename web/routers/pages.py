@@ -26,7 +26,7 @@ JS_STRINGS = [
     N_("Download STLs"), N_("Rendering {done}/{total}…"), N_("Server unreachable"), N_("Server error {status}"),
     N_("Could not prepare the final design"), N_("Final render failed"), N_("Link copied"), N_("Command copied"),
     N_("Loaded \"{title}\""), N_("toggle {part}"), N_("ball"), N_("full quality ($fn {fn}), rendered on request"),
-    N_("behind"), N_("under"), N_("{place} the sensor"), N_(", battery {battery}"),
+    N_("behind"), N_("under"), N_("separate"), N_("anchored"), N_("fused"), N_("{place} the sensor"), N_(", battery {battery}"),
     N_("Undo"), N_("Auto-fit undone and switched off"),
 ]
 
@@ -43,7 +43,7 @@ def index(request: Request):
     # "</" would end the <script> block early
     response = templates.TemplateResponse(request, "index.html", {
         "boot": json.dumps(boot, ensure_ascii=False).replace("</", "<\\/"),
-        "lang": lang, "languages": LANGUAGES})
+        "lang": lang, "languages": LANGUAGES, "dev_reload": request.app.state.settings.dev_reload})
     if normalize(request.query_params.get(COOKIE)):
         response.set_cookie(COOKIE, lang, max_age=365 * 24 * 3600, samesite="lax")
     return response

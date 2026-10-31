@@ -202,8 +202,9 @@ class Carrier:
 class Deck:
     tilt_deg: float = 0.0             # about X through the ball; + raises the back (+Y)
     tent_deg: float = 0.0             # about Y through the ball; + raises the -X side
-    # palm rest: a SEPARATE printed block in front of the body that continues
-    # the deck plane (same width, same lean), 0 = none
+    # optional palm rest in front of the body, continuing
+    # the deck plane (same width, same lean); length 0 = none
+    palm_attachment: str = "separate" # separate, anchored, fused
     palm_length: float = 0.0
     palm_drop: float = 2.0            # its top sits this far below the deck
     palm_round: float = 2.0           # round-over of its top edge
@@ -228,17 +229,19 @@ class MCU:
     component_height: float = 3.5     # tallest part on top
     bootsel: tuple[float, float] | None = None    # (along, across) from centre; along>0 = toward USB
     wireless: bool = False
+    usb_type: str = "usb-c"
+    usb_z_offset: float = 0.0        # socket bottom relative to PCB top (negative for mid-mount)
 
 
 _PICO_HOLES = ((-23.5, -5.7), (-23.5, 5.7), (23.5, -5.7), (23.5, 5.7))   # 47 x 11.4
-PICO = MCU("pico", 51.0, 21.0, holes=_PICO_HOLES, usb_width=8.0, usb_height=2.8, bootsel=(13.0, -3.5))
-PICO_W = MCU("pico-w", 51.0, 21.0, holes=_PICO_HOLES, usb_width=8.0, usb_height=2.8, bootsel=(13.0, -3.5), wireless=True)
-PICO_2 = MCU("pico2", 51.0, 21.0, holes=_PICO_HOLES, usb_width=8.0, usb_height=2.8, bootsel=(13.0, -3.5))
+PICO = MCU("pico", 51.0, 21.0, holes=_PICO_HOLES, usb_width=8.0, usb_height=2.8, bootsel=(13.0, -3.5), usb_type="micro-usb")
+PICO_W = MCU("pico-w", 51.0, 21.0, holes=_PICO_HOLES, usb_width=8.0, usb_height=2.8, bootsel=(13.0, -3.5), wireless=True, usb_type="micro-usb")
+PICO_2 = MCU("pico2", 51.0, 21.0, holes=_PICO_HOLES, usb_width=8.0, usb_height=2.8, bootsel=(13.0, -3.5), usb_type="micro-usb")
 RP2040_ZERO = MCU("rp2040-zero", 23.5, 18.0, usb_width=9.0, usb_height=3.3, usb_overhang=1.0, bootsel=(-5.0, 0.0))
-XIAO = MCU("xiao", 21.0, 17.5, usb_width=9.0, usb_height=3.3, usb_overhang=1.2, wireless=True)  # XIAO nRF52840 / RP2040
-NICE_NANO = MCU("nice-nano", 33.0, 18.0, usb_width=9.0, usb_height=3.3, usb_overhang=1.5, component_height=2.0, wireless=True)
+XIAO = MCU("xiao", 21.0, 17.8, usb_width=9.0, usb_height=3.3, usb_overhang=1.2, wireless=True)  # XIAO nRF52840 / RP2040
+NICE_NANO = MCU("nice-nano", 33.0, 18.0, usb_width=9.0, usb_height=3.3, usb_overhang=1.5, component_height=2.0, wireless=True, usb_z_offset=-1.1)
 SUPERMINI = MCU("supermini", 33.5, 18.0, usb_width=9.0, usb_height=3.3, usb_overhang=1.5, component_height=2.0, wireless=True)
-PRO_MICRO = MCU("pro-micro", 33.0, 18.0, usb_width=8.0, usb_height=3.0, usb_overhang=1.5, component_height=3.0)
+PRO_MICRO = MCU("pro-micro", 33.02, 17.78, usb_width=8.0, usb_height=3.0, usb_overhang=1.5, component_height=3.0, usb_type="micro-usb")
 
 MCUS = {m.name: m for m in (PICO, PICO_W, PICO_2, RP2040_ZERO, XIAO, NICE_NANO, SUPERMINI, PRO_MICRO)}
 
@@ -389,6 +392,9 @@ class Tray:
     mcu_place: str = "behind"         # behind the sensor PCB, or "under" it (tray gets taller, body stays small)
     usb_exit: str = "side"            # "side": board lies across, USB out of the usb_side wall; "back": turned 90°
     usb_side: int = +1                # +X (1) or -X (-1) wall for usb_exit="side"
+    usb_type: str = "auto"           # auto, micro-usb, usb-c
+    mcu_wall_clear: float = 0.3       # minimum printed mount/PCB to inside wall
+    usb_clear: float = 0.3           # per side around socket shell
     wall: float = 3.0
     floor: float = 3.0
     feet_dia: float = 10.0            # rubber-foot recesses in the bottom (0 = none)
@@ -646,6 +652,15 @@ class Design:
             if my + 2.0 > inner_l:
                 add(_("MCU {mcu} needs {needed:.1f} mm front-to-back under the sensor but the inside is {inside:.1f} mm").format(
                     mcu=m.name, needed=my + 2.0, inside=inner_l), pad + (my + 2.0 - inner_l) / 2)
+        deficit = self.mcu_fit_deficit()
+        if deficit > 0.01:
+            add(_("MCU {mcu} mount needs more clearance from the walls, sensor or lid posts").format(mcu=m.name),
+                pad + deficit + 0.25)
+        if self.deck.palm_length > 0 and self.deck.palm_attachment == "anchored":
+            if self.deck.palm_length < 18:
+                probs.append({"message": _("anchored palm rest needs at least 18 mm length"), "fix": {"palm": 18.0}})
+            if t.floor < 2.5:
+                probs.append({"message": _("anchored palm rest needs at least 2.5 mm floor thickness"), "fix": {"floor": 2.5}})
         # cup scoops (dome / block) must stay above the ball-support pockets
         cup = self.cup
         if cup.scoop_axes:
@@ -682,49 +697,55 @@ class Design:
     # ---- world frame Z levels ----
     @property
     def z_floor_top_nobat(self) -> float:
-        z0 = self.z_pcb_face
-        t = self.tray
-        needs: list[tuple[tuple[float, float], float]] = []
-        for k in range(8):   # sensor PCB + header
-            a = math.radians(45 * k)
-            needs.append(((self.pcb.r * math.cos(a), self.pcb.r * math.sin(a)),
-                          self.pcb.thickness + self.pcb.header_height + t.clearance))
-        if self.switches.count:
-            dsw = self.switches.depth_below_lid(self.carrier.thickness) + t.clearance
-            s = max(self.switches.type.size_in, self.switches.size_across) / 2
-            for x, y, _ang in self.switch_positions():
-                for sx in (-1, 1):
-                    for sy in (-1, 1):
-                        needs.append(((x + sx * s, y + sy * s), dsw))
-        if t.mcu_place == "behind":
-            hw = self.mcu_xy_size[0] / 2
-            stack = self.mcu_stack + self.holder_over_mcu()
-            for y in (self.bay_y0, self.bay_y0 + self.bay_depth):
-                for x in (-hw, hw):
-                    needs.append(((x, y), stack))
-        return min(self.deck_to_world((x, y, z0))[2] - depth for (x, y), depth in needs)
+        """Floor reference before the battery / under-sensor stack allowance."""
+        return self.z_floor_top + self.battery.extra_height + (self.mcu_stack if self.tray.mcu_place == "under" else 0)
 
-    def holder_over_mcu(self) -> float:
-        """Extra depth the MCU bay needs when a tile's switch holder hangs above the board."""
+    def holder_over_mcu(self, center=None) -> float:
+        """Extra depth where a tile holder overlaps the horizontal MCU."""
         if not self.switches.is_tiles or self.tray.mcu_place != "behind":
             return 0.0
         from .tiles import holder_boxes
         mx, my = self.mcu_xy_size
-        cxm, cym = self.mcu_center()
-        bx0, bx1, by0, by1 = cxm - mx / 2, cxm + mx / 2, cym - my / 2, cym + my / 2
+        cxm, cym = self.mcu_center() if center is None else center
+        z = self.z_pcb_face - self.switches.depth_below_lid(self.carrier.thickness)
+        corners = [self.world_to_deck((cxm + x, cym + y, z)) for x in (-mx / 2, mx / 2) for y in (-my / 2, my / 2)]
         for x0, x1, y0, y1 in holder_boxes(self):
-            if x0 < bx1 and x1 > bx0 and y0 < by1 and y1 > by0:
+            if (x0 < max(p[0] for p in corners) and x1 > min(p[0] for p in corners)
+                    and y0 < max(p[1] for p in corners) and y1 > min(p[1] for p in corners)):
                 return self.switches.depth_below_lid(self.carrier.thickness) + self.tray.clearance
         return 0.0
 
     @property
     def z_floor_top(self) -> float:
-        """World Z of the tray floor's inside face. A battery (and an MCU
-        placed under the sensor) lowers it by exactly its own height."""
-        z = self.z_floor_top_nobat - self.battery.extra_height
-        if self.tray.mcu_place == "under":
-            z -= self.mcu_stack
-        return z
+        """Solve the floor and wall-relative MCU placement together without recursion."""
+        t = self.tray
+        needs = []
+        for k in range(8):
+            a = math.radians(45 * k)
+            needs.append((self.pcb.r * math.cos(a), self.pcb.r * math.sin(a),
+                          self.pcb.thickness + self.pcb.header_height + t.clearance))
+        if self.switches.count:
+            depth = self.switches.depth_below_lid(self.carrier.thickness) + t.clearance
+            radius = max(self.switches.type.size_in, self.switches.size_across) / 2
+            for x, y, _ in self.switch_positions():
+                for dx in (-radius, radius):
+                    for dy in (-radius, radius):
+                        needs.append((x + dx, y + dy, depth))
+        allowance = self.battery.extra_height + (self.mcu_stack if t.mcu_place == "under" else 0)
+        floor = min(self.deck_to_world((x, y, self.z_pcb_face))[2] - depth for x, y, depth in needs) - allowance
+        # A horizontal PCB under a sloping lid may need a lower floor. Moving
+        # the floor also changes the wall position; converge monotonically.
+        for _ in range(40):
+            cx, cy = self.mcu_center(floor)
+            sx, sy = self.mcu_xy_size
+            extra = self.holder_over_mcu((cx, cy))
+            top = floor + self.mcu_standoff_h + t.mcu.thickness + max(t.mcu.component_height, self.usb_height + self.usb_z_offset) + t.clearance + extra
+            over = max(self.world_to_deck((cx + dx, cy + dy, top))[2] - self.z_pcb_face
+                       for dx in (-sx / 2, sx / 2) for dy in (-sy / 2, sy / 2))
+            if over <= 1e-7:
+                break
+            floor -= over / self.world_to_deck((0, 0, 1))[2] + 1e-6
+        return floor
 
     @property
     def mcu_standoff_h(self) -> float:
@@ -739,19 +760,89 @@ class Design:
         return self.z_floor_top - self.tray.floor
 
     # ---- world-frame floor positions ----
-    def mcu_center(self) -> tuple[float, float]:
-        """World XY of the board centre. The USB end is parked 1 mm from its wall."""
+    @property
+    def usb_kind(self) -> str:
+        return self.tray.mcu.usb_type if self.tray.usb_type == "auto" else self.tray.usb_type
+
+    @property
+    def usb_width(self) -> float:
+        if self.tray.usb_type == "auto" or self.usb_kind == self.tray.mcu.usb_type:
+            return self.tray.mcu.usb_width
+        return 8.0 if self.usb_kind == "micro-usb" else 9.0
+
+    @property
+    def usb_height(self) -> float:
+        if self.tray.usb_type == "auto" or self.usb_kind == self.tray.mcu.usb_type:
+            return self.tray.mcu.usb_height
+        return 2.8 if self.usb_kind == "micro-usb" else 3.3
+
+    @property
+    def usb_z_offset(self) -> float:
+        return self.tray.mcu.usb_z_offset if self.usb_kind == self.tray.mcu.usb_type else 0.0
+
+    def mcu_mount_bounds(self):
+        """Local along/across bounds of PCB and supports; USB end stays open."""
+        t, m = self.tray, self.tray.mcu
+        if m.holes:
+            r = t.standoff_dia / 2
+            return (min(-m.length / 2, min(a - r for a, b in m.holes)),
+                    max(m.length / 2, max(a + r for a, b in m.holes)),
+                    max(m.width / 2, max(abs(b) + r for a, b in m.holes)))
+        extra = t.pocket_clear + 1.5
+        return -m.length / 2 - extra, m.length / 2, m.width / 2 + extra
+
+    def mcu_center(self, floor_z=None) -> tuple[float, float]:
+        """Park PCB/supports 0.3 mm from the actual sloping inside USB wall."""
+        t, m = self.tray, self.tray.mcu
+        floor = self.z_floor_top if floor_z is None else floor_z
+        lo, hi, across = self.mcu_mount_bounds()
+        x, y = (0.0, 0.0) if t.usb_exit == "back" else (0.0, self.bay_y0 + self.mcu_xy_size[1] / 2 if t.mcu_place == "behind" else 0.0)
+        axis = 1 if t.usb_exit == "back" else 0
+        direction = (0, 1, 0) if axis == 1 else (t.usb_side, 0, 0)
+        sign = 1 if axis == 1 else t.usb_side
+        limit = (self.back_length if axis == 1 else self.half_width) - t.wall - t.mcu_wall_clear
+        height = self.mcu_standoff_h + m.thickness + (0 if m.holes else 1)
+        points = []
+        for a in (lo, hi):
+            for b in (-across, across):
+                for z in (floor, floor + height):
+                    points.append((x - b, y + a, z) if axis == 1 else (x + t.usb_side * a, y + t.usb_side * b, z))
+        farthest = max(sign * self.world_to_deck(p)[axis] for p in points)
+        rate = sign * self.world_to_deck(direction)[axis]
+        travel = (limit - farthest) / rate
+        return x + direction[0] * travel, y + direction[1] * travel
+
+    def mcu_mount_corners(self, floor_z=None):
+        """World corners enclosing the PCB and its printed supports."""
+        floor = self.z_floor_top if floor_z is None else floor_z
+        x, y = self.mcu_center(floor)
+        lo, hi, across = self.mcu_mount_bounds()
+        height = self.mcu_standoff_h + self.tray.mcu.thickness + (0 if self.tray.mcu.holes else 1)
+        return [(x - b, y + a, z) if self.tray.usb_exit == "back" else
+                (x + self.tray.usb_side * a, y + self.tray.usb_side * b, z)
+                for a in (lo, hi) for b in (-across, across) for z in (floor, floor + height)]
+
+    def mcu_fit_deficit(self) -> float:
+        """Conservative clearance checks in the same frames as the generated parts."""
         t = self.tray
-        sx, sy = self.mcu_xy_size
-        if t.usb_exit == "back":
-            x = 0.0
-            y = self.back_length - t.wall - 1.0 - sy / 2
-            if t.mcu_place == "behind" and self.bay_y0 + sy / 2 > y:
-                y = self.bay_y0 + sy / 2
-            return x, y
-        x = t.usb_side * (self.inner_half_width - 1.0 - sx / 2)
-        y = self.bay_y0 + sy / 2 if t.mcu_place == "behind" else 0.0
-        return x, y
+        corners = self.mcu_mount_corners()
+        deck = [self.world_to_deck(p) for p in corners]
+        w, l, cx, cy = self.footprint
+        hx, hy = w / 2 - t.wall, l / 2 - t.wall
+        r = max(self.carrier.corner_r - t.wall, 1)
+        deficit = 0.0
+        for x, y, z in deck:
+            qx, qy = abs(x - cx) - (hx - r), abs(y - cy) - (hy - r)
+            distance = math.hypot(max(qx, 0), max(qy, 0)) + min(max(qx, qy), 0) - r
+            deficit = max(deficit, distance + t.mcu_wall_clear)
+        x0, x1 = min(p[0] for p in deck), max(p[0] for p in deck)
+        y0, y1 = min(p[1] for p in deck), max(p[1] for p in deck)
+        for x, y in self.lid_screw_points():
+            distance = math.hypot(max(x0 - x, x - x1, 0), max(y0 - y, y - y1, 0))
+            deficit = max(deficit, self.post_r + t.mcu_wall_clear - distance)
+        if t.mcu_place == "behind":
+            deficit = max(deficit, self.bay_y0 - min(p[1] for p in corners))
+        return deficit
 
     def battery_center(self) -> tuple[float, float]:
         b = self.battery
@@ -805,7 +896,7 @@ class Design:
     # ---- palm rest (separate part, deck frame outline) ----
     @property
     def palm_y_range(self) -> tuple[float, float]:
-        y1 = -self.half_length - 0.5          # 0.5 mm gap to the body
+        y1 = -self.front_length - (0.0 if self.deck.palm_attachment == "fused" else 0.5)
         return y1 - self.deck.palm_length, y1
 
     def bom(self) -> list[dict]:
@@ -868,7 +959,7 @@ class Design:
             _("cup {shape}, skirt Ø{skirt:.1f}   ball centre {h:.2f} mm above PCB front").format(
                 shape=self.cup.shape, skirt=self.skirt_dia, h=self.lens.ball_above_pcb),
             _("deck tilt/tent                    : {tilt}° / {tent}°").format(tilt=self.deck.tilt_deg, tent=self.deck.tent_deg)
-            + (_(", separate palm rest {l:g} mm").format(l=self.deck.palm_length) if self.deck.palm_length else ""),
+            + (_(", palm rest {l:g} mm ({attachment})").format(l=self.deck.palm_length, attachment=_(self.deck.palm_attachment)) if self.deck.palm_length else ""),
             _("body ({centred}, padding {pad:g}) : {w:.1f} x {l:.1f} mm; free behind sensor {free:.1f} mm, MCU needs {need:.1f}").format(
                 centred=centred, pad=self.carrier.padding, w=w, l=l, free=self.back_space, need=self.bay_depth),
             _("height: floor -> ball top / back  : {a:.1f} / {b:.1f} mm  ({breakdown})").format(

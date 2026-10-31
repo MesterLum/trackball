@@ -5,6 +5,7 @@
     TRACKBALL_FN_FINAL     $fn for downloadable / printable STLs (default 96)
     TRACKBALL_WORKERS      parallel OpenSCAD processes (default min(3, cpu count))
     TRACKBALL_AUTO_RENDER  1 = render previews as you edit, 0 = only on request (default 1)
+    TRACKBALL_DEV_RELOAD   1 = local development browser refresh (default 0)
     TRACKBALL_PRESETS      directory with prebuilt preset bundles (default <OUT>/../presets)
 """
 from __future__ import annotations
@@ -30,6 +31,7 @@ class Settings:
     fn_final: int = field(default_factory=lambda: _int("TRACKBALL_FN_FINAL", 96))
     workers: int = field(default_factory=lambda: _int("TRACKBALL_WORKERS", min(3, os.cpu_count() or 1)))
     auto_render: bool = field(default_factory=lambda: os.environ.get("TRACKBALL_AUTO_RENDER", "1") not in ("0", "false", "no"))
+    dev_reload: bool = field(default_factory=lambda: os.environ.get("TRACKBALL_DEV_RELOAD", "0") == "1")
     presets_dir: Path = field(default_factory=lambda: Path(os.environ.get(
         "TRACKBALL_PRESETS", Path(os.environ.get("TRACKBALL_OUT", ROOT / "out" / "web")).parent / "presets")))
 

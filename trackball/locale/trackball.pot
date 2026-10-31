@@ -947,3 +947,36 @@ msgstr ""
 msgid "{switch} switches"
 msgstr ""
 
+
+msgid "USB connector"
+msgstr ""
+
+msgid "socket shape: auto uses the controller default; override for board variants"
+msgstr ""
+
+msgid "MCU {mcu} mount needs more clearance from the walls, sensor or lid posts"
+msgstr ""
+
+msgid "separate"
+msgstr ""
+
+msgid "anchored"
+msgstr ""
+
+msgid "fused"
+msgstr ""
+
+msgid "palm-rest attachment"
+msgstr ""
+
+msgid "separate, removable with alignment tongues and an underside key, or fused to the tray"
+msgstr ""
+
+msgid "anchored palm rest needs at least 18 mm length"
+msgstr ""
+
+msgid "anchored palm rest needs at least 2.5 mm floor thickness"
+msgstr ""
+
+msgid ", palm rest {l:g} mm ({attachment})"
+msgstr ""

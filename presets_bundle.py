@@ -44,7 +44,9 @@ def bom_markdown(title: str, cmd: str, bom: list[dict], summary: str) -> str:
     lines = [f"# {title}", "", "```", cmd, "```", "", "## Parts to buy", "", "| qty | item | note |", "|---|---|---|"]
     lines += [f"| {b['qty']} | {b['item']} | {b['note']} |" for b in bom]
     lines += ["", "## Printed parts", "", "- cup.stl (deck frame, print as is)", "- carrier.stl (lid, print as is)",
-              "- tray.stl (floor down)", "- palmrest.stl (only when the preset has a palm rest)", "",
+              "- tray.stl (floor down; includes the palm rest in fused mode)",
+              "- palmrest.stl (separate or anchored palm rest only)",
+              "- palm_key.stl (anchored mode only; press into the underside after joining)", "",
               "## Dimensions", "", "```", summary, "```", "",
               "Assembly order and the numbers that still need measuring are in the project README."]
     return "\n".join(lines) + "\n"

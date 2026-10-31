@@ -5,6 +5,7 @@ import hashlib
 import json
 import shlex
 from dataclasses import dataclass
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -14,10 +15,21 @@ from trackball import options
 from trackball.carrier import carrier
 from trackball.config import Design
 from trackball.cup import cup
-from trackball.palmrest import palmrest
+from trackball.palmrest import palm_key, palmrest
 from trackball.tray import tray
 
-PART_BUILDERS = {"cup": cup, "carrier": carrier, "tray": tray, "palmrest": palmrest}
+PART_BUILDERS = {"cup": cup, "carrier": carrier, "tray": tray, "palmrest": palmrest, "palm_key": palm_key}
+
+
+@lru_cache(maxsize=1)
+def geometry_revision() -> str:
+    """Invalidate saved designs after a CAD source change / server reload."""
+    digest = hashlib.sha256()
+    root = Path(options.__file__).resolve().parent
+    for path in sorted(root.rglob("*.py")):
+        digest.update(path.relative_to(root).as_posix().encode())
+        digest.update(path.read_bytes())
+    return digest.hexdigest()
 
 
 @dataclass
@@ -55,14 +67,17 @@ class DesignService:
     @staticmethod
     def design_id(values: dict[str, Any]) -> str:
         v = options.coerce(values)
-        digest = hashlib.sha1(json.dumps(v, sort_keys=True).encode()).hexdigest()[:8]
+        digest = hashlib.sha1((geometry_revision() + json.dumps(v, sort_keys=True)).encode()).hexdigest()[:8]
         return f"{options.variant_name(v)}-{digest}"
 
     def load(self, did: str) -> DesignResult | None:
         p = self.out / did / "design.json"
         if not p.exists():
             return None
-        return self.prepare(json.loads(p.read_text()), write=False)
+        res = self.prepare(json.loads(p.read_text()), write=False)
+        # Older downloads still refer to their original generated files.
+        res.id, res.dir = did, p.parent
+        return res
 
     def prepare(self, values: dict[str, Any], write: bool = True, quality: str | None = None,
                 autofit: bool = False) -> DesignResult:
@@ -94,12 +109,13 @@ class DesignService:
     def _write_parts(self, res: DesignResult) -> None:
         d = res.design
         for name, build in PART_BUILDERS.items():
-            if name == "palmrest" and d.deck.palm_length <= 0:
-                continue
             scad = res.dir / f"{name}.scad"
             if scad.exists():
                 continue
-            text = scad_render(build(d))
+            shape = build(d)
+            if shape is None:
+                continue
+            text = scad_render(shape)
             scad.write_text(text)
             (res.dir / f"{name}.hash").write_text(hashlib.sha1(text.encode()).hexdigest()[:12])
 

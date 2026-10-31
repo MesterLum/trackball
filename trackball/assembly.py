@@ -9,7 +9,7 @@ from .carrier import carrier
 from .common import rounded_rect, to_world, zcyl
 from .config import Design
 from .cup import cup, supports_preview
-from .palmrest import palmrest
+from .palmrest import palm_key, palmrest
 from .tray import battery_preview, mcu_preview, tray
 
 
@@ -98,6 +98,9 @@ def assembly(d: Design, explode: float = 0.0):
     pr = palmrest(d)
     if pr is not None:
         parts.append(pr.color("peru"))
+    key = palm_key(d)
+    if key is not None:
+        parts.append(key.color("teal"))
     return union()(*parts)
 
 

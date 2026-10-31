@@ -17,7 +17,8 @@ from .i18n import N_, _
 from .supports import SUPPORTS
 
 # words the summary translates at runtime (keeps them in the catalog)
-_DYNAMIC_WORDS = (N_("front"), N_("left"), N_("right"), N_("sides"), N_("tiles"), N_("behind"), N_("under"))
+_DYNAMIC_WORDS = (N_("front"), N_("left"), N_("right"), N_("sides"), N_("tiles"), N_("behind"), N_("under"),
+                  N_("separate"), N_("anchored"), N_("fused"))
 
 BATTERY_RE = re.compile(r"^\s*(\d+(?:\.\d+)?)\s*[xX×]\s*(\d+(?:\.\d+)?)\s*[xX×]\s*(\d+(?:\.\d+)?)\s*$")
 
@@ -104,6 +105,8 @@ OPTIONS: tuple[Option, ...] = (
     Option("mcu_place", "choice", "behind", N_("behind the sensor, or under it (taller tray, smaller body)"), N_("Electronics"),
            choices=("behind", "under"), label=N_("MCU placement")),
     Option("usb", "choice", "right", N_("which wall the USB cable leaves"), N_("Electronics"), choices=("right", "left", "back"), label=N_("USB exit")),
+    Option("usb_type", "choice", "auto", N_("socket shape: auto uses the controller default; override for board variants"),
+           N_("Electronics"), choices=("auto", "micro-usb", "usb-c"), label=N_("USB connector")),
     Option("battery", "str", "", N_("LiPo under the sensor as LxWxT in mm, e.g. 50x34x5 (empty = none)"), N_("Electronics"),
            pattern=BATTERY_RE.pattern, label=N_("battery")),
     # ---- body
@@ -119,6 +122,8 @@ OPTIONS: tuple[Option, ...] = (
     Option("tent", "float", 0.0, N_("deck tenting; the left (-X) side rises"), N_("Deck"), min=-20, max=20, step=1, unit="°", label=N_("tent")),
     Option("palm", "float", 0.0, N_("separate palm rest of this length in front (0 = none)"), N_("Deck"), min=0, max=100, step=5, unit="mm",
            label=N_("palm rest length")),
+    Option("palm_attachment", "choice", "separate", N_("separate, removable with alignment tongues and an underside key, or fused to the tray"),
+           N_("Deck"), choices=("separate", "anchored", "fused"), label=N_("palm-rest attachment")),
     Option("palm_drop", "float", 2.0, N_("how far the palm rest top sits below the deck"), N_("Deck"), min=0, max=15, step=0.5, unit="mm",
            label=N_("palm rest drop")),
     Option("palm_pad", "float", 0.0, N_("depth of the recess on the palm rest for a leather/foam pad (0 = none)"), N_("Deck"),
@@ -188,14 +193,14 @@ def make_design(values: dict[str, Any]) -> Design:
                 round=v["cup_round"], saddle_r=v["cup_scoop"], peak=v["cup_peak"]),
         pcb=dataclasses.replace(SENSOR_PCBS[v["sensor_pcb"]], header_height=v["header_height"]),
         carrier=Carrier(padding=v["padding"], edge_round=v["edge_round"]),
-        tray=Tray(mcu=MCUS[v["mcu"]], mcu_place=v["mcu_place"],
+        tray=Tray(mcu=MCUS[v["mcu"]], mcu_place=v["mcu_place"], usb_type=v["usb_type"],
                   usb_exit="back" if v["usb"] == "back" else "side",
                   usb_side=-1 if v["usb"] == "left" else 1,
                   wall=v["wall"], floor=v["floor"], feet_dia=v["feet"]),
         switches=Switches(type=SWITCH_TYPES[v["switch_type"]], count=v["switches"], placement=v["buttons"],
                           keycap_u=v["keycap_u"], gap=v["switch_gap"], mirror=not v["no_mirror"],
                           tile_gap=v["tile_gap"], tile_frame=v["tile_frame"]),
-        deck=Deck(tilt_deg=v["tilt"], tent_deg=v["tent"], palm_length=v["palm"], palm_drop=v["palm_drop"],
+        deck=Deck(tilt_deg=v["tilt"], tent_deg=v["tent"], palm_length=v["palm"], palm_attachment=v["palm_attachment"], palm_drop=v["palm_drop"],
                   palm_round=v["edge_round"], palm_pad_recess=v["palm_pad"]),
         battery=parse_battery(v["battery"]),
         fn=v["fn"],
@@ -264,6 +269,8 @@ def variant_name(values: dict[str, Any]) -> str:
         bits.append("under")
     if v["usb"] != "right":
         bits.append(f"usb{v['usb']}")
+    if v["usb_type"] != "auto":
+        bits.append(v["usb_type"])
     if v["header_height"] != BY_NAME["header_height"].default:
         bits.append(f"hdr{v['header_height']:g}")
     if v["switches"] and v["buttons"] == "tiles":
@@ -276,6 +283,8 @@ def variant_name(values: dict[str, Any]) -> str:
         bits.append(f"tilt{v['tilt']:g}" + (f"tent{v['tent']:g}" if v["tent"] else ""))
     if v["palm"]:
         bits.append(f"palm{v['palm']:g}")
+        if v["palm_attachment"] != "separate":
+            bits.append(v["palm_attachment"])
     if v["battery"]:
         bits.append("bat" + v["battery"].lower().replace(" ", ""))
     return "_".join(bits)

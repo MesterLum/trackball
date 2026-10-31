@@ -13,7 +13,7 @@ document.addEventListener('alpine:init', () => {
     parts: [],              // PartStatus[]
     rendering: false,
     explode: 0,
-    visible: { cup: true, carrier: true, tray: true, palmrest: true, ball: true },
+    visible: { cup: true, carrier: true, tray: true, palmrest: true, palm_key: true, ball: true },
     toast: '',
     toastAction: null,      // {label, run} shown as a button in the toast
     _past: [], _future: [], _committed: '',   // undo / redo stacks of cfg snapshots (JSON)

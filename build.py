@@ -34,7 +34,7 @@ from trackball.config import MCUS, SENSOR_PCBS, SWITCH_TYPES, Design
 from trackball.i18n import from_environment, set_language
 from trackball.options import OPTIONS, add_to_parser
 from trackball.cup import cup
-from trackball.palmrest import palmrest
+from trackball.palmrest import palm_key, palmrest
 from trackball.supports import SUPPORTS
 from trackball.tray import tray
 
@@ -53,6 +53,7 @@ VIEWS: dict[str, tuple[str, list[tuple[str, float, float, float]]]] = {
                           [("top", 55, 0, 25), ("bottom", 235, 0, 25)]),
     "tray": ("Print: base tray", [("top", 55, 0, 25), ("bottom", 235, 0, 25)]),
     "tray_placement": ("Tray with the MCU on its standoffs", [("top", 55, 0, 25), ("usb-side", 60, 0, 60)]),
+    "palm_key": ("Print: underside palm-rest retaining key", [("top", 55, 0, 25)]),
     "palmrest": ("Print: separate palm rest (only with --palm)", [("top", 55, 0, 25), ("bottom", 235, 0, 25)]),
 }
 
@@ -234,15 +235,17 @@ def main() -> int:
         "carrier_placement": carrier_placement(d),
         "tray_placement": tray_placement(d),
     }
-    if d.deck.palm_length > 0:
-        parts["palmrest"] = palmrest(d)
+    for name, builder in (("palmrest", palmrest), ("palm_key", palm_key)):
+        shape = builder(d)
+        if shape is not None:
+            parts[name] = shape
     for name, obj in parts.items():
         path = out / f"{name}.scad"
         obj.save_as_scad(str(path))
         print("wrote", path.relative_to(Path.cwd()) if path.is_relative_to(Path.cwd()) else path)
 
     if args.stl:
-        for name in ("cup", "carrier", "tray"):
+        for name in (n for n in ("cup", "carrier", "tray", "palmrest", "palm_key") if n in parts):
             ok = render_stl(out / f"{name}.scad", out / f"{name}.stl")
             print("  ->", "ok" if ok else "FAILED", out / f"{name}.stl")
 

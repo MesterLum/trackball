@@ -63,7 +63,7 @@
         <template x-for="g in groups" :key="g.name">
           <div x-show="tab === g.key" class="space-y-4" x-transition.opacity.duration.150ms>
             <template x-for="o in g.options" :key="o.name">
-              <div class="opt" :class="{'opt-changed': !isDefault(o.name), 'opt-error': errors[o.name]}">
+              <div class="opt" x-show="o.name !== 'palm_attachment' || Number(cfg.palm) > 0" :class="{'opt-changed': !isDefault(o.name), 'opt-error': errors[o.name]}">
 
                 <!-- numeric: label + value, slider + stepper -->
                 <template x-if="o.kind === 'float' || o.kind === 'int'">
@@ -92,7 +92,7 @@
                     <span class="font-medium text-sm" x-text="o.label"></span>
                     <select class="select select-bordered select-sm mt-1" x-model="cfg[o.name]" @change="update()"
                             x-effect="$el.value = cfg[o.name]">
-                      <template x-for="c in o.choices" :key="c"><option :value="c" x-text="c" :selected="String(c) === String(cfg[o.name])"></option></template>
+                      <template x-for="c in o.choices" :key="c"><option :value="c" x-text="o.name === 'palm_attachment' ? t(c) : c" :selected="String(c) === String(cfg[o.name])"></option></template>
                     </select>
                     <p class="text-xs opacity-60 mt-1" x-text="o.help"></p>
                   </label>
@@ -308,6 +308,7 @@
 
 <script type="module" src="/static/viewer.js"></script>
 <script defer src="/static/app.js"></script>
+{% if dev_reload %}<script defer src="/static/dev-reload.js"></script>{% endif %}
 <script defer src="https://unpkg.com/alpinejs@3.14.1/dist/cdn.min.js"></script>
 </body>
 </html>

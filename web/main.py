@@ -49,6 +49,10 @@ def create_app(out_dir: Path | None = None, settings: Settings | None = None) ->
     app.include_router(api.router)
     app.include_router(pages.router)
 
+    if settings.dev_reload:
+        from web.dev_reload import install_dev_reload
+        install_dev_reload(app, ROOT)
+
     @app.exception_handler(RequestValidationError)
     async def on_validation_error(request: Request, exc: RequestValidationError):
         """422 with a per-field map in addition to FastAPI's detail list."""
