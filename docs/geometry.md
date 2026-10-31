@@ -222,11 +222,15 @@ a friction pocket), USB size, tallest component, BOOTSEL position.
    bars and fix with a drop of glue.
 4. Screw the cup onto the carrier (4 screws from below).
 5. Mount the MCU in the tray, wire the sensor header
-   (GND, MISO, SCLK, MOSI, NCS, 5V) to SPI pins, route the USB out the
-   back cutout. Without mounting holes, seat the board USB-first, then
-   screw the clamp bar (printed upside down, flat top on the bed) over its far end. Drop the battery in its frame, wires toward the MCU.
-6. Drop the carrier onto the tray and fix the 4 corner screws.
-7. Drop the ball in.
+   (GND, MISO, SCLK, MOSI, NCS, 5V) to SPI pins, route the USB out its
+   wall opening. Without mounting holes, seat the board USB-first, then
+   screw the clamp bar (printed upside down, flat top on the bed) over its far end.
+6. Wireless: drop the battery in its frame, wires toward the MCU, and fit the
+   power switch: drop a slide switch into its holder and slide it outward into
+   the wall recess (a dab of glue holds it), snap a rocker in from outside, or fix
+   a toggle with its nut.
+7. Drop the carrier onto the tray and fix the 4 corner screws.
+8. Drop the ball in.
 
 ## Numbers to verify before trusting a print
 

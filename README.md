@@ -1,156 +1,125 @@
 # Ridekay Trackball
 
-Customize a printable trackball around your ball, sensor PCB, controller and
-switches. Preview the model, check its fit, and download SCAD or STL bundles.
-MCU supports sit close to the USB wall; the opening follows the selected
-Micro-USB or USB-C connector. Palm rests can be separate, anchored, or fused
-into a tray with straight sides through the joint.
+**Design a 3D-printable trackball around your own ball, sensor, controller and buttons, right in your browser.**
 
-The application runs entirely in the browser: Svelte 5, TypeScript, Tailwind
-CSS 4, daisyUI 5 and Three.js. OpenSCAD WebAssembly renders in a dedicated worker.
-The production output is a static site suitable for GitHub Pages.
+**[Open the configurator → trackball.ridekay.com](https://trackball.ridekay.com)**
 
-## Development
+![The configurator: settings on the left, a 3D preview of the trackball with a palm rest, measurements and download buttons on the right](docs/images/configurator.png)
 
-Use **Node.js 24 LTS** and **Yarn 4**. Nix pins the toolchain; direnv activates it
-when you enter the directory:
+Pick a ball size, how it rolls, a controller, buttons, a battery and a palm rest. The
+configurator checks that everything fits, adjusts the body when it has to, and gives you
+ready-to-print STL files plus a parts list. Nothing is uploaded: the models are generated
+on your own computer.
 
-```sh
-direnv allow
-just setup
-just dev
-```
+## Features
 
-Without direnv, enter `nix develop` first. If Nix is unavailable, install Node
-24, enable the Yarn version declared in `package.json` using Corepack, and
-install [just](https://just.systems/).
+- **Live 3D preview** of every printed part, with exploded view, part toggles and PNG
+  snapshots.
+- **Fit checks with explanations.** Auto fit makes the smallest change that works (for
+  example a few millimetres more padding) and tells you what it changed and why.
+- **Ball and cup:** 20–60 mm balls; BTUs, ceramic balls or bearing rollers; cone, dome or
+  block cups with adjustable openings.
+- **Buttons:** Choc, MX or flat microswitch paddles in a row (front, left, right or both
+  sides), or large sculpted tiles around the ball.
+- **Electronics:** Raspberry Pi Pico family, RP2040-Zero, XIAO, nice!nano, Supermini or Pro
+  Micro, with USB-C or Micro-USB openings on any wall. Boards without mounting holes are
+  held by a screwed clamp bar.
+- **Wireless builds:** a LiPo pocket under the sensor and a power switch (slide, rocker or
+  toggle) on the wall of your choice, placed clear of the USB plug and everything inside.
+- **Ergonomics:** tilt, tent and a palm rest that is separate, anchored with a key, or fused
+  to the base.
+- **21 presets** to start from, shareable links, undo/redo, English and Spanish.
 
-```sh
-just          # list common commands
-just setup    # install locked dependencies and verified OpenSCAD WASM
-just hooks    # install git hooks: format + lint on commit, types + tests on push
-just dev      # Svelte development server with automatic updates
-just check    # TypeScript and Svelte diagnostics
-just lint     # ESLint for TypeScript, Svelte and scripts
-just test     # calculation and rendered-solid regression tests
-just coverage # the same tests with a coverage report (fails below 95%)
-just build    # produce dist/
-just preview  # serve the production build locally
-just browsers # install Chromium and Linux browser dependencies
-just presets  # render the preset gallery thumbnails from the built site
-just e2e      # test the production site in Chromium
-just ci       # same setup and validation used by GitHub Actions
-```
+## Build your own
 
-The first setup downloads the pinned runtime from official OpenSCAD archives
-and verifies SHA-256 checksums. Subsequent runs reuse the local cache.
-See [development environment details](docs/development.md).
+### 1. Configure
 
-## Shared calculations and geometry
+Open [the configurator](https://trackball.ridekay.com), start from a preset or the
+defaults, and adjust. When the status says **Ready**, use **Share link** to keep your
+settings and **Download STLs** to get the printable parts. The download also contains your
+settings, a dimensions summary and the parts list.
 
-| Location | Responsibility |
-| --- | --- |
-| `packages/core/src/config/` | Option registry, defaults, coercion, auto fit and presets |
-| `packages/core/src/calculations/` | Dimensions, board envelopes, positioning, validation and BOM |
-| `packages/core/src/geometry/` | Parametric geometry for each part and assembly |
-| `packages/core/src/scad/` | Immutable OpenSCAD syntax tree and serializer |
-| `packages/renderer-browser/` | WASM worker, cancellation, progress and bounded STL cache |
-| `apps/web/` | Svelte controls, Three.js viewer, sharing and downloads |
-| `tests/fixtures/` | Dimension and SCAD references from Python checkpoint `1ed1441`; rows marked `rebaselined` follow deliberate changes |
+### 2. Buy the parts
 
-`@trackball/core` builds as an independent ESM package with TypeScript
-declarations. It imports no DOM, Svelte or browser renderer. A future CLI can
-reuse its calculations and SCAD output and choose its own rendering adapter:
+The **Parts to buy** list under the preview is generated for your exact design. A typical
+build needs:
 
-```ts
-import { autofit, createDesign, generateParts } from '@trackball/core';
+- a trackball (34 mm by default) and its supports (BTUs, ceramic balls or bearings);
+- a PMW3360 sensor board (designed around the
+  [Bastard Keyboards](https://github.com/Bastardkb) Charybdis sensor PCB) with its lens;
+- a controller board, plus switches and keycaps if you add buttons;
+- M3 heat-set inserts (Ø4 × 5 mm), M3 screws, and rubber feet;
+- optionally a LiPo battery and a power switch for a wireless controller.
 
-const fitted = autofit({ ball: 44, mcu: 'xiao', usb_type: 'usb-c' });
-const design = createDesign(fitted.values);
-const problems = design.validate();
-if (problems.length) throw new Error(problems.join('\n'));
-for (const part of generateParts(design)) {
-  console.log(part.name, part.scad);
-}
-```
+### 3. Print
 
-The browser uses a separate WASM renderer. Tests use the official Node WASM
-build to compare old and new solids; no system OpenSCAD installation is needed.
-The previous Python application remains available in Git at `1ed1441`.
+- Print each part in the orientation it is exported: the cup and lid flat, the base and
+  palm rest floor down. Print the controller clamp bar upside down (flat top on the bed).
+- PLA or PETG both work. Print the lid in **PETG** if it has flexing paddles or tiles,
+  and the palm-rest key in PETG.
+- Print a test first: a cup at low curve smoothness checks the press fit of your ball
+  supports; a scrap of wall checks the power-switch opening.
 
-## Using the configurator
+### 4. Assemble
 
-Options are grouped into ball/cup, buttons, electronics, body and deck.
-Auto fit applies the smallest necessary adjustments and displays them.
-Turn it off to inspect fit problems directly. Auto render can also be disabled.
-Undo, redo, presets and shared URLs preserve the configuration.
+1. Press the heat-set inserts: 4 in the cup bottom, 2 in the lid underside, 4 in the base
+   posts.
+2. Press the BTUs into the cup until the flange seats (or fit the ceramic balls or
+   bearings).
+3. Screw the sensor board to the lid underside, lens up through the window. Snap key
+   switches in from the top, or push microswitches into their holders with a drop of glue.
+4. Screw the cup onto the lid (4 screws from below).
+5. Mount the controller in the base and wire the sensor (GND, MISO, SCLK, MOSI, NCS, 5V) to
+   its SPI pins, with the USB connector through its wall opening. Boards without mounting
+   holes: seat the board USB-first, then screw the clamp bar over its far end.
+6. Wireless: drop the battery into its frame and fit the power switch (slide it into its
+   holder and outward into the wall, snap the rocker in, or fix the toggle with its nut).
+7. Put the lid on the base and fix the 4 corner screws. Drop the ball in.
 
-The preview and the STL download use the same curve smoothness (`$fn`, under
-Body), so the download reuses the rendered preview. STL exports include the
-design, summary and BOM.
-SCAD exports also include assembly, section and hardware placement views.
-Cup and carrier export in their flat print frame; the tray and palm rest
-export floor down. A fused rest is part of `tray.stl`; anchored mode includes
-`palm_key.stl`. Controllers without mounting holes add `mcu_clamp.stl`, a bar
-that screws over the board; print it upside down. The viewer supports orbiting, part visibility, exploded views
-and PNG snapshots.
+The [geometry, hardware and assembly notes](docs/geometry.md) explain every dimension and
+option in detail.
 
-Preset thumbnails are not committed: `just presets` renders them with the
-site's own viewer into `apps/web/public/presets/` and `dist/presets/`, and CI
-regenerates them on every build, so they always match the current geometry.
-A preset that no longer fits fails the build.
+### Firmware
 
-English and Spanish messages live in `packages/core/src/es.json`. The language
-selector updates both the controls and calculated messages. A unit test fails
-when a user-facing string has no Spanish entry.
+This project designs the hardware only. Any firmware with PMW3360/PMW3389 support over SPI
+works, for example [QMK](https://qmk.fm) or [ZMK](https://zmk.dev) with a pointing-device
+module; set the pins to match your wiring.
 
-See [geometry, hardware and assembly notes](docs/geometry.md) for dimensional
-assumptions, board references, printing tolerances and assembly instructions.
+## Status: check before you print
 
-## GitHub Pages
+The geometry is tested in software, but some dimensions come from datasheets and community
+models rather than measured parts. Measure yours, or print a small test first:
 
-In repository **Settings → Pages**, select **GitHub Actions** as the source.
-Two workflows share the `just` recipes:
+- sensor lens height and ball distance;
+- BTU size and press fit;
+- D2F microswitch body and plunger;
+- the PMW3389 round module (placeholder numbers);
+- controller BOOT button positions;
+- power-switch openings (SS12D00, KCD11, MTS-102/103);
+- the controller clamp's contact area (adjustable under Electronics).
 
-- **CI** (`.github/workflows/ci.yml`) runs on every pull request in two
-  parallel jobs, both required to merge into `main`: `checks` (formatting,
-  types, unit and geometry tests with at least 95% coverage, report on the run
-  page) and `e2e` (production build, preset thumbnails, browser tests).
-- **Deploy** (`.github/workflows/deploy.yml`) runs only on `main`: it repeats
-  `just ci` on exactly what was merged, then publishes `dist/` to Pages.
+Details are in [Numbers to verify](docs/geometry.md#numbers-to-verify-before-trusting-a-print).
+Measurements from real parts are very welcome; see [Contributing](CONTRIBUTING.md).
 
-`main` accepts changes only through pull requests with both checks green.
+## Contributing
 
-The default URL base is `/<repository>/`, or `/` for a `<owner>.github.io`
-repository. Set the repository variable `PAGES_BASE_PATH` to `/` when using a
-custom domain, or to another explicit base when needed. To check locally:
-
-```sh
-BASE_PATH=/trackball/ just build
-BASE_PATH=/trackball/ just e2e
-BASE_PATH=/trackball/ just preview
-```
-
-Publish the entire `dist/` directory, including the WASM runtime and notices.
-Rendering uses the visitor's CPU and memory. The app cancels superseded work,
-renders parts sequentially in a worker and bounds its in-memory STL cache to
-48 MiB. Large designs or high final detail can still take longer on mobile.
-
-The pinned OpenSCAD runtime is GPL-2.0-or-later; upstream source and license
-links are included with the distributed runtime in `openscad/NOTICE.md`.
+Bug reports, measurements, print reports and code are all welcome. Start with
+[CONTRIBUTING.md](CONTRIBUTING.md); developers will find the setup in
+[docs/development.md](docs/development.md) and the code layout in
+[docs/architecture.md](docs/architecture.md). Please follow the
+[code of conduct](CODE_OF_CONDUCT.md), and report security issues privately as described in
+[SECURITY.md](SECURITY.md).
 
 ## License
 
-Ridekay Trackball is free software: you can redistribute it and/or modify it
-under the terms of the [GNU General Public License](LICENSE), version 3 or (at
-your option) any later version. It is distributed WITHOUT ANY WARRANTY; see the
-license for details.
+Ridekay Trackball is free software: you can redistribute it and/or modify it under the
+terms of the [GNU General Public License](LICENSE), version 3 or (at your option) any later
+version. It is distributed WITHOUT ANY WARRANTY; see the license for details.
 
-The models you generate (SCAD, STL, parts lists) are yours: print, share and
-sell them under any terms you like. The license covers the configurator's
-source code.
+**The models you generate (SCAD, STL, parts lists) are yours:** print, share and sell them
+under any terms you like. The license covers the configurator's source code.
 
-Third-party components keep their own licenses: OpenSCAD (GPL-2.0-or-later)
-and Svelte, three.js, fflate, daisyUI and Tailwind CSS (MIT), and the Archivo
-typeface (SIL Open Font License 1.1). The build collects their notices into
-`THIRD_PARTY_LICENSES.txt` at the root of the deployed site.
+Third-party components keep their own licenses: OpenSCAD (GPL-2.0-or-later), Svelte,
+three.js, fflate, daisyUI and Tailwind CSS (MIT), and the Archivo typeface (SIL Open Font
+License 1.1). The site lists their notices in
+[THIRD_PARTY_LICENSES.txt](https://trackball.ridekay.com/THIRD_PARTY_LICENSES.txt).
