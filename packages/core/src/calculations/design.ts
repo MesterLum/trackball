@@ -13,13 +13,8 @@ import {
   abs,
   min,
   max,
-  sum,
-  any,
-  all,
   round,
   minBy,
-  maxBy,
-  enumerate,
   format,
   formatValue,
   math,
@@ -442,9 +437,6 @@ export class Switches {
   }
   row_half_width(): any {
     return add(mul(sub(this.count, 1) / 2, this.pitch), this.size_across / 2);
-  }
-  reach(skirt_dia: any): any {
-    return add(this.row_distance(skirt_dia), this.type.size_in / 2);
   }
   depth_below_lid(lid_t: any): any {
     let bar_h: any, st: any;

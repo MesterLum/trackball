@@ -31,6 +31,7 @@ just setup    # install locked dependencies and verified OpenSCAD WASM
 just dev      # Svelte development server with automatic updates
 just check    # TypeScript and Svelte diagnostics
 just test     # calculation and rendered-solid regression tests
+just coverage # the same tests with a coverage report (fails below 95%)
 just build    # produce dist/
 just preview  # serve the production build locally
 just browsers # install Chromium and Linux browser dependencies
@@ -107,9 +108,16 @@ assumptions, board references, printing tolerances and assembly instructions.
 ## GitHub Pages
 
 In repository **Settings → Pages**, select **GitHub Actions** as the source.
-The workflow runs `nix develop --command just ci`, builds and tests the site
-under its repository path, and deploys successful main/master builds.
-Pull requests and the migration branch validate without deploying.
+Two workflows share the `just` recipes:
+
+- **CI** (`.github/workflows/ci.yml`) runs on every pull request in two
+  parallel jobs, both required to merge into `main`: `checks` (formatting,
+  types, unit and geometry tests with at least 95% coverage, report on the run
+  page) and `e2e` (production build, preset thumbnails, browser tests).
+- **Deploy** (`.github/workflows/deploy.yml`) runs only on `main`: it repeats
+  `just ci` on exactly what was merged, then publishes `dist/` to Pages.
+
+`main` accepts changes only through pull requests with both checks green.
 
 The default URL base is `/<repository>/`, or `/` for a `<owner>.github.io`
 repository. Set the repository variable `PAGES_BASE_PATH` to `/` when using a

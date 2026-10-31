@@ -1,0 +1,33 @@
+name: Set up toolchain
+description: Nix shell (Node 24, Yarn 4, just), dependency caches and the GitHub Pages base path
+inputs:
+  pages-base:
+    description: Explicit site base path (the PAGES_BASE_PATH repository variable); empty picks one
+    required: false
+    default: ''
+runs:
+  using: composite
+  steps:
+    - uses: cachix/install-nix-action@v31
+    # Yarn packages, the verified OpenSCAD runtime and Corepack live in .cache; Chromium in ms-playwright.
+    - uses: actions/cache@v4
+      with:
+        path: |
+          .cache
+          ~/.cache/ms-playwright
+        key: deps-${{ runner.os }}-${{ hashFiles('yarn.lock', 'package.json', 'scripts/openscad.lock.json') }}
+        restore-keys: deps-${{ runner.os }}-
+    - name: Choose Pages base path
+      shell: bash
+      env:
+        CUSTOM_BASE: ${{ inputs.pages-base }}
+      run: |
+        repo="${GITHUB_REPOSITORY#*/}"
+        if [ -n "$CUSTOM_BASE" ]; then
+          base="$CUSTOM_BASE"
+        elif [ "$repo" = "${GITHUB_REPOSITORY_OWNER}.github.io" ]; then
+          base="/"
+        else
+          base="/$repo/"
+        fi
+        echo "BASE_PATH=$base" >> "$GITHUB_ENV"

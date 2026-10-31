@@ -46,13 +46,14 @@ just wasm     # fetch and verify the pinned OpenSCAD runtime
 just dev      # development server with automatic updates
 just check    # TypeScript and Svelte checks
 just test     # calculation and model regression tests
+just coverage # the same tests with coverage/index.html (fails below 95%)
 just build    # static production build
 just browsers # install Chromium for browser tests
 just presets  # render preset thumbnails into public/ and dist/
 just e2e      # browser rendering and download tests
 just format   # format source files
 just format-check # check formatting without editing files
-just ci       # setup, checks, tests, build, browser setup, thumbnails and browser tests
+just ci       # setup, checks, coverage, build, browser setup, thumbnails and browser tests
 ```
 
 CI runs the same recipes inside `nix develop --command just ci`. Update the
