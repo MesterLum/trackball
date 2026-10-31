@@ -43,6 +43,10 @@ check: versions
 test: wasm
     yarn test
 
+# Run the same tests with a coverage report (coverage/index.html); fails below 95%.
+coverage: wasm
+    yarn test:coverage
+
 # Build the static site for GitHub Pages (or another static host).
 build: wasm
     yarn build
@@ -64,4 +68,4 @@ e2e: build browsers
     yarn test:e2e
 
 # The same validation sequence is used in CI and locally.
-ci: setup format-check check test build browsers presets e2e
+ci: setup format-check check coverage build browsers presets e2e

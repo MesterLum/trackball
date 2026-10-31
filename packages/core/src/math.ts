@@ -33,9 +33,6 @@ export const abs = Math.abs;
 const flattened = (v: any[]) => (v.length === 1 && Array.isArray(v[0]) ? v[0] : v);
 export const min = (...v: any[]) => Math.min(...flattened(v));
 export const max = (...v: any[]) => Math.max(...flattened(v));
-export const sum = (v: number[]) => v.reduce((a, b) => a + b, 0);
-export const any = (v: any[]) => v.some(truth);
-export const all = (v: any[]) => v.every(truth);
 export function round(v: number, digits = 0): number {
   // Round the exact IEEE-754 value, including halfway-to-even cases.
   // Decimal multiplication first can erase the information needed at a tie.
@@ -57,7 +54,6 @@ export function round(v: number, digits = 0): number {
   return (Math.sign(v) * Number(quotient)) / 10 ** digits;
 }
 export const minBy = (v: any[], key: (v: any) => any) => [...v].sort((a, b) => compare(key(a), key(b)))[0];
-export const maxBy = (v: any[], key: (v: any) => any) => [...v].sort((a, b) => compare(key(b), key(a)))[0];
 function compare(a: any, b: any): number {
   if (Array.isArray(a)) {
     for (let i = 0; i < a.length; i++) {
@@ -68,7 +64,6 @@ function compare(a: any, b: any): number {
   }
   return a < b ? -1 : a > b ? 1 : 0;
 }
-export const enumerate = (v: any[]) => v.map((x, i) => [i, x]);
 export const math = {
   ...Object.fromEntries(['sin', 'cos', 'sqrt', 'atan2', 'hypot'].map((k) => [k, (Math as any)[k]])),
   pi: Math.PI,
@@ -77,7 +72,11 @@ export const math = {
   degrees: (v: number) => (v * 180) / Math.PI,
 } as Record<string, any>;
 export function formatValue(v: any, spec = ''): string {
-  if (spec.endsWith('f')) return Number(v).toFixed(Number(spec.slice(1, -1)));
+  if (spec.endsWith('f')) {
+    // Python's '.Nf' rounds the exact value half to even; toFixed alone rounds 2.25 up to 2.3.
+    const digits = Number(spec.slice(1, -1));
+    return round(Number(v), digits).toFixed(digits);
+  }
   return String(v);
 }
 export const format = (s: string, values: Record<string, any>): string =>

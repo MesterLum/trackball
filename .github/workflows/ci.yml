@@ -1,0 +1,55 @@
+name: CI
+
+# Runs on every pull request; both jobs are required checks for merging into main.
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup
+        with:
+          pages-base: ${{ vars.PAGES_BASE_PATH }}
+      - name: Format, types, and tests with coverage (95% minimum)
+        run: nix develop --command just setup format-check check coverage
+      - name: Coverage summary
+        if: always() && hashFiles('coverage/coverage-summary.json') != ''
+        run: nix develop --command node scripts/coverage-summary.mjs >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload coverage report
+        if: always() && hashFiles('coverage/index.html') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 14
+
+  e2e:
+    name: e2e
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup
+        with:
+          pages-base: ${{ vars.PAGES_BASE_PATH }}
+      - name: Build, preset thumbnails, and browser tests
+        run: nix develop --command just setup build browsers presets e2e
+      - name: Upload browser diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-test-results
+          path: test-results/
+          if-no-files-found: ignore
