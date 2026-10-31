@@ -1,0 +1,10 @@
+{
+  "name": "@trackball/web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@trackball/core": "workspace:*",
+    "@trackball/renderer-browser": "workspace:*"
+  }
+}

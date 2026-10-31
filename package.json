@@ -1,0 +1,46 @@
+{
+  "name": "trackball-configurator",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "yarn build:core && vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "check": "yarn build:core && svelte-check --tsconfig ./tsconfig.json",
+    "test": "vitest run tests/unit",
+    "test:e2e": "playwright test",
+    "setup:wasm": "node scripts/setup-wasm.mjs",
+    "build:core": "tsc -p packages/core/tsconfig.json",
+    "format": "prettier --write packages apps tests scripts *.json *.ts *.js",
+    "format:check": "prettier --check packages apps tests scripts *.json *.ts *.js"
+  },
+  "dependencies": {
+    "fflate": "^0.8.2",
+    "svelte": "^5.0.0",
+    "three": "^0.180.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@sveltejs/vite-plugin-svelte": "^6.0.0",
+    "@tailwindcss/vite": "^4.0.0",
+    "@types/node": "^24.0.0",
+    "@types/three": "^0.180.0",
+    "daisyui": "^5.0.0",
+    "prettier": "^3.0.0",
+    "prettier-plugin-svelte": "^3.0.0",
+    "svelte-check": "^4.0.0",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.9.0",
+    "vite": "^7.0.0",
+    "vitest": "^4.1.12"
+  },
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "packageManager": "yarn@4.14.1"
+}

@@ -1,0 +1,7076 @@
+[
+  {
+    "name": "em06",
+    "input": {
+      "tilt": 10,
+      "switch_type": "mx",
+      "switches": 2,
+      "keycap_u": 1.5,
+      "palm": 40,
+      "mcu": "nice-nano",
+      "battery": "50x34x5"
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 2,
+      "switch_type": "mx",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.5,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "nice-nano",
+      "mcu_place": "behind",
+      "usb": "right",
+      "usb_type": "auto",
+      "battery": "50x34x5",
+      "edge_round": 2.0,
+      "padding": 9.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 10.0,
+      "tent": 0.0,
+      "palm": 40.0,
+      "palm_attachment": "separate",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -43.87982523251963,
+    "footprint": [
+      73.6,
+      113.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      17.0,
+      36.64067068326946,
+      -40.87982523251963
+    ],
+    "palm": [
+      -97.3,
+      -57.3
+    ],
+    "switches": [
+      [
+        14.2875,
+        -38.8,
+        90.0
+      ],
+      [
+        -14.287500000000003,
+        -38.8,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: nice-nano",
+        "qty": 1,
+        "note": "wireless capable, friction pocket (dab of glue)"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "mx switches",
+        "qty": 2,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1.5u",
+        "qty": 2,
+        "note": "any profile"
+      },
+      {
+        "item": "LiPo 50x34x5 mm",
+        "qty": 1,
+        "note": "plus a slide switch for the side-wall slot"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 8,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "em06-tiles",
+    "input": {
+      "buttons": "tiles",
+      "switches": 8,
+      "padding": 26,
+      "tilt": 10,
+      "palm": 45,
+      "palm_pad": 1.5,
+      "mcu": "nice-nano",
+      "battery": "50x34x5"
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 8,
+      "switch_type": "micro",
+      "buttons": "tiles",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "nice-nano",
+      "mcu_place": "behind",
+      "usb": "right",
+      "usb_type": "auto",
+      "battery": "50x34x5",
+      "edge_round": 2.0,
+      "padding": 26.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 10.0,
+      "tent": 0.0,
+      "palm": 45.0,
+      "palm_attachment": "separate",
+      "palm_drop": 2.0,
+      "palm_pad": 1.5
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -43.87982523251963,
+    "footprint": [
+      107.6,
+      107.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      34.0,
+      36.64067068326946,
+      -40.87982523251963
+    ],
+    "palm": [
+      -99.3,
+      -54.3
+    ],
+    "switches": [
+      [
+        -17.450000000000017,
+        -30.224286592076904,
+        60.0
+      ],
+      [
+        -6.411025993536394e-15,
+        -34.900000000000006,
+        90.0
+      ],
+      [
+        17.450000000000006,
+        -30.22428659207691,
+        120.0
+      ],
+      [
+        17.450000000000006,
+        30.22428659207691,
+        240.0
+      ],
+      [
+        2.1370086645121316e-15,
+        34.900000000000006,
+        270.0
+      ],
+      [
+        -17.449999999999996,
+        30.224286592076915,
+        300.0
+      ],
+      [
+        -34.900000000000006,
+        4.274017329024263e-15,
+        0.0
+      ],
+      [
+        34.900000000000006,
+        0.0,
+        180.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: nice-nano",
+        "qty": 1,
+        "note": "wireless capable, friction pocket (dab of glue)"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "Omron D2F / Kailh GM microswitches",
+        "qty": 8,
+        "note": "pushed into the holder blocks under the tiles"
+      },
+      {
+        "item": "LiPo 50x34x5 mm",
+        "qty": 1,
+        "note": "plus a slide switch for the side-wall slot"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 8,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "four-tiles",
+    "input": {
+      "buttons": "tiles",
+      "switches": 4,
+      "padding": 25,
+      "mcu": "rp2040-zero",
+      "mcu_place": "under"
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 4,
+      "switch_type": "micro",
+      "buttons": "tiles",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "rp2040-zero",
+      "mcu_place": "under",
+      "usb": "right",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 25.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 0.0,
+      "tent": 0.0,
+      "palm": 0.0,
+      "palm_attachment": "separate",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -43.1,
+    "footprint": [
+      105.6,
+      105.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      37.75,
+      0.0,
+      -40.1
+    ],
+    "palm": [
+      -53.3,
+      -53.3
+    ],
+    "switches": [
+      [
+        -6.411025993536394e-15,
+        -34.900000000000006,
+        90.0
+      ],
+      [
+        2.1370086645121316e-15,
+        34.900000000000006,
+        270.0
+      ],
+      [
+        -34.900000000000006,
+        4.274017329024263e-15,
+        0.0
+      ],
+      [
+        34.900000000000006,
+        0.0,
+        180.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: rp2040-zero",
+        "qty": 1,
+        "note": "USB, friction pocket (dab of glue)"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "Omron D2F / Kailh GM microswitches",
+        "qty": 4,
+        "note": "pushed into the holder blocks under the tiles"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 4,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "nano-cradle",
+    "input": {
+      "cup_shape": "dome",
+      "cup_cut": 9,
+      "rim": 2,
+      "support": "ceramic-3",
+      "polar": 42,
+      "mcu": "rp2040-zero",
+      "mcu_place": "under",
+      "switches": 0,
+      "padding": 5
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "ceramic-3",
+      "supports": 3,
+      "polar": 42.0,
+      "cup_shape": "dome",
+      "cup_cut": 9.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 2.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 0,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "rp2040-zero",
+      "mcu_place": "under",
+      "usb": "right",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 5.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 0.0,
+      "tent": 0.0,
+      "palm": 0.0,
+      "palm_attachment": "separate",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -43.1,
+    "footprint": [
+      65.6,
+      65.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      17.749999999999996,
+      0.0,
+      -40.1
+    ],
+    "palm": [
+      -33.3,
+      -33.3
+    ],
+    "switches": [],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: rp2040-zero",
+        "qty": 1,
+        "note": "USB, friction pocket (dab of glue)"
+      },
+      {
+        "item": "Ball support: static ceramic \u00d83.0",
+        "qty": 3,
+        "note": "snap into the printed sockets"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 4,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "nano-pikes",
+    "input": {
+      "cup_shape": "dome",
+      "cup_peak": "sharp",
+      "cup_cut": 10,
+      "rim": 0,
+      "cup_round": 0,
+      "support": "ceramic-3",
+      "polar": 42,
+      "mcu": "rp2040-zero",
+      "mcu_place": "under",
+      "switches": 0,
+      "padding": 5
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "ceramic-3",
+      "supports": 3,
+      "polar": 42.0,
+      "cup_shape": "dome",
+      "cup_cut": 10.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "sharp",
+      "cup_round": 0.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 0.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 0,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "rp2040-zero",
+      "mcu_place": "under",
+      "usb": "right",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 5.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 0.0,
+      "tent": 0.0,
+      "palm": 0.0,
+      "palm_attachment": "separate",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -43.1,
+    "footprint": [
+      65.6,
+      65.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      17.749999999999996,
+      0.0,
+      -40.1
+    ],
+    "palm": [
+      -33.3,
+      -33.3
+    ],
+    "switches": [],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: rp2040-zero",
+        "qty": 1,
+        "note": "USB, friction pocket (dab of glue)"
+      },
+      {
+        "item": "Ball support: static ceramic \u00d83.0",
+        "qty": 3,
+        "note": "snap into the printed sockets"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 4,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "block-cradle",
+    "input": {
+      "cup_shape": "block",
+      "cup_cut": 8,
+      "rim": 2,
+      "support": "ceramic-3",
+      "supports": 4,
+      "polar": 42
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "ceramic-3",
+      "supports": 4,
+      "polar": 42.0,
+      "cup_shape": "block",
+      "cup_cut": 8.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 2.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "pico",
+      "mcu_place": "behind",
+      "usb": "right",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 9.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 0.0,
+      "tent": 0.0,
+      "palm": 0.0,
+      "palm_attachment": "separate",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -34.6,
+    "footprint": [
+      73.6,
+      110.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      7.5,
+      34.4,
+      -31.6
+    ],
+    "palm": [
+      -55.8,
+      -55.8
+    ],
+    "switches": [
+      [
+        17.999999999999996,
+        -38.05,
+        90.0
+      ],
+      [
+        -2.329890535377839e-15,
+        -38.05,
+        90.0
+      ],
+      [
+        -18.000000000000004,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: pico",
+        "qty": 1,
+        "note": "USB, on 4x M2x6 self-tapping screws"
+      },
+      {
+        "item": "Ball support: static ceramic \u00d83.0",
+        "qty": 4,
+        "note": "snap into the printed sockets"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 4,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "default",
+    "input": {},
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "pico",
+      "mcu_place": "behind",
+      "usb": "right",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 9.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 0.0,
+      "tent": 0.0,
+      "palm": 0.0,
+      "palm_attachment": "separate",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -34.6,
+    "footprint": [
+      73.6,
+      110.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      7.5,
+      34.4,
+      -31.6
+    ],
+    "palm": [
+      -55.8,
+      -55.8
+    ],
+    "switches": [
+      [
+        17.999999999999996,
+        -38.05,
+        90.0
+      ],
+      [
+        -2.329890535377839e-15,
+        -38.05,
+        90.0
+      ],
+      [
+        -18.000000000000004,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: pico",
+        "qty": 1,
+        "note": "USB, on 4x M2x6 self-tapping screws"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 4,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "minimal",
+    "input": {
+      "mcu": "rp2040-zero",
+      "mcu_place": "under",
+      "switches": 0,
+      "padding": 4
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 0,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "rp2040-zero",
+      "mcu_place": "under",
+      "usb": "right",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 4.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 0.0,
+      "tent": 0.0,
+      "palm": 0.0,
+      "palm_attachment": "separate",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -43.1,
+    "footprint": [
+      63.6,
+      63.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      16.75,
+      0.0,
+      -40.1
+    ],
+    "palm": [
+      -32.3,
+      -32.3
+    ],
+    "switches": [],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: rp2040-zero",
+        "qty": 1,
+        "note": "USB, friction pocket (dab of glue)"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 4,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "minimal-buttons",
+    "input": {
+      "mcu": "rp2040-zero",
+      "mcu_place": "under",
+      "usb": "back",
+      "switches": 2,
+      "keycap_u": 1.5,
+      "no_mirror": true
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 2,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.5,
+      "switch_gap": 0.0,
+      "no_mirror": true,
+      "mcu": "rp2040-zero",
+      "mcu_place": "under",
+      "usb": "back",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 9.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 0.0,
+      "tent": 0.0,
+      "palm": 0.0,
+      "palm_attachment": "separate",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -43.1,
+    "footprint": [
+      73.6,
+      92.1,
+      0.0,
+      -9.25
+    ],
+    "mcu": [
+      0.0,
+      21.75,
+      -40.1
+    ],
+    "palm": [
+      -55.8,
+      -55.8
+    ],
+    "switches": [
+      [
+        13.499999999999998,
+        -38.05,
+        90.0
+      ],
+      [
+        -13.500000000000002,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: rp2040-zero",
+        "qty": 1,
+        "note": "USB, friction pocket (dab of glue)"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 2,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1.5u",
+        "qty": 2,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 4,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "low-profile",
+    "input": {
+      "header_height": 3
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 3.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "pico",
+      "mcu_place": "behind",
+      "usb": "right",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 9.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 0.0,
+      "tent": 0.0,
+      "palm": 0.0,
+      "palm_attachment": "separate",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -31.500001,
+    "footprint": [
+      73.6,
+      110.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      7.5,
+      34.4,
+      -28.500001
+    ],
+    "palm": [
+      -55.8,
+      -55.8
+    ],
+    "switches": [
+      [
+        17.999999999999996,
+        -38.05,
+        90.0
+      ],
+      [
+        -2.329890535377839e-15,
+        -38.05,
+        90.0
+      ],
+      [
+        -18.000000000000004,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: pico",
+        "qty": 1,
+        "note": "USB, on 4x M2x6 self-tapping screws"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 4,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "paddles",
+    "input": {
+      "switch_type": "micro"
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "micro",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "pico",
+      "mcu_place": "behind",
+      "usb": "right",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 9.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 0.0,
+      "tent": 0.0,
+      "palm": 0.0,
+      "palm_attachment": "separate",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -34.6,
+    "footprint": [
+      73.6,
+      125.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      7.5,
+      34.4,
+      -31.6
+    ],
+    "palm": [
+      -63.3,
+      -63.3
+    ],
+    "switches": [
+      [
+        17.999999999999996,
+        -41.8,
+        90.0
+      ],
+      [
+        -2.559511810217968e-15,
+        -41.8,
+        90.0
+      ],
+      [
+        -18.000000000000004,
+        -41.8,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: pico",
+        "qty": 1,
+        "note": "USB, on 4x M2x6 self-tapping screws"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "Omron D2F / Kailh GM microswitches",
+        "qty": 3,
+        "note": "pushed into the holder bars"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 4,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "ball44-sides",
+    "input": {
+      "ball": 44,
+      "mcu": "pico-w",
+      "mcu_place": "under",
+      "switch_type": "mx",
+      "switches": 2,
+      "buttons": "sides"
+    },
+    "values": {
+      "ball": 44.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 2,
+      "switch_type": "mx",
+      "buttons": "sides",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "pico-w",
+      "mcu_place": "under",
+      "usb": "right",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 9.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 0.0,
+      "tent": 0.0,
+      "palm": 0.0,
+      "palm_attachment": "separate",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -48.1,
+    "footprint": [
+      123.6,
+      83.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      32.5,
+      0.0,
+      -45.1
+    ],
+    "palm": [
+      -42.3,
+      -42.3
+    ],
+    "switches": [
+      [
+        -43.8,
+        -9.525,
+        0.0
+      ],
+      [
+        -43.8,
+        9.525,
+        0.0
+      ],
+      [
+        43.8,
+        9.524999999999995,
+        180.0
+      ],
+      [
+        43.8,
+        -9.525000000000006,
+        180.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d844 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: pico-w",
+        "qty": 1,
+        "note": "wireless capable, on 4x M2x6 self-tapping screws"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "mx switches",
+        "qty": 4,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 4,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 4,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "ball55",
+    "input": {
+      "ball": 55,
+      "support": "ceramic-3",
+      "mcu": "rp2040-zero"
+    },
+    "values": {
+      "ball": 55.0,
+      "support": "ceramic-3",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "rp2040-zero",
+      "mcu_place": "behind",
+      "usb": "right",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 9.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 0.0,
+      "tent": 0.0,
+      "palm": 0.0,
+      "palm_attachment": "separate",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -45.1,
+    "footprint": [
+      94.6,
+      131.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      32.25,
+      34.8,
+      -42.1
+    ],
+    "palm": [
+      -66.3,
+      -66.3
+    ],
+    "switches": [
+      [
+        17.999999999999996,
+        -48.55,
+        90.0
+      ],
+      [
+        -2.9728301049302e-15,
+        -48.55,
+        90.0
+      ],
+      [
+        -18.000000000000004,
+        -48.55,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d855 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: rp2040-zero",
+        "qty": 1,
+        "note": "USB, friction pocket (dab of glue)"
+      },
+      {
+        "item": "Ball support: static ceramic \u00d83.0",
+        "qty": 3,
+        "note": "snap into the printed sockets"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 4,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "compact-wireless",
+    "input": {
+      "mcu": "xiao",
+      "battery": "40x25x3",
+      "switch_type": "micro",
+      "switches": 2
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 2,
+      "switch_type": "micro",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "xiao",
+      "mcu_place": "behind",
+      "usb": "right",
+      "usb_type": "auto",
+      "battery": "40x25x3",
+      "edge_round": 2.0,
+      "padding": 9.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 0.0,
+      "tent": 0.0,
+      "palm": 0.0,
+      "palm_attachment": "separate",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -38.6,
+    "footprint": [
+      73.6,
+      125.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      23.0,
+      34.7,
+      -35.6
+    ],
+    "palm": [
+      -63.3,
+      -63.3
+    ],
+    "switches": [
+      [
+        8.999999999999998,
+        -41.8,
+        90.0
+      ],
+      [
+        -9.000000000000002,
+        -41.8,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: xiao",
+        "qty": 1,
+        "note": "wireless capable, friction pocket (dab of glue)"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "Omron D2F / Kailh GM microswitches",
+        "qty": 2,
+        "note": "pushed into the holder bars"
+      },
+      {
+        "item": "LiPo 40x25x3 mm",
+        "qty": 1,
+        "note": "plus a slide switch for the side-wall slot"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 4,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "big-wireless",
+    "input": {
+      "tilt": 12,
+      "battery": "60x40x6",
+      "mcu": "supermini",
+      "palm": 50,
+      "palm_pad": 1
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "supermini",
+      "mcu_place": "behind",
+      "usb": "right",
+      "usb_type": "auto",
+      "battery": "60x40x6",
+      "edge_round": 2.0,
+      "padding": 9.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 12.0,
+      "tent": 0.0,
+      "palm": 50.0,
+      "palm_attachment": "separate",
+      "palm_drop": 2.0,
+      "palm_pad": 1.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -45.4427491549687,
+    "footprint": [
+      73.6,
+      110.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      16.75,
+      37.003863922668245,
+      -42.4427491549687
+    ],
+    "palm": [
+      -105.8,
+      -55.8
+    ],
+    "switches": [
+      [
+        17.999999999999996,
+        -38.05,
+        90.0
+      ],
+      [
+        -2.329890535377839e-15,
+        -38.05,
+        90.0
+      ],
+      [
+        -18.000000000000004,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: supermini",
+        "qty": 1,
+        "note": "wireless capable, friction pocket (dab of glue)"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "LiPo 60x40x6 mm",
+        "qty": 1,
+        "note": "plus a slide switch for the side-wall slot"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 8,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "tented",
+    "input": {
+      "tilt": 8,
+      "tent": 6,
+      "switches": 4,
+      "mcu": "supermini",
+      "padding": 12
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 4,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "supermini",
+      "mcu_place": "behind",
+      "usb": "right",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 12.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 8.0,
+      "tent": 6.0,
+      "palm": 0.0,
+      "palm_attachment": "separate",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -37.84167943804522,
+    "footprint": [
+      79.6,
+      116.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      15.973731425563733,
+      36.27523487017669,
+      -34.84167943804522
+    ],
+    "palm": [
+      -58.8,
+      -58.8
+    ],
+    "switches": [
+      [
+        26.999999999999996,
+        -38.05,
+        90.0
+      ],
+      [
+        8.999999999999998,
+        -38.05,
+        90.0
+      ],
+      [
+        -9.000000000000002,
+        -38.05,
+        90.0
+      ],
+      [
+        -27.000000000000004,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: supermini",
+        "qty": 1,
+        "note": "wireless capable, friction pocket (dab of glue)"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 4,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 4,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 4,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "bearings",
+    "input": {
+      "support": "mr63",
+      "switch_gap": 2
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "mr63",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 2.0,
+      "no_mirror": false,
+      "mcu": "pico",
+      "mcu_place": "behind",
+      "usb": "right",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 9.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 0.0,
+      "tent": 0.0,
+      "palm": 0.0,
+      "palm_attachment": "separate",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -34.6,
+    "footprint": [
+      73.6,
+      110.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      7.5,
+      34.4,
+      -31.6
+    ],
+    "palm": [
+      -55.8,
+      -55.8
+    ],
+    "switches": [
+      [
+        19.999999999999996,
+        -38.05,
+        90.0
+      ],
+      [
+        -2.329890535377839e-15,
+        -38.05,
+        90.0
+      ],
+      [
+        -20.000000000000004,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: pico",
+        "qty": 1,
+        "note": "USB, on 4x M2x6 self-tapping screws"
+      },
+      {
+        "item": "Ball support: bearing 3x6x2.5 on M3",
+        "qty": 3,
+        "note": "plus one M3x25 screw each as axle"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 4,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "mx-wide",
+    "input": {
+      "switch_type": "mx",
+      "keycap_u": 1.25,
+      "mcu": "pico2",
+      "tilt": 6,
+      "padding": 12
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "mx",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.25,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "pico2",
+      "mcu_place": "behind",
+      "usb": "right",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 12.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 6.0,
+      "tent": 0.0,
+      "palm": 0.0,
+      "palm_attachment": "separate",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -36.658648475764245,
+    "footprint": [
+      79.6,
+      119.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      10.5,
+      35.508001710637124,
+      -33.658648475764245
+    ],
+    "palm": [
+      -60.3,
+      -60.3
+    ],
+    "switches": [
+      [
+        23.812499999999996,
+        -38.8,
+        90.0
+      ],
+      [
+        -2.375814790345865e-15,
+        -38.8,
+        90.0
+      ],
+      [
+        -23.812500000000004,
+        -38.8,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: pico2",
+        "qty": 1,
+        "note": "USB, on 4x M2x6 self-tapping screws"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "mx switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1.25u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 4,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "left-cable",
+    "input": {
+      "usb": "left",
+      "wall": 4,
+      "floor": 4,
+      "feet": 12
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "pico",
+      "mcu_place": "behind",
+      "usb": "left",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 9.0,
+      "wall": 4.0,
+      "floor": 4.0,
+      "feet": 12.0,
+      "fn": 96,
+      "tilt": 0.0,
+      "tent": 0.0,
+      "palm": 0.0,
+      "palm_attachment": "separate",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -34.6,
+    "footprint": [
+      73.6,
+      110.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      -6.5,
+      34.4,
+      -31.6
+    ],
+    "palm": [
+      -55.8,
+      -55.8
+    ],
+    "switches": [
+      [
+        17.999999999999996,
+        -38.05,
+        90.0
+      ],
+      [
+        -2.329890535377839e-15,
+        -38.05,
+        90.0
+      ],
+      [
+        -18.000000000000004,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: pico",
+        "qty": 1,
+        "note": "USB, on 4x M2x6 self-tapping screws"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d812 mm",
+        "qty": 4,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "ball44-bearings",
+    "input": {
+      "ball": 44,
+      "support": "mr83",
+      "mcu_place": "under",
+      "switch_gap": 2
+    },
+    "values": {
+      "ball": 44.0,
+      "support": "mr83",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 2.0,
+      "no_mirror": false,
+      "mcu": "pico",
+      "mcu_place": "under",
+      "usb": "right",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 9.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 0.0,
+      "tent": 0.0,
+      "palm": 0.0,
+      "palm_attachment": "separate",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -48.1,
+    "footprint": [
+      83.6,
+      120.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      12.5,
+      0.0,
+      -45.1
+    ],
+    "palm": [
+      -60.8,
+      -60.8
+    ],
+    "switches": [
+      [
+        19.999999999999996,
+        -43.05,
+        90.0
+      ],
+      [
+        -2.6360522351646778e-15,
+        -43.05,
+        90.0
+      ],
+      [
+        -20.000000000000004,
+        -43.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d844 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: pico",
+        "qty": 1,
+        "note": "USB, on 4x M2x6 self-tapping screws"
+      },
+      {
+        "item": "Ball support: bearing 3x8x3 on M3",
+        "qty": 3,
+        "note": "plus one M3x25 screw each as axle"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 4,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "bare25",
+    "input": {
+      "ball": 25,
+      "support": "btu-4.8",
+      "mcu": "pro-micro",
+      "mcu_place": "under",
+      "switches": 0,
+      "padding": 5
+    },
+    "values": {
+      "ball": 25.0,
+      "support": "btu-4.8",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 0,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "pro-micro",
+      "mcu_place": "under",
+      "usb": "right",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 5.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 0.0,
+      "tent": 0.0,
+      "palm": 0.0,
+      "palm_attachment": "separate",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -38.1,
+    "footprint": [
+      56.6,
+      56.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      8.489999999999998,
+      0.0,
+      -35.1
+    ],
+    "palm": [
+      -28.8,
+      -28.8
+    ],
+    "switches": [],
+    "bom": [
+      {
+        "item": "Trackball \u00d825 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: pro-micro",
+        "qty": 1,
+        "note": "USB, friction pocket (dab of glue)"
+      },
+      {
+        "item": "Ball support: BTU \u00d84.8 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 4,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "pico-left-0",
+    "input": {
+      "mcu": "pico",
+      "usb": "left",
+      "tilt": 0,
+      "tent": -8,
+      "palm": 40,
+      "palm_attachment": "anchored"
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "pico",
+      "mcu_place": "behind",
+      "usb": "left",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 9.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 0.0,
+      "tent": -8.0,
+      "palm": 40.0,
+      "palm_attachment": "anchored",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -37.28488339112149,
+    "footprint": [
+      73.6,
+      110.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      -2.5891750458041596,
+      34.4,
+      -34.28488339112149
+    ],
+    "palm": [
+      -95.8,
+      -55.8
+    ],
+    "switches": [
+      [
+        17.999999999999996,
+        -38.05,
+        90.0
+      ],
+      [
+        -2.329890535377839e-15,
+        -38.05,
+        90.0
+      ],
+      [
+        -18.000000000000004,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: pico",
+        "qty": 1,
+        "note": "USB, on 4x M2x6 self-tapping screws"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 8,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "pico-left-10",
+    "input": {
+      "mcu": "pico",
+      "usb": "left",
+      "tilt": 10,
+      "tent": -8,
+      "palm": 40,
+      "palm_attachment": "anchored"
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "pico",
+      "mcu_place": "behind",
+      "usb": "left",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 9.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 10.0,
+      "tent": -8.0,
+      "palm": 40.0,
+      "palm_attachment": "anchored",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -38.628208923547874,
+    "footprint": [
+      73.6,
+      110.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      -2.4003829541999213,
+      36.24067068326946,
+      -35.628208923547874
+    ],
+    "palm": [
+      -95.8,
+      -55.8
+    ],
+    "switches": [
+      [
+        17.999999999999996,
+        -38.05,
+        90.0
+      ],
+      [
+        -2.329890535377839e-15,
+        -38.05,
+        90.0
+      ],
+      [
+        -18.000000000000004,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: pico",
+        "qty": 1,
+        "note": "USB, on 4x M2x6 self-tapping screws"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 8,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "pico-right-0",
+    "input": {
+      "mcu": "pico",
+      "usb": "right",
+      "tilt": 0,
+      "tent": -8,
+      "palm": 40,
+      "palm_attachment": "anchored"
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "pico",
+      "mcu_place": "behind",
+      "usb": "right",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 9.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 0.0,
+      "tent": -8.0,
+      "palm": 40.0,
+      "palm_attachment": "anchored",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -37.28488339112149,
+    "footprint": [
+      73.6,
+      110.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      12.507108974133684,
+      34.4,
+      -34.28488339112149
+    ],
+    "palm": [
+      -95.8,
+      -55.8
+    ],
+    "switches": [
+      [
+        17.999999999999996,
+        -38.05,
+        90.0
+      ],
+      [
+        -2.329890535377839e-15,
+        -38.05,
+        90.0
+      ],
+      [
+        -18.000000000000004,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: pico",
+        "qty": 1,
+        "note": "USB, on 4x M2x6 self-tapping screws"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 8,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "pico-right-10",
+    "input": {
+      "mcu": "pico",
+      "usb": "right",
+      "tilt": 10,
+      "tent": -8,
+      "palm": 40,
+      "palm_attachment": "anchored"
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "pico",
+      "mcu_place": "behind",
+      "usb": "right",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 9.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 10.0,
+      "tent": -8.0,
+      "palm": 40.0,
+      "palm_attachment": "anchored",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -38.628208923547874,
+    "footprint": [
+      73.6,
+      110.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      12.695901065737923,
+      36.24067068326946,
+      -35.628208923547874
+    ],
+    "palm": [
+      -95.8,
+      -55.8
+    ],
+    "switches": [
+      [
+        17.999999999999996,
+        -38.05,
+        90.0
+      ],
+      [
+        -2.329890535377839e-15,
+        -38.05,
+        90.0
+      ],
+      [
+        -18.000000000000004,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: pico",
+        "qty": 1,
+        "note": "USB, on 4x M2x6 self-tapping screws"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 8,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "pico-back-0",
+    "input": {
+      "mcu": "pico",
+      "usb": "back",
+      "tilt": 0,
+      "tent": -8,
+      "palm": 40,
+      "palm_attachment": "anchored"
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "pico",
+      "mcu_place": "behind",
+      "usb": "back",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 33.9,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 0.0,
+      "tent": -8.0,
+      "palm": 40.0,
+      "palm_attachment": "anchored",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [
+      {
+        "option": "padding",
+        "from": 9.0,
+        "to": 33.9,
+        "reason": "MCU pico needs 52.0 mm behind the sensor but only 27.4 mm are free before the back posts; MCU pico mount needs more clearance from the walls, sensor or lid posts"
+      }
+    ],
+    "problems": [],
+    "floor": -37.28488339112149,
+    "footprint": [
+      123.4,
+      160.4,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      0.0,
+      50.900000000000006,
+      -34.28488339112149
+    ],
+    "palm": [
+      -120.7,
+      -80.7
+    ],
+    "switches": [
+      [
+        17.999999999999996,
+        -38.05,
+        90.0
+      ],
+      [
+        -2.329890535377839e-15,
+        -38.05,
+        90.0
+      ],
+      [
+        -18.000000000000004,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: pico",
+        "qty": 1,
+        "note": "USB, on 4x M2x6 self-tapping screws"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 8,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "pico-back-10",
+    "input": {
+      "mcu": "pico",
+      "usb": "back",
+      "tilt": 10,
+      "tent": -8,
+      "palm": 40,
+      "palm_attachment": "anchored"
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "pico",
+      "mcu_place": "behind",
+      "usb": "back",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 28.6,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 10.0,
+      "tent": -8.0,
+      "palm": 40.0,
+      "palm_attachment": "anchored",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [
+      {
+        "option": "padding",
+        "from": 9.0,
+        "to": 28.6,
+        "reason": "MCU pico needs 52.0 mm behind the sensor but only 33.2 mm are free before the back posts; MCU pico mount needs more clearance from the walls, sensor or lid posts"
+      }
+    ],
+    "problems": [],
+    "floor": -38.628208923547874,
+    "footprint": [
+      112.80000000000001,
+      149.8,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      0.0,
+      52.49334114694236,
+      -35.628208923547874
+    ],
+    "palm": [
+      -115.4,
+      -75.4
+    ],
+    "switches": [
+      [
+        17.999999999999996,
+        -38.05,
+        90.0
+      ],
+      [
+        -2.329890535377839e-15,
+        -38.05,
+        90.0
+      ],
+      [
+        -18.000000000000004,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: pico",
+        "qty": 1,
+        "note": "USB, on 4x M2x6 self-tapping screws"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 8,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "rp2040-zero-left-0",
+    "input": {
+      "mcu": "rp2040-zero",
+      "usb": "left",
+      "tilt": 0,
+      "tent": -8,
+      "palm": 40,
+      "palm_attachment": "anchored"
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "rp2040-zero",
+      "mcu_place": "behind",
+      "usb": "left",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 9.9,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 0.0,
+      "tent": -8.0,
+      "palm": 40.0,
+      "palm_attachment": "anchored",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [
+      {
+        "option": "padding",
+        "from": 9.0,
+        "to": 9.9,
+        "reason": "MCU rp2040-zero needs 22.8 mm behind the sensor but only 22.1 mm are free before the back posts"
+      }
+    ],
+    "problems": [],
+    "floor": -37.28488339112149,
+    "footprint": [
+      75.4,
+      112.4,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      -17.74801986107092,
+      34.8,
+      -34.28488339112149
+    ],
+    "palm": [
+      -96.7,
+      -56.7
+    ],
+    "switches": [
+      [
+        17.999999999999996,
+        -38.05,
+        90.0
+      ],
+      [
+        -2.329890535377839e-15,
+        -38.05,
+        90.0
+      ],
+      [
+        -18.000000000000004,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: rp2040-zero",
+        "qty": 1,
+        "note": "USB, friction pocket (dab of glue)"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 8,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "rp2040-zero-left-10",
+    "input": {
+      "mcu": "rp2040-zero",
+      "usb": "left",
+      "tilt": 10,
+      "tent": -8,
+      "palm": 40,
+      "palm_attachment": "anchored"
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "rp2040-zero",
+      "mcu_place": "behind",
+      "usb": "left",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 9.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 10.0,
+      "tent": -8.0,
+      "palm": 40.0,
+      "palm_attachment": "anchored",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -38.628208923547874,
+    "footprint": [
+      73.6,
+      110.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      -16.65038295419992,
+      36.64067068326946,
+      -35.628208923547874
+    ],
+    "palm": [
+      -95.8,
+      -55.8
+    ],
+    "switches": [
+      [
+        17.999999999999996,
+        -38.05,
+        90.0
+      ],
+      [
+        -2.329890535377839e-15,
+        -38.05,
+        90.0
+      ],
+      [
+        -18.000000000000004,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: rp2040-zero",
+        "qty": 1,
+        "note": "USB, friction pocket (dab of glue)"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 8,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "rp2040-zero-right-0",
+    "input": {
+      "mcu": "rp2040-zero",
+      "usb": "right",
+      "tilt": 0,
+      "tent": -8,
+      "palm": 40,
+      "palm_attachment": "anchored"
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "rp2040-zero",
+      "mcu_place": "behind",
+      "usb": "right",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 9.9,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 0.0,
+      "tent": -8.0,
+      "palm": 40.0,
+      "palm_attachment": "anchored",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [
+      {
+        "option": "padding",
+        "from": 9.0,
+        "to": 9.9,
+        "reason": "MCU rp2040-zero needs 22.8 mm behind the sensor but only 22.1 mm are free before the back posts"
+      }
+    ],
+    "problems": [],
+    "floor": -37.28488339112149,
+    "footprint": [
+      75.4,
+      112.4,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      27.525412954698055,
+      34.8,
+      -34.28488339112149
+    ],
+    "palm": [
+      -96.7,
+      -56.7
+    ],
+    "switches": [
+      [
+        17.999999999999996,
+        -38.05,
+        90.0
+      ],
+      [
+        -2.329890535377839e-15,
+        -38.05,
+        90.0
+      ],
+      [
+        -18.000000000000004,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: rp2040-zero",
+        "qty": 1,
+        "note": "USB, friction pocket (dab of glue)"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 8,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "rp2040-zero-right-10",
+    "input": {
+      "mcu": "rp2040-zero",
+      "usb": "right",
+      "tilt": 10,
+      "tent": -8,
+      "palm": 40,
+      "palm_attachment": "anchored"
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "rp2040-zero",
+      "mcu_place": "behind",
+      "usb": "right",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 9.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 10.0,
+      "tent": -8.0,
+      "palm": 40.0,
+      "palm_attachment": "anchored",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -38.628208923547874,
+    "footprint": [
+      73.6,
+      110.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      26.805360231035532,
+      36.64067068326946,
+      -35.628208923547874
+    ],
+    "palm": [
+      -95.8,
+      -55.8
+    ],
+    "switches": [
+      [
+        17.999999999999996,
+        -38.05,
+        90.0
+      ],
+      [
+        -2.329890535377839e-15,
+        -38.05,
+        90.0
+      ],
+      [
+        -18.000000000000004,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: rp2040-zero",
+        "qty": 1,
+        "note": "USB, friction pocket (dab of glue)"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 8,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "rp2040-zero-back-0",
+    "input": {
+      "mcu": "rp2040-zero",
+      "usb": "back",
+      "tilt": 0,
+      "tent": -8,
+      "palm": 40,
+      "palm_attachment": "anchored"
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "rp2040-zero",
+      "mcu_place": "behind",
+      "usb": "back",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 10.2,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 0.0,
+      "tent": -8.0,
+      "palm": 40.0,
+      "palm_attachment": "anchored",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [
+      {
+        "option": "padding",
+        "from": 9.0,
+        "to": 10.2,
+        "reason": "MCU rp2040-zero needs 28.3 mm behind the sensor but only 27.4 mm are free before the back posts"
+      }
+    ],
+    "problems": [],
+    "floor": -37.28488339112149,
+    "footprint": [
+      76.0,
+      113.0,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      0.0,
+      41.45,
+      -34.28488339112149
+    ],
+    "palm": [
+      -97.0,
+      -57.0
+    ],
+    "switches": [
+      [
+        17.999999999999996,
+        -38.05,
+        90.0
+      ],
+      [
+        -2.329890535377839e-15,
+        -38.05,
+        90.0
+      ],
+      [
+        -18.000000000000004,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: rp2040-zero",
+        "qty": 1,
+        "note": "USB, friction pocket (dab of glue)"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 8,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "rp2040-zero-back-10",
+    "input": {
+      "mcu": "rp2040-zero",
+      "usb": "back",
+      "tilt": 10,
+      "tent": -8,
+      "palm": 40,
+      "palm_attachment": "anchored"
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "rp2040-zero",
+      "mcu_place": "behind",
+      "usb": "back",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 9.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 10.0,
+      "tent": -8.0,
+      "palm": 40.0,
+      "palm_attachment": "anchored",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -38.628208923547874,
+    "footprint": [
+      73.6,
+      110.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      0.0,
+      46.6565525862533,
+      -35.628208923547874
+    ],
+    "palm": [
+      -95.8,
+      -55.8
+    ],
+    "switches": [
+      [
+        17.999999999999996,
+        -38.05,
+        90.0
+      ],
+      [
+        -2.329890535377839e-15,
+        -38.05,
+        90.0
+      ],
+      [
+        -18.000000000000004,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: rp2040-zero",
+        "qty": 1,
+        "note": "USB, friction pocket (dab of glue)"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 8,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "xiao-left-0",
+    "input": {
+      "mcu": "xiao",
+      "usb": "left",
+      "tilt": 0,
+      "tent": -8,
+      "palm": 40,
+      "palm_attachment": "anchored"
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "xiao",
+      "mcu_place": "behind",
+      "usb": "left",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 9.7,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 0.0,
+      "tent": -8.0,
+      "palm": 40.0,
+      "palm_attachment": "anchored",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [
+      {
+        "option": "padding",
+        "from": 9.0,
+        "to": 9.7,
+        "reason": "MCU xiao needs 22.6 mm behind the sensor but only 22.1 mm are free before the back posts"
+      }
+    ],
+    "problems": [],
+    "floor": -37.28488339112149,
+    "footprint": [
+      75.0,
+      112.0,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      -18.796054346567196,
+      34.7,
+      -34.28488339112149
+    ],
+    "palm": [
+      -96.5,
+      -56.5
+    ],
+    "switches": [
+      [
+        17.999999999999996,
+        -38.05,
+        90.0
+      ],
+      [
+        -2.329890535377839e-15,
+        -38.05,
+        90.0
+      ],
+      [
+        -18.000000000000004,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: xiao",
+        "qty": 1,
+        "note": "wireless capable, friction pocket (dab of glue)"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 8,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "xiao-left-10",
+    "input": {
+      "mcu": "xiao",
+      "usb": "left",
+      "tilt": 10,
+      "tent": -8,
+      "palm": 40,
+      "palm_attachment": "anchored"
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "xiao",
+      "mcu_place": "behind",
+      "usb": "left",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 9.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 10.0,
+      "tent": -8.0,
+      "palm": 40.0,
+      "palm_attachment": "anchored",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -38.628208923547874,
+    "footprint": [
+      73.6,
+      110.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      -17.90038295419992,
+      36.54067068326946,
+      -35.628208923547874
+    ],
+    "palm": [
+      -95.8,
+      -55.8
+    ],
+    "switches": [
+      [
+        17.999999999999996,
+        -38.05,
+        90.0
+      ],
+      [
+        -2.329890535377839e-15,
+        -38.05,
+        90.0
+      ],
+      [
+        -18.000000000000004,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: xiao",
+        "qty": 1,
+        "note": "wireless capable, friction pocket (dab of glue)"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 8,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "xiao-right-0",
+    "input": {
+      "mcu": "xiao",
+      "usb": "right",
+      "tilt": 0,
+      "tent": -8,
+      "palm": 40,
+      "palm_attachment": "anchored"
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "xiao",
+      "mcu_place": "behind",
+      "usb": "right",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 9.7,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 0.0,
+      "tent": -8.0,
+      "palm": 40.0,
+      "palm_attachment": "anchored",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [
+      {
+        "option": "padding",
+        "from": 9.0,
+        "to": 9.7,
+        "reason": "MCU xiao needs 22.6 mm behind the sensor but only 22.1 mm are free before the back posts"
+      }
+    ],
+    "problems": [],
+    "floor": -37.28488339112149,
+    "footprint": [
+      75.0,
+      112.0,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      28.57344744019433,
+      34.7,
+      -34.28488339112149
+    ],
+    "palm": [
+      -96.5,
+      -56.5
+    ],
+    "switches": [
+      [
+        17.999999999999996,
+        -38.05,
+        90.0
+      ],
+      [
+        -2.329890535377839e-15,
+        -38.05,
+        90.0
+      ],
+      [
+        -18.000000000000004,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: xiao",
+        "qty": 1,
+        "note": "wireless capable, friction pocket (dab of glue)"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 8,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "xiao-right-10",
+    "input": {
+      "mcu": "xiao",
+      "usb": "right",
+      "tilt": 10,
+      "tent": -8,
+      "palm": 40,
+      "palm_attachment": "anchored"
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "xiao",
+      "mcu_place": "behind",
+      "usb": "right",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 9.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 10.0,
+      "tent": -8.0,
+      "palm": 40.0,
+      "palm_attachment": "anchored",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -38.628208923547874,
+    "footprint": [
+      73.6,
+      110.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      28.055360231035532,
+      36.54067068326946,
+      -35.628208923547874
+    ],
+    "palm": [
+      -95.8,
+      -55.8
+    ],
+    "switches": [
+      [
+        17.999999999999996,
+        -38.05,
+        90.0
+      ],
+      [
+        -2.329890535377839e-15,
+        -38.05,
+        90.0
+      ],
+      [
+        -18.000000000000004,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: xiao",
+        "qty": 1,
+        "note": "wireless capable, friction pocket (dab of glue)"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 8,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "xiao-back-0",
+    "input": {
+      "mcu": "xiao",
+      "usb": "back",
+      "tilt": 0,
+      "tent": -8,
+      "palm": 40,
+      "palm_attachment": "anchored"
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "xiao",
+      "mcu_place": "behind",
+      "usb": "back",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 9.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 0.0,
+      "tent": -8.0,
+      "palm": 40.0,
+      "palm_attachment": "anchored",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -37.28488339112149,
+    "footprint": [
+      73.6,
+      110.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      0.0,
+      41.5,
+      -34.28488339112149
+    ],
+    "palm": [
+      -95.8,
+      -55.8
+    ],
+    "switches": [
+      [
+        17.999999999999996,
+        -38.05,
+        90.0
+      ],
+      [
+        -2.329890535377839e-15,
+        -38.05,
+        90.0
+      ],
+      [
+        -18.000000000000004,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: xiao",
+        "qty": 1,
+        "note": "wireless capable, friction pocket (dab of glue)"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 8,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "xiao-back-10",
+    "input": {
+      "mcu": "xiao",
+      "usb": "back",
+      "tilt": 10,
+      "tent": -8,
+      "palm": 40,
+      "palm_attachment": "anchored"
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "xiao",
+      "mcu_place": "behind",
+      "usb": "back",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 9.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 10.0,
+      "tent": -8.0,
+      "palm": 40.0,
+      "palm_attachment": "anchored",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -38.628208923547874,
+    "footprint": [
+      73.6,
+      110.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      0.0,
+      47.909006583522114,
+      -35.628208923547874
+    ],
+    "palm": [
+      -95.8,
+      -55.8
+    ],
+    "switches": [
+      [
+        17.999999999999996,
+        -38.05,
+        90.0
+      ],
+      [
+        -2.329890535377839e-15,
+        -38.05,
+        90.0
+      ],
+      [
+        -18.000000000000004,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: xiao",
+        "qty": 1,
+        "note": "wireless capable, friction pocket (dab of glue)"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 8,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "pro-micro-left-0",
+    "input": {
+      "mcu": "pro-micro",
+      "usb": "left",
+      "tilt": 0,
+      "tent": -8,
+      "palm": 40,
+      "palm_attachment": "anchored"
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "pro-micro",
+      "mcu_place": "behind",
+      "usb": "left",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 9.7,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 0.0,
+      "tent": -8.0,
+      "palm": 40.0,
+      "palm_attachment": "anchored",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [
+      {
+        "option": "padding",
+        "from": 9.0,
+        "to": 9.7,
+        "reason": "MCU pro-micro needs 22.6 mm behind the sensor but only 22.1 mm are free before the back posts"
+      }
+    ],
+    "problems": [],
+    "floor": -37.28488339112149,
+    "footprint": [
+      75.0,
+      112.0,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      -12.786054346567193,
+      34.69,
+      -34.28488339112149
+    ],
+    "palm": [
+      -96.5,
+      -56.5
+    ],
+    "switches": [
+      [
+        17.999999999999996,
+        -38.05,
+        90.0
+      ],
+      [
+        -2.329890535377839e-15,
+        -38.05,
+        90.0
+      ],
+      [
+        -18.000000000000004,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: pro-micro",
+        "qty": 1,
+        "note": "USB, friction pocket (dab of glue)"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 8,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "pro-micro-left-10",
+    "input": {
+      "mcu": "pro-micro",
+      "usb": "left",
+      "tilt": 10,
+      "tent": -8,
+      "palm": 40,
+      "palm_attachment": "anchored"
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "pro-micro",
+      "mcu_place": "behind",
+      "usb": "left",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 9.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 10.0,
+      "tent": -8.0,
+      "palm": 40.0,
+      "palm_attachment": "anchored",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -38.628208923547874,
+    "footprint": [
+      73.6,
+      110.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      -11.890382954199918,
+      36.53067068326946,
+      -35.628208923547874
+    ],
+    "palm": [
+      -95.8,
+      -55.8
+    ],
+    "switches": [
+      [
+        17.999999999999996,
+        -38.05,
+        90.0
+      ],
+      [
+        -2.329890535377839e-15,
+        -38.05,
+        90.0
+      ],
+      [
+        -18.000000000000004,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: pro-micro",
+        "qty": 1,
+        "note": "USB, friction pocket (dab of glue)"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 8,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "pro-micro-right-0",
+    "input": {
+      "mcu": "pro-micro",
+      "usb": "right",
+      "tilt": 0,
+      "tent": -8,
+      "palm": 40,
+      "palm_attachment": "anchored"
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "pro-micro",
+      "mcu_place": "behind",
+      "usb": "right",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 9.7,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 0.0,
+      "tent": -8.0,
+      "palm": 40.0,
+      "palm_attachment": "anchored",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [
+      {
+        "option": "padding",
+        "from": 9.0,
+        "to": 9.7,
+        "reason": "MCU pro-micro needs 22.6 mm behind the sensor but only 22.1 mm are free before the back posts"
+      }
+    ],
+    "problems": [],
+    "floor": -37.28488339112149,
+    "footprint": [
+      75.0,
+      112.0,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      22.563447440194327,
+      34.69,
+      -34.28488339112149
+    ],
+    "palm": [
+      -96.5,
+      -56.5
+    ],
+    "switches": [
+      [
+        17.999999999999996,
+        -38.05,
+        90.0
+      ],
+      [
+        -2.329890535377839e-15,
+        -38.05,
+        90.0
+      ],
+      [
+        -18.000000000000004,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: pro-micro",
+        "qty": 1,
+        "note": "USB, friction pocket (dab of glue)"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 8,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "pro-micro-right-10",
+    "input": {
+      "mcu": "pro-micro",
+      "usb": "right",
+      "tilt": 10,
+      "tent": -8,
+      "palm": 40,
+      "palm_attachment": "anchored"
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "pro-micro",
+      "mcu_place": "behind",
+      "usb": "right",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 9.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 10.0,
+      "tent": -8.0,
+      "palm": 40.0,
+      "palm_attachment": "anchored",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -38.628208923547874,
+    "footprint": [
+      73.6,
+      110.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      22.04536023103553,
+      36.53067068326946,
+      -35.628208923547874
+    ],
+    "palm": [
+      -95.8,
+      -55.8
+    ],
+    "switches": [
+      [
+        17.999999999999996,
+        -38.05,
+        90.0
+      ],
+      [
+        -2.329890535377839e-15,
+        -38.05,
+        90.0
+      ],
+      [
+        -18.000000000000004,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: pro-micro",
+        "qty": 1,
+        "note": "USB, friction pocket (dab of glue)"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 8,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "pro-micro-back-0",
+    "input": {
+      "mcu": "pro-micro",
+      "usb": "back",
+      "tilt": 0,
+      "tent": -8,
+      "palm": 40,
+      "palm_attachment": "anchored"
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "pro-micro",
+      "mcu_place": "behind",
+      "usb": "back",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 19.7,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 0.0,
+      "tent": -8.0,
+      "palm": 40.0,
+      "palm_attachment": "anchored",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [
+      {
+        "option": "padding",
+        "from": 9.0,
+        "to": 19.7,
+        "reason": "MCU pro-micro needs 37.8 mm behind the sensor but only 27.4 mm are free before the back posts; MCU pro-micro mount needs more clearance from the walls, sensor or lid posts"
+      }
+    ],
+    "problems": [],
+    "floor": -37.28488339112149,
+    "footprint": [
+      95.0,
+      132.0,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      0.0,
+      46.19,
+      -34.28488339112149
+    ],
+    "palm": [
+      -106.5,
+      -66.5
+    ],
+    "switches": [
+      [
+        17.999999999999996,
+        -38.05,
+        90.0
+      ],
+      [
+        -2.329890535377839e-15,
+        -38.05,
+        90.0
+      ],
+      [
+        -18.000000000000004,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: pro-micro",
+        "qty": 1,
+        "note": "USB, friction pocket (dab of glue)"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 8,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "pro-micro-back-10",
+    "input": {
+      "mcu": "pro-micro",
+      "usb": "back",
+      "tilt": 10,
+      "tent": -8,
+      "palm": 40,
+      "palm_attachment": "anchored"
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "pro-micro",
+      "mcu_place": "behind",
+      "usb": "back",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 13.9,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 10.0,
+      "tent": -8.0,
+      "palm": 40.0,
+      "palm_attachment": "anchored",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [
+      {
+        "option": "padding",
+        "from": 9.0,
+        "to": 13.9,
+        "reason": "MCU pro-micro needs 37.8 mm behind the sensor but only 33.2 mm are free before the back posts; MCU pro-micro mount needs more clearance from the walls, sensor or lid posts"
+      }
+    ],
+    "problems": [],
+    "floor": -38.628208923547874,
+    "footprint": [
+      83.4,
+      120.4,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      0.0,
+      46.874842381489145,
+      -35.628208923547874
+    ],
+    "palm": [
+      -100.7,
+      -60.7
+    ],
+    "switches": [
+      [
+        17.999999999999996,
+        -38.05,
+        90.0
+      ],
+      [
+        -2.329890535377839e-15,
+        -38.05,
+        90.0
+      ],
+      [
+        -18.000000000000004,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: pro-micro",
+        "qty": 1,
+        "note": "USB, friction pocket (dab of glue)"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 8,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "fused",
+    "input": {
+      "palm": 40,
+      "palm_attachment": "fused"
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "pico",
+      "mcu_place": "behind",
+      "usb": "right",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 9.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 0.0,
+      "tent": 0.0,
+      "palm": 40.0,
+      "palm_attachment": "fused",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -34.6,
+    "footprint": [
+      73.6,
+      110.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      7.5,
+      34.4,
+      -31.6
+    ],
+    "palm": [
+      -95.3,
+      -55.3
+    ],
+    "switches": [
+      [
+        17.999999999999996,
+        -38.05,
+        90.0
+      ],
+      [
+        -2.329890535377839e-15,
+        -38.05,
+        90.0
+      ],
+      [
+        -18.000000000000004,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: pico",
+        "qty": 1,
+        "note": "USB, on 4x M2x6 self-tapping screws"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 8,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "anchored",
+    "input": {
+      "palm": 40,
+      "palm_attachment": "anchored"
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "pico",
+      "mcu_place": "behind",
+      "usb": "right",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 9.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 0.0,
+      "tent": 0.0,
+      "palm": 40.0,
+      "palm_attachment": "anchored",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -34.6,
+    "footprint": [
+      73.6,
+      110.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      7.5,
+      34.4,
+      -31.6
+    ],
+    "palm": [
+      -95.8,
+      -55.8
+    ],
+    "switches": [
+      [
+        17.999999999999996,
+        -38.05,
+        90.0
+      ],
+      [
+        -2.329890535377839e-15,
+        -38.05,
+        90.0
+      ],
+      [
+        -18.000000000000004,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: pico",
+        "qty": 1,
+        "note": "USB, on 4x M2x6 self-tapping screws"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 8,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "sensor3389",
+    "input": {
+      "sensor_pcb": "pmw3389-round"
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "pmw3389-round",
+      "header_height": 9.0,
+      "switches": 3,
+      "switch_type": "choc-v1",
+      "buttons": "front",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "pico",
+      "mcu_place": "behind",
+      "usb": "right",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 9.0,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 0.0,
+      "tent": 0.0,
+      "palm": 0.0,
+      "palm_attachment": "separate",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [],
+    "problems": [],
+    "floor": -34.6,
+    "footprint": [
+      73.6,
+      110.6,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      7.5,
+      29.5,
+      -31.6
+    ],
+    "palm": [
+      -55.8,
+      -55.8
+    ],
+    "switches": [
+      [
+        17.999999999999996,
+        -38.05,
+        90.0
+      ],
+      [
+        -2.329890535377839e-15,
+        -38.05,
+        90.0
+      ],
+      [
+        -18.000000000000004,
+        -38.05,
+        90.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: pmw3389-round",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: pico",
+        "qty": 1,
+        "note": "USB, on 4x M2x6 self-tapping screws"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "choc-v1 switches",
+        "qty": 3,
+        "note": "wired GPIO to GND, internal pull-up"
+      },
+      {
+        "item": "keycaps 1u",
+        "qty": 3,
+        "note": "any profile"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 4,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  },
+  {
+    "name": "bad-tiles",
+    "input": {
+      "buttons": "tiles",
+      "switches": 5
+    },
+    "values": {
+      "ball": 34.0,
+      "support": "btu-7.5",
+      "supports": 3,
+      "polar": 55.0,
+      "cup_shape": "cone",
+      "cup_cut": 6.0,
+      "cup_scoop": 16.0,
+      "cup_peak": "round",
+      "cup_round": 2.0,
+      "ball_gap": 0.8,
+      "cup_wall": 3.0,
+      "rim": 5.0,
+      "skirt": 14.0,
+      "sensor_pcb": "bastardkb",
+      "header_height": 9.0,
+      "switches": 4,
+      "switch_type": "micro",
+      "buttons": "tiles",
+      "tile_gap": 3.5,
+      "tile_frame": 4.0,
+      "keycap_u": 1.0,
+      "switch_gap": 0.0,
+      "no_mirror": false,
+      "mcu": "pico",
+      "mcu_place": "behind",
+      "usb": "right",
+      "usb_type": "auto",
+      "battery": "",
+      "edge_round": 2.0,
+      "padding": 27.6,
+      "wall": 3.0,
+      "floor": 3.0,
+      "feet": 10.0,
+      "fn": 96,
+      "tilt": 0.0,
+      "tent": 0.0,
+      "palm": 0.0,
+      "palm_attachment": "separate",
+      "palm_drop": 2.0,
+      "palm_pad": 0.0
+    },
+    "changes": [
+      {
+        "option": "switches",
+        "from": 5,
+        "to": 4,
+        "reason": "tiles come in 2, 4, 6, 8"
+      },
+      {
+        "option": "padding",
+        "from": 9.0,
+        "to": 27.6,
+        "reason": "MCU pico needs 22.0 mm behind the sensor but only 3.6 mm are free before the back posts; MCU pico mount needs more clearance from the walls, sensor or lid posts"
+      }
+    ],
+    "problems": [],
+    "floor": -38.000001,
+    "footprint": [
+      110.80000000000001,
+      110.80000000000001,
+      0.0,
+      0.0
+    ],
+    "mcu": [
+      26.10000000000001,
+      34.4,
+      -35.000001
+    ],
+    "palm": [
+      -55.900000000000006,
+      -55.900000000000006
+    ],
+    "switches": [
+      [
+        -6.411025993536394e-15,
+        -34.900000000000006,
+        90.0
+      ],
+      [
+        2.1370086645121316e-15,
+        34.900000000000006,
+        270.0
+      ],
+      [
+        -34.900000000000006,
+        4.274017329024263e-15,
+        0.0
+      ],
+      [
+        34.900000000000006,
+        0.0,
+        180.0
+      ]
+    ],
+    "bom": [
+      {
+        "item": "Trackball \u00d834 mm",
+        "qty": 1,
+        "note": "a two-colour or speckled ball tracks best"
+      },
+      {
+        "item": "Sensor board: bastardkb-pmw3360",
+        "qty": 1,
+        "note": "PMW3360 / PMW3389 with the LM19-LSI lens"
+      },
+      {
+        "item": "Controller: pico",
+        "qty": 1,
+        "note": "USB, on 4x M2x6 self-tapping screws"
+      },
+      {
+        "item": "Ball support: BTU \u00d87.5 press-fit",
+        "qty": 3,
+        "note": "press fit"
+      },
+      {
+        "item": "Omron D2F / Kailh GM microswitches",
+        "qty": 4,
+        "note": "pushed into the holder blocks under the tiles"
+      },
+      {
+        "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
+        "qty": 10,
+        "note": "4 cup, 2 sensor PCB, 4 tray posts"
+      },
+      {
+        "item": "M3x8 screws",
+        "qty": 8,
+        "note": "cup to carrier (4), lid to tray (4)"
+      },
+      {
+        "item": "M3x6 screws",
+        "qty": 2,
+        "note": "sensor PCB to carrier"
+      },
+      {
+        "item": "Rubber feet \u00d810 mm",
+        "qty": 4,
+        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+      },
+      {
+        "item": "Wire (6 for the sensor SPI, 2 per switch)",
+        "qty": 1,
+        "note": "JST or direct solder"
+      }
+    ]
+  }
+]
