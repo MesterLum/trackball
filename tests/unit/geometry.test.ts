@@ -40,7 +40,9 @@ for (const row of reference)
   it(`solid parity: ${row.name}/${row.part}`, async () => {
     const dir = await mkdtemp(join(tmpdir(), 'trackball-parity-'));
     try {
-      const part = generateParts(createDesign(row.values as Values)).find((p) => p.name === row.part)!;
+      // Settings added after the checkpoint, set to reproduce its behaviour where one exists.
+      const values = { palm_corners: 'rounded', ...row.values } as Values;
+      const part = generateParts(createDesign(values)).find((p) => p.name === row.part)!;
       const metrics = [];
       for (const [name, scad] of [
         ['reference', row.scad],

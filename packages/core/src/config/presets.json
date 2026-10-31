@@ -1,7 +1,7 @@
 [
   {
-    "key": "em06",
-    "title": "EM06 style",
+    "key": "wireless-palm",
+    "title": "Wireless with palm rest",
     "blurb": "10\u00b0 tilt, two 1.5u MX keys in front, 40 mm palm rest, nice!nano with a battery under the sensor.",
     "values": {
       "tilt": 10,
@@ -15,8 +15,8 @@
     "tags": ["tilt", "wireless", "palm rest"]
   },
   {
-    "key": "em06-tiles",
-    "title": "EM06 tiles",
+    "key": "tiles-palm",
+    "title": "Sculpted tiles",
     "blurb": "Eight sculpted keys filling the deck around the ball over microswitches, 10\u00b0 tilt, 45 mm palm rest with a pad recess, nice!nano with a battery under the sensor.",
     "values": {
       "buttons": "tiles",
@@ -44,8 +44,8 @@
     "tags": ["tiles"]
   },
   {
-    "key": "nano-cradle",
-    "title": "Nano cradle",
+    "key": "lobe-cradle",
+    "title": "Lobe cradle",
     "blurb": "Dome cup with side lobes and deep front/back openings, 3 mm ceramic bearings set low, RP2040-Zero under the sensor, no buttons.",
     "values": {
       "cup_shape": "dome",
@@ -61,8 +61,8 @@
     "tags": ["tiny", "cradle"]
   },
   {
-    "key": "nano-pikes",
-    "title": "Nano pikes",
+    "key": "pointed-lobes",
+    "title": "Pointed lobes",
     "blurb": "Dome cup with two pointed side lobes rising to the ball's equator, V scoops front and back, sharp edges, 3 mm ceramic bearings set low, RP2040-Zero under the sensor, no buttons.",
     "values": {
       "cup_shape": "dome",

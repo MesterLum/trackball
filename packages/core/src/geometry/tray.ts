@@ -28,6 +28,7 @@ import { _ } from '../i18n.js';
 import { circle, cube, hull, linear_extrude, polygon, union } from '../scad/index.js';
 import { EPS, half_space_above, rounded_rect, to_world, zcyl } from './common.js';
 import { tray_palm_joint } from './palmrest.js';
+import { power_switch_parts } from './power.js';
 export function lid_screw_points(d: any): any {
   return d.lid_screw_points();
 }
@@ -102,17 +103,12 @@ export function tray(d: any): any {
     sag: any,
     sh: any,
     slots: any,
-    sw_h: any,
-    sw_w: any,
-    sy: any,
     t: any,
     tall: any,
     usb_end: any,
     w: any,
     wires: any,
     x: any,
-    x_far: any,
-    x_in: any,
     y: any,
     z0: any,
     zb: any,
@@ -222,14 +218,9 @@ export function tray(d: any): any {
       add(add(zf_top, fh), 1),
     );
     adds.push(sub(sub(frame, pocket), wires).translate([bx, by, 0]));
-    if (truth(b.power_switch)) {
-      [sw_w, sw_h] = b.power_switch_slot;
-      sy = -add(add(d.pcb.r, 6), sw_w / 2);
-      [x_in, x_far] = [sub(sub(d.half_width, t.wall), 2), add(d.half_width, mul(4, t.wall))];
-      cuts.push(
-        _box(x_in, x_far, sub(sy, sw_w / 2), add(sy, sw_w / 2), add(zf_top, 3), add(add(zf_top, 3), sw_h)),
-      );
-    }
+    const [cradle, opening] = power_switch_parts(d);
+    if (cradle) adds.push(cradle);
+    if (opening) cuts.push(opening);
   }
   for ([fx, fy] of d.feet_xy()) {
     cuts.push(zcyl(t.feet_dia, sub(zf_bot, 1), add(zf_bot, t.feet_depth), fn).translate([fx, fy, 0]));

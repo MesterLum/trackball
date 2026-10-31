@@ -190,6 +190,19 @@ export function carrier(d: any): any {
   [z0, z1] = [d.z_pcb_face, d.z_carrier_top];
   [w, l, cx, cy] = d.footprint;
   plate = rounded_slab(w, l, cr.corner_r, sub(z1, z0), cr.edge_round, fn).up(z0).translate([cx, cy, 0]);
+  if (d.palm_square_corners) {
+    // A fused palm rest continues the tray straight forward: square the lid's front corners to
+    // meet it, keeping only the edge round-over (corner radius 0 lets it pick the smallest).
+    const front = mul(
+      rounded_slab(w, l, 0, sub(z1, z0), cr.edge_round, fn).up(z0).translate([cx, cy, 0]),
+      cube([add(w, 2), add(cr.corner_r, 1), add(sub(z1, z0), 2)]).translate([
+        sub(-w / 2, 1),
+        sub(-d.front_length, 1),
+        sub(z0, 1),
+      ]),
+    );
+    plate = add(plate, front);
+  }
   cuts = [];
   [ww, wl] = lens_window_size(d);
   cuts.push(

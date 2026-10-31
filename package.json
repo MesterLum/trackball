@@ -10,12 +10,14 @@
     "check": "yarn build:core && svelte-check --tsconfig ./tsconfig.json",
     "test": "vitest run tests/unit",
     "test:e2e": "playwright test",
+    "presets": "node scripts/render-presets.mjs",
     "setup:wasm": "node scripts/setup-wasm.mjs",
     "build:core": "tsc -p packages/core/tsconfig.json",
     "format": "prettier --write packages apps tests scripts *.json *.ts *.js",
     "format:check": "prettier --check packages apps tests scripts *.json *.ts *.js"
   },
   "dependencies": {
+    "@fontsource-variable/archivo": "^5",
     "fflate": "^0.8.2",
     "svelte": "^5.0.0",
     "three": "^0.180.0"

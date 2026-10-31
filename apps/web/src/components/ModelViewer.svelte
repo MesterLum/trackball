@@ -13,6 +13,10 @@
     explode = 0,
     visible,
     showBall = true,
+    showGrid = true,
+    dark = false,
+    onframe = () => {},
+    fill = false,
   }: {
     parts: RenderedPart[];
     tilt?: number;
@@ -22,6 +26,12 @@
     explode?: number;
     visible: Record<string, boolean>;
     showBall?: boolean;
+    showGrid?: boolean;
+    dark?: boolean;
+    /** Called after new meshes are loaded and framed. */
+    onframe?: () => void;
+    /** Take the whole window (thumbnail rendering). */
+    fill?: boolean;
   } = $props();
   let host: HTMLDivElement;
   let scene: THREE.Scene,
@@ -39,10 +49,15 @@
     const box = new THREE.Box3();
     for (const mesh of meshes.values()) if (mesh.visible) box.expandByObject(mesh);
     if (box.isEmpty()) box.setFromObject(ball);
-    const size = box.getSize(new THREE.Vector3()),
-      center = box.getCenter(new THREE.Vector3()),
-      distance = Math.max(size.x, size.y, size.z) * 1.9;
-    camera.position.copy(center).add(new THREE.Vector3(distance, -distance, distance * 0.9));
+    // Fit the bounding sphere into the narrower of the two fields of view (portrait screens).
+    const sphere = box.getBoundingSphere(new THREE.Sphere()),
+      vertical = THREE.MathUtils.degToRad(camera.fov),
+      horizontal = 2 * Math.atan(Math.tan(vertical / 2) * camera.aspect),
+      distance = (sphere.radius / Math.sin(Math.min(vertical, horizontal) / 2)) * 0.95;
+    camera.position
+      .copy(sphere.center)
+      .add(new THREE.Vector3(1, -1, 0.9).normalize().multiplyScalar(distance));
+    const center = sphere.center;
     controls.target.copy(center);
     controls.update();
   }
@@ -71,12 +86,16 @@
       const light = new THREE.DirectionalLight(0xffffff, 3);
       light.position.set(80, -100, 160);
       scene.add(light);
-      grid = new THREE.GridHelper(350, 35, 0x64748b, 0x334155);
-      grid.rotation.x = Math.PI / 2;
-      scene.add(grid);
       ball = new THREE.Mesh(
         new THREE.SphereGeometry(1, 48, 32),
-        new THREE.MeshStandardMaterial({ color: 0x7895b2, metalness: 0.25, roughness: 0.3 }),
+        // Mostly opaque; a little translucency still hints at the supports below.
+        new THREE.MeshPhysicalMaterial({
+          color: 0xc81e3c,
+          transparent: true,
+          opacity: 0.82,
+          roughness: 0.25,
+          clearcoat: 0.6,
+        }),
       );
       scene.add(ball);
       observer = new ResizeObserver(() => {
@@ -111,6 +130,22 @@
       grid?.geometry.dispose();
       renderer?.dispose();
     };
+  });
+  // 10 mm cells, coloured to sit quietly on the current theme.
+  $effect(() => {
+    if (!ready) return;
+    const [major, minor] = dark ? [0x48535a, 0x2b3236] : [0xbfc4bd, 0xe0e3de];
+    const next = new THREE.GridHelper(300, 30, major, minor);
+    next.rotation.x = Math.PI / 2;
+    if (grid) {
+      next.position.z = grid.position.z;
+      next.visible = grid.visible;
+      scene.remove(grid);
+      grid.geometry.dispose();
+      (grid.material as THREE.Material).dispose();
+    }
+    grid = next;
+    scene.add(grid);
   });
   $effect(() => {
     if (!ready) return;
@@ -158,27 +193,32 @@
       mesh.visible = visible[part.name] ?? visible.hardware ?? false;
     }
     ball.scale.setScalar(ballRadius);
-    ball.position.z = explode * 2;
+    // One step above the cup (lift 2) so exploding separates the ball from it.
+    ball.position.z = explode * 3;
     ball.visible = showBall;
     grid.position.z = floor - 0.1;
-    if (changed) fit();
+    grid.visible = showGrid;
+    if (changed) {
+      fit();
+      onframe();
+    }
   });
 </script>
 
-<div class="viewer" bind:this={host} aria-label="3D model preview">
+<div class="viewer" class:fill bind:this={host} aria-label="3D model preview">
   {#if error}<p role="alert" class="alert alert-warning absolute inset-x-4 top-4">{error}</p>{/if}
 </div>
 
 <style>
   .viewer {
-    height: clamp(360px, 58vh, 760px);
+    height: clamp(320px, 58vh, 760px);
     width: 100%;
     position: relative;
-    background: radial-gradient(
-      ellipse at 45% 45%,
-      color-mix(in srgb, var(--color-base-300) 65%, transparent),
-      transparent
-    );
+    background: var(--color-base-100);
+  }
+  .viewer.fill {
+    height: 100vh;
+    background: transparent;
   }
   .viewer :global(canvas) {
     display: block;

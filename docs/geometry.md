@@ -7,8 +7,8 @@
   modelled here, which is also their print orientation.
 - **world frame**: deck frame rotated by `tilt` about X and `tent` about Y.
   The desk is horizontal here. The tray floor, MCU and battery live here.
-  The tray walls stay perpendicular to the deck, so the sides lean like the
-  ProtoArc EM06's. `Design.deck_to_world()` / `world_to_deck()` convert.
+  The tray walls stay perpendicular to the deck, so the sides lean with the
+  deck. `Design.deck_to_world()` / `world_to_deck()` convert.
 
 ## Sizing rules
 
@@ -55,6 +55,8 @@
   `palm_attachment separate` keeps it freely positioned (default);
   `anchored` adds two alignment tongues and a replaceable underside snap key;
   `fused` combines the palm rest and base into `tray.stl`, keeping the lid removable.
+  `palm_corners square` (default) squares the lid's two front corners so they meet the
+  fused rest flush; `rounded` keeps the lid shape and leaves a small notch at each corner.
   Its joint has a square rear edge and straight side walls through the seam;
   only the exterior front corners remain rounded. The palm height/drop setting
   still controls its top relative to the lid.
@@ -75,8 +77,8 @@
   the module by up to 6 mm.
 - **Cup shape** (`cup_shape`): `cone` is a plain cone from skirt to rim,
   open all around. `dome` is a spherical shell that follows the ball, with the
-  front and back scooped away so two side lobes cradle the ball (Ploopy Nano
-  look). `block` is a rounded square scooped on all four sides, leaving four
+  front and back scooped away so two side lobes cradle the ball.
+  `block` is a rounded square scooped on all four sides, leaving four
   corner tabs. `cup_cut` is how deep the scoops go below the rim; `rim`
   (how far below the ball centre the rim sits) sets how much ball shows. The
   scoops must stay above the ball-support pockets, so deep cradles need
@@ -85,11 +87,11 @@
   `cup_scoop` is the radius of the round scoops (narrower lobes with a
   smaller one). `cup_peak sharp` replaces them with V-shaped scoops whose
   walls reach the outer surface at the rim, so each lobe ends in a point
-  (1 mm flat) like the Ploopy Nano; with `rim 0` the points sit at the
+  (1 mm flat); with `rim 0` the points sit at the
   ball's equator, the highest they can go while the ball still drops in.
 - **Tiles** (`buttons tiles switches 2|4|6|8`): instead of a row of
   key switches, the lid top is divided into large wedge keys that fill the
-  deck around the ball, ProtoArc EM06 style: one per side (4), the front and
+  deck around the ball: one per side (4), the front and
   back split in two (6) or three (8), or only the two sides (2). Each tile is
   a flexure paddle printed into the lid, hinged along the body edge, with an
   Omron D2F microswitch in a holder block that hangs from the ring around the
@@ -169,13 +171,29 @@ a friction pocket), USB size, tallest component, BOOTSEL position.
   `nice-nano`, `supermini`, `pro-micro`. Boards without mounting holes get
   a friction pocket; add a dab of glue or tape.
 - Battery: `battery LxWxT` makes a framed pocket for that cell under the
-  sensor (L along X, W along Y) plus a slide-switch slot in the USB wall. Useful with the wireless boards
+  sensor (L along X, W along Y). Useful with the wireless boards
   (nice!nano, Supermini, XIAO nRF52840, Pico W with a LiPo shim).
+- Power switch (`power_switch slide|rocker|toggle|none`, `power_wall
+  right|left|front|back`): the switch moves along the chosen wall to the first
+  spot clear of the USB plug (a 12 mm moulded plug plus margin), controller,
+  battery frame, lid posts, sensor PCB and the button bodies under the lid, and
+  sits 1-1.5 mm above the floor. The front wall is refused while a palm rest is
+  attached there. If nothing fits, validation says so instead of moving it.
+  - `slide`: SS12D00 (8.6 x 3.6 x 3.5 mm). A body-height recess thins the wall
+    to 1.2 mm around a 4.6 x 2.4 mm lever slot; printed cheeks and a shelf hold
+    the body. Drop it in behind the wall, slide it outward, add a dab of glue.
+  - `rocker`: KCD11 mini rocker, 13.2 x 8.8 mm snap-in cutout, wall thinned to
+    1.5 mm for the tabs, about 16.5 mm deep inside with terminals.
+  - `toggle`: MTS-102 (ON-OFF) or MTS-103 (ON-OFF-ON, same body), 6.3 mm hole,
+    wall thinned to 2.5 mm for the nut, about 16 mm deep inside.
+  These dimensions are typical datasheet values, not yet measured against
+  real parts (`packages/core/src/calculations/power.ts`); print a test wall
+  first.
 - Click switches, three types:
   - `choc-v1` (default): 13.8 mm plate cutout with a relief pocket under
     the 5 mm lid, leaving a 1.3 mm plate for the clips.
   - `mx`: 14 mm cutout, 1.5 mm plate. Deeper body, the tray floor adapts.
-  - `micro`: EM06-style flat paddles printed into the lid. Each paddle is
+  - `micro`: flat paddles printed into the lid. Each paddle is
     2.5 mm thick, freed on three sides by a 0.8 mm slot, hinged at the
     outer edge by a 0.8 mm flexure. A bar under the paddle tip holds an
     Omron D2F / Kailh GM microswitch (12.8 x 5.8 x 6.5 mm) pushed in from

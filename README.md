@@ -1,4 +1,4 @@
-# Parametric trackball configurator
+# Ridekay Trackball
 
 Customize a printable trackball around your ball, sensor PCB, controller and
 switches. Preview the model, check its fit, and download SCAD or STL bundles.
@@ -34,6 +34,7 @@ just test     # calculation and rendered-solid regression tests
 just build    # produce dist/
 just preview  # serve the production build locally
 just browsers # install Chromium and Linux browser dependencies
+just presets  # render the preset gallery thumbnails from the built site
 just e2e      # test the production site in Chromium
 just ci       # same setup and validation used by GitHub Actions
 ```
@@ -52,7 +53,7 @@ See [development environment details](docs/development.md).
 | `packages/core/src/scad/` | Immutable OpenSCAD syntax tree and serializer |
 | `packages/renderer-browser/` | WASM worker, cancellation, progress and bounded STL cache |
 | `apps/web/` | Svelte controls, Three.js viewer, sharing and downloads |
-| `tests/fixtures/` | Dimension and SCAD references from Python checkpoint `1ed1441` |
+| `tests/fixtures/` | Dimension and SCAD references from Python checkpoint `1ed1441`; rows marked `rebaselined` follow deliberate changes |
 
 `@trackball/core` builds as an independent ESM package with TypeScript
 declarations. It imports no DOM, Svelte or browser renderer. A future CLI can
@@ -81,16 +82,23 @@ Auto fit applies the smallest necessary adjustments and displays them.
 Turn it off to inspect fit problems directly. Auto render can also be disabled.
 Undo, redo, presets and shared URLs preserve the configuration.
 
-Preview detail is independent of the final `$fn` setting under Body. STL
-exports render at final quality and include the design, summary and BOM.
+The preview and the STL download use the same curve smoothness (`$fn`, under
+Body), so the download reuses the rendered preview. STL exports include the
+design, summary and BOM.
 SCAD exports also include assembly, section and hardware placement views.
 Cup and carrier export in their flat print frame; the tray and palm rest
 export floor down. A fused rest is part of `tray.stl`; anchored mode includes
 `palm_key.stl`. The viewer supports orbiting, part visibility, exploded views
 and PNG snapshots.
 
+Preset thumbnails are not committed: `just presets` renders them with the
+site's own viewer into `apps/web/public/presets/` and `dist/presets/`, and CI
+regenerates them on every build, so they always match the current geometry.
+A preset that no longer fits fails the build.
+
 English and Spanish messages live in `packages/core/src/es.json`. The language
-selector updates both the controls and calculated messages.
+selector updates both the controls and calculated messages. A unit test fails
+when a user-facing string has no Spanish entry.
 
 See [geometry, hardware and assembly notes](docs/geometry.md) for dimensional
 assumptions, board references, printing tolerances and assembly instructions.

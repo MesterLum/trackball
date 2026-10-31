@@ -2,7 +2,7 @@ name: Test and deploy static configurator
 
 on:
   push:
-    branches: [main, master, migration/svelte-typescript-wasm]
+    branches: [main, master]
   pull_request:
   workflow_dispatch:
 
@@ -20,6 +20,14 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: cachix/install-nix-action@v31
+      # Yarn packages, the verified OpenSCAD runtime and Corepack live in .cache; Chromium in ms-playwright.
+      - uses: actions/cache@v4
+        with:
+          path: |
+            .cache
+            ~/.cache/ms-playwright
+          key: deps-${{ runner.os }}-${{ hashFiles('yarn.lock', 'package.json', 'scripts/openscad.lock.json') }}
+          restore-keys: deps-${{ runner.os }}-
       - name: Choose Pages base path
         env:
           CUSTOM_BASE: ${{ vars.PAGES_BASE_PATH }}

@@ -13,7 +13,8 @@ describe('Python checkpoint dimension parity', () => {
   for (const row of reference)
     it(row.name, () => {
       const fit = autofit(row.input as Partial<Values>);
-      expect(fit.values).toEqual(row.values);
+      // Options added after the checkpoint keep their defaults.
+      expect(fit.values).toEqual({ ...defaults(), ...row.values });
       const d = createDesign(fit.values);
       close(d.footprint, row.footprint);
       close(d.z_floor_top, row.floor);

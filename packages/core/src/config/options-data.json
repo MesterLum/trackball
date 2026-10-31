@@ -63,7 +63,7 @@
     "name": "cup_shape",
     "kind": "choice",
     "default": "cone",
-    "help": "cone: open all around; dome: side lobes, open front/back (Nano style); block: square with four corner tabs",
+    "help": "cone: open all around; dome: side lobes, open front/back; block: square with four corner tabs",
     "group": "Ball & cup",
     "flag": null,
     "choices": ["cone", "dome", "block"],
@@ -108,7 +108,7 @@
     "name": "cup_peak",
     "kind": "choice",
     "default": "round",
-    "help": "round: cylindrical scoops; sharp: V scoops so the lobes end in points (Ploopy Nano look)",
+    "help": "round: cylindrical scoops; sharp: V scoops so the lobes end in points",
     "group": "Ball & cup",
     "flag": null,
     "choices": ["round", "sharp"],
@@ -258,7 +258,7 @@
     "name": "buttons",
     "kind": "choice",
     "default": "front",
-    "help": "where the row goes: front (between you and the ball), left, right, sides; tiles: large sculpted keys filling the deck around the ball, over microswitches (EM06 style)",
+    "help": "where the row goes: front (between you and the ball), left, right, sides; tiles: large sculpted keys filling the deck around the ball, over microswitches",
     "group": "Buttons",
     "flag": null,
     "choices": ["front", "left", "right", "sides", "tiles"],
@@ -420,6 +420,42 @@
     "label": "battery"
   },
   {
+    "name": "power_switch",
+    "kind": "choice",
+    "default": "slide",
+    "help": "switch that cuts the battery: a small slide lever, a snap-in rocker, or a nut-mounted toggle lever (MTS-103 adds a second ON position)",
+    "group": "Electronics",
+    "flag": null,
+    "choices": ["slide", "rocker", "toggle", "none"],
+    "choice_labels": {
+      "slide": "Slide switch (SS12D00)",
+      "rocker": "Rocker switch (KCD11)",
+      "toggle": "Toggle switch (MTS-102 / MTS-103)",
+      "none": "No switch"
+    },
+    "min": null,
+    "max": null,
+    "step": null,
+    "unit": "",
+    "pattern": null,
+    "label": "power switch"
+  },
+  {
+    "name": "power_wall",
+    "kind": "choice",
+    "default": "right",
+    "help": "wall for the power switch; it moves along the wall to clear the USB opening, controller, battery and posts",
+    "group": "Electronics",
+    "flag": null,
+    "choices": ["right", "left", "front", "back"],
+    "min": null,
+    "max": null,
+    "step": null,
+    "unit": "",
+    "pattern": null,
+    "label": "power switch wall"
+  },
+  {
     "name": "edge_round",
     "kind": "float",
     "default": 2.0,
@@ -498,7 +534,7 @@
     "name": "fn",
     "kind": "int",
     "default": 96,
-    "help": "OpenSCAD $fn (curve smoothness; lower = faster)",
+    "help": "Segments per full circle ($fn). The preview and the STL download use the same value; higher is smoother and slower.",
     "group": "Body",
     "flag": null,
     "choices": [],
@@ -507,7 +543,7 @@
     "step": null,
     "unit": "",
     "pattern": null,
-    "label": "$fn"
+    "label": "curve smoothness"
   },
   {
     "name": "tilt",
@@ -568,6 +604,21 @@
     "unit": "",
     "pattern": null,
     "label": "palm-rest attachment"
+  },
+  {
+    "name": "palm_corners",
+    "kind": "choice",
+    "default": "square",
+    "help": "fused palm rest: square lid corners meet the rest flush; rounded keeps the lid shape and leaves a small notch at each corner",
+    "group": "Deck",
+    "flag": null,
+    "choices": ["square", "rounded"],
+    "min": null,
+    "max": null,
+    "step": null,
+    "unit": "",
+    "pattern": null,
+    "label": "fused corners"
   },
   {
     "name": "palm_drop",
