@@ -88,7 +88,8 @@ design, summary and BOM.
 SCAD exports also include assembly, section and hardware placement views.
 Cup and carrier export in their flat print frame; the tray and palm rest
 export floor down. A fused rest is part of `tray.stl`; anchored mode includes
-`palm_key.stl`. The viewer supports orbiting, part visibility, exploded views
+`palm_key.stl`. Controllers without mounting holes add `mcu_clamp.stl`, a bar
+that screws over the board; print it upside down. The viewer supports orbiting, part visibility, exploded views
 and PNG snapshots.
 
 Preset thumbnails are not committed: `just presets` renders them with the
@@ -127,3 +128,19 @@ renders parts sequentially in a worker and bounds its in-memory STL cache to
 
 The pinned OpenSCAD runtime is GPL-2.0-or-later; upstream source and license
 links are included with the distributed runtime in `openscad/NOTICE.md`.
+
+## License
+
+Ridekay Trackball is free software: you can redistribute it and/or modify it
+under the terms of the [GNU General Public License](LICENSE), version 3 or (at
+your option) any later version. It is distributed WITHOUT ANY WARRANTY; see the
+license for details.
+
+The models you generate (SCAD, STL, parts lists) are yours: print, share and
+sell them under any terms you like. The license covers the configurator's
+source code.
+
+Third-party components keep their own licenses: OpenSCAD (GPL-2.0-or-later)
+and Svelte, three.js, fflate, daisyUI and Tailwind CSS (MIT), and the Archivo
+typeface (SIL Open Font License 1.1). The build collects their notices into
+`THIRD_PARTY_LICENSES.txt` at the root of the deployed site.

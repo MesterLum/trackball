@@ -405,6 +405,55 @@
     "label": "USB connector"
   },
   {
+    "name": "mcu_hold",
+    "kind": "choice",
+    "default": "clamp",
+    "help": "controllers without mounting holes: a printed bar screwed over the far end of the board holds it down against cable tugs; glue only keeps the plain pocket",
+    "group": "Electronics",
+    "flag": null,
+    "choices": ["clamp", "glue"],
+    "choice_labels": {
+      "clamp": "Screwed clamp bar",
+      "glue": "Glue only"
+    },
+    "min": null,
+    "max": null,
+    "step": null,
+    "unit": "",
+    "pattern": null,
+    "label": "controller hold-down"
+  },
+  {
+    "name": "clamp_length",
+    "kind": "float",
+    "default": 3.0,
+    "help": "how far the clamp pad reaches in from the board end opposite the USB; keep it on an area without parts or pads",
+    "group": "Electronics",
+    "flag": null,
+    "choices": [],
+    "min": 1.5,
+    "max": 12,
+    "step": 0.5,
+    "unit": "mm",
+    "pattern": null,
+    "label": "clamp pad length"
+  },
+  {
+    "name": "clamp_width",
+    "kind": "float",
+    "default": 8.0,
+    "help": "width of the clamp pad across the board, centred; keep it clear of the edge pads where wires are soldered",
+    "group": "Electronics",
+    "flag": null,
+    "choices": [],
+    "min": 3,
+    "max": 17,
+    "step": 0.5,
+    "unit": "mm",
+    "pattern": null,
+    "label": "clamp pad width"
+  },
+  {
     "name": "battery",
     "kind": "str",
     "default": "",

@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import reference from '../fixtures/python-dimensions.json';
 import { createDesign, autofit, generateParts, defaults, coerce } from '../../packages/core/src/index';
 import type { Values } from '../../packages/core/src/index';
+import { CHECKPOINT } from './checkpoint';
 function close(actual: any, expected: any): void {
   if (typeof expected === 'number') expect(actual).toBeCloseTo(expected, 7);
   else if (Array.isArray(expected)) {
@@ -12,9 +13,9 @@ function close(actual: any, expected: any): void {
 describe('Python checkpoint dimension parity', () => {
   for (const row of reference)
     it(row.name, () => {
-      const fit = autofit(row.input as Partial<Values>);
-      // Options added after the checkpoint keep their defaults.
-      expect(fit.values).toEqual({ ...defaults(), ...row.values });
+      const fit = autofit({ ...CHECKPOINT, ...(row.input as Partial<Values>) });
+      // Options added after the checkpoint keep their defaults (or the checkpoint settings).
+      expect(fit.values).toEqual({ ...defaults(), ...CHECKPOINT, ...row.values });
       const d = createDesign(fit.values);
       close(d.footprint, row.footprint);
       close(d.z_floor_top, row.floor);

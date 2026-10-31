@@ -35,9 +35,18 @@ export type Values = Record<string, string | number | boolean>;
 export const OPTIONS = data as Option[];
 export const BY_NAME = Object.fromEntries(OPTIONS.map((o) => [o.name, o]));
 /** Choice options whose values are shown as words (translated) rather than part numbers. */
-export const TRANSLATED_CHOICES = new Set(['palm_attachment', 'palm_corners', 'power_switch', 'power_wall']);
+export const TRANSLATED_CHOICES = new Set([
+  'mcu_hold',
+  'palm_attachment',
+  'palm_corners',
+  'power_switch',
+  'power_wall',
+]);
 /** Options that only matter for some configurations, hidden otherwise. */
 export function optionApplies(name: string, v: Partial<Values>): boolean {
+  const holeless = !MCUS[String(v.mcu)]?.holes?.length;
+  if (name === 'mcu_hold') return holeless;
+  if (name === 'clamp_length' || name === 'clamp_width') return holeless && v.mcu_hold !== 'glue';
   if (name === 'palm_attachment') return Number(v.palm) > 0;
   if (name === 'palm_corners') return Number(v.palm) > 0 && v.palm_attachment === 'fused';
   if (name === 'power_switch') return String(v.battery ?? '').trim() !== '';
@@ -109,6 +118,9 @@ export function makeDesign(values: Partial<Values>): Design {
       mcu: copy(MCUS[String(v.mcu)]),
       mcu_place: v.mcu_place,
       usb_type: v.usb_type,
+      mcu_hold: v.mcu_hold,
+      clamp_length: v.clamp_length,
+      clamp_width: v.clamp_width,
       usb_exit: v.usb === 'back' ? 'back' : 'side',
       usb_side: v.usb === 'left' ? -1 : 1,
       wall: v.wall,

@@ -2,10 +2,11 @@
   "name": "trackball-configurator",
   "version": "1.0.0",
   "private": true,
+  "license": "GPL-3.0-or-later",
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
-    "build": "yarn build:core && vite build",
+    "build": "yarn build:core && node scripts/third-party-licenses.mjs && vite build",
     "preview": "vite preview --host 127.0.0.1",
     "check": "yarn build:core && svelte-check --tsconfig ./tsconfig.json",
     "test": "vitest run tests/unit",

@@ -168,8 +168,18 @@ a friction pocket), USB size, tallest component, BOOTSEL position.
   different outlines, connector overhang or mid-mount offsets. A connector-type
   override alone cannot describe every clone's mechanical differences.
 - MCU presets: `pico`, `pico-w`, `pico2`, `rp2040-zero`, `xiao`,
-  `nice-nano`, `supermini`, `pro-micro`. Boards without mounting holes get
-  a friction pocket; add a dab of glue or tape.
+  `nice-nano`, `supermini`, `pro-micro`. Boards without mounting holes sit in
+  a pocket that takes the plug's push and pull. By default (`mcu_hold clamp`)
+  a separate printed bar (`mcu_clamp.stl`, 2.8 mm thick) is screwed over the
+  board end opposite the USB with two M2x6 self-tapping screws into posts
+  beside the pocket, so wiggling the cable cannot lever the board up. Only its
+  pad touches the board: `clamp_length` (from that end, default 3 mm) by
+  `clamp_width` (centred, default 8 mm); elsewhere the underside stays 1.4 mm
+  up, clear of edge pads and wires. The posts sit 0.15 mm low, so tightening
+  the screws flexes the bar and keeps the pad pressed. Check the default pad
+  against your board: these boards have not been measured for part-free
+  areas. Validation refuses a pad wider than the board, past its middle, or a
+  bar over the RP2040-Zero BOOT button. `mcu_hold glue` keeps the plain pocket.
 - Battery: `battery LxWxT` makes a framed pocket for that cell under the
   sensor (L along X, W along Y). Useful with the wireless boards
   (nice!nano, Supermini, XIAO nRF52840, Pico W with a LiPo shim).
@@ -213,7 +223,8 @@ a friction pocket), USB size, tallest component, BOOTSEL position.
 4. Screw the cup onto the carrier (4 screws from below).
 5. Mount the MCU in the tray, wire the sensor header
    (GND, MISO, SCLK, MOSI, NCS, 5V) to SPI pins, route the USB out the
-   back cutout. Drop the battery in its frame, wires toward the MCU.
+   back cutout. Without mounting holes, seat the board USB-first, then
+   screw the clamp bar (printed upside down, flat top on the bed) over its far end. Drop the battery in its frame, wires toward the MCU.
 6. Drop the carrier onto the tray and fix the 4 corner screws.
 7. Drop the ball in.
 
