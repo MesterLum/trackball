@@ -31,6 +31,14 @@ format: versions
 format-check: versions
     yarn format:check
 
+# Lint TypeScript, Svelte and scripts with ESLint.
+lint: versions
+    yarn lint
+
+# Install the git hooks (format + lint on commit, types + unit tests on push).
+hooks:
+    lefthook install
+
 # Start the Svelte development server with automatic reload.
 dev: wasm
     yarn dev
@@ -68,4 +76,4 @@ e2e: build browsers
     yarn test:e2e
 
 # The same validation sequence is used in CI and locally.
-ci: setup format-check check coverage build browsers presets e2e
+ci: setup format-check lint check coverage build browsers presets e2e

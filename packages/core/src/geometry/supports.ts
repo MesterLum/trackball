@@ -1,32 +1,13 @@
 // Parametric model algorithms ported from checkpoint 1ed1441. All execution is TypeScript.
-import {
-  add,
-  sub,
-  mul,
-  mod,
-  index,
-  get,
-  truth,
-  contains,
-  range,
-  length,
-  abs,
-  min,
-  max,
-  round,
-  minBy,
-  format,
-  formatValue,
-  math,
-} from '../math.js';
+import { add, sub, mul, max, format, math } from '../math.js';
 import { _ } from '../i18n.js';
 import { color, cube, cylinder, sphere } from '../scad/index.js';
 export const BIG = 60.0;
 export class BallSupport {
   [key: string]: any;
-  constructor(values: Record<string, any> = {}) {}
-  prepare(ball_r: any, polar_deg: any, r_out: any): any {}
-  cutter(fn: any): any {
+  constructor(_values: Record<string, any> = {}) {}
+  prepare(_ball_r: any, _polar_deg: any, _r_out: any): any {}
+  cutter(_fn: any): any {
     throw new Error('Unsupported support operation');
   }
   body_reach(): any {
@@ -35,7 +16,7 @@ export class BallSupport {
   body_radius(): any {
     throw new Error('Unsupported support operation');
   }
-  preview(fn: any): any {
+  preview(_fn: any): any {
     return null;
   }
   describe(): any {

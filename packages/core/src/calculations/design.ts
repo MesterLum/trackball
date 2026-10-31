@@ -3,7 +3,6 @@ import {
   add,
   sub,
   mul,
-  mod,
   index,
   get,
   truth,
@@ -16,13 +15,12 @@ import {
   round,
   minBy,
   format,
-  formatValue,
   math,
 } from '../math.js';
 import { _ } from '../i18n.js';
 import { POWER_SWITCHES, is_placement, place_power_switch } from './power.js';
 import { CLAMP, CLAMP_SIDE_EXTRA } from './clamp.js';
-import { BallSupport, PressFitBTU } from '../geometry/supports.js';
+import { PressFitBTU } from '../geometry/supports.js';
 import { TILE_COUNTS, TILE_DEPTH_MIN, holder_boxes, positions, tile_depth } from '../geometry/tiles.js';
 export class SensorPCB {
   [key: string]: any;
@@ -1133,7 +1131,7 @@ export class Design {
           min(
             (() => {
               const result: any = [];
-              for (const [a, b] of m.holes) {
+              for (const [a, _b] of m.holes) {
                 result.push(sub(a, r));
               }
               return result;
@@ -1145,7 +1143,7 @@ export class Design {
           max(
             (() => {
               const result: any = [];
-              for (const [a, b] of m.holes) {
+              for (const [a, _b] of m.holes) {
                 result.push(add(a, r));
               }
               return result;
@@ -1157,7 +1155,7 @@ export class Design {
           max(
             (() => {
               const result: any = [];
-              for (const [a, b] of m.holes) {
+              for (const [_a, b] of m.holes) {
                 result.push(add(abs(b), r));
               }
               return result;
@@ -1269,8 +1267,7 @@ export class Design {
       x: any,
       y0: any,
       y1: any,
-      y: any,
-      z: any;
+      y: any;
     t = this.tray;
     corners = this.mcu_mount_corners();
     deck = (() => {
@@ -1284,7 +1281,7 @@ export class Design {
     [hx, hy] = [sub(w / 2, t.wall), sub(l / 2, t.wall)];
     r = max(sub(this.carrier.corner_r, t.wall), 1);
     deficit = 0.0;
-    for ([x, y, z] of deck) {
+    for ([x, y] of deck) {
       [qx, qy] = [sub(abs(sub(x, cx)), sub(hx, r)), sub(abs(sub(y, cy)), sub(hy, r))];
       distance = sub(add(math.hypot(max(qx, 0), max(qy, 0)), min(max(qx, qy), 0)), r);
       deficit = max(deficit, add(distance, t.mcu_wall_clear));

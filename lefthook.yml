@@ -1,0 +1,19 @@
+# Local git hooks; install once with `just hooks`. CI runs the same checks and stays the gate
+# (hooks can be skipped with --no-verify).
+pre-commit:
+  parallel: true
+  jobs:
+    - name: format
+      glob: '*.{ts,js,mjs,svelte,json,css}'
+      run: scripts/dev-shell.sh yarn prettier --write {staged_files}
+      stage_fixed: true
+    - name: lint
+      glob: '*.{ts,js,mjs,svelte}'
+      run: scripts/dev-shell.sh yarn eslint {staged_files}
+
+pre-push:
+  jobs:
+    - name: types
+      run: scripts/dev-shell.sh yarn check
+    - name: unit tests
+      run: scripts/dev-shell.sh yarn test

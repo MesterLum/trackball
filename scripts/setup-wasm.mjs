@@ -30,7 +30,9 @@ for (const target of ['web', 'node']) {
       console.log(`OpenSCAD ${target}: cached`);
       continue;
     }
-  } catch {}
+  } catch {
+    // No cached runtime yet: download it below.
+  }
   const archive = new Uint8Array(await (await fetchOk(entry.url)).arrayBuffer());
   const actual = createHash('sha256').update(archive).digest('hex');
   if (actual !== entry.sha256) throw new Error(`OpenSCAD ${target}: checksum mismatch`);
