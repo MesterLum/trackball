@@ -1,0 +1,8 @@
+node_modules
+.cache
+dist
+packages/core/dist
+tests/fixtures
+out
+apps/web/public/openscad/openscad.js
+apps/web/public/openscad/openscad.wasm

@@ -1,0 +1,11 @@
+{
+  "version": "2025.03.25",
+  "web": {
+    "url": "https://files.openscad.org/playground/OpenSCAD-2025.03.25.wasm24456-WebAssembly-web.zip",
+    "sha256": "0968af31b9c9b3bba68d9031de1695ccae51c32231a1aab4ef27b18c86379f3b"
+  },
+  "node": {
+    "url": "https://files.openscad.org/playground/OpenSCAD-2025.03.25.wasm24455-WebAssembly-node.zip",
+    "sha256": "219c569a3d2bbd51895fd0872683f1a7fdffcfe343deaee20f7e15214f3c73f1"
+  }
+}
