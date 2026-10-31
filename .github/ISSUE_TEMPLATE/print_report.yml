@@ -1,0 +1,43 @@
+name: Print or fit report
+description: Share how a print came out, or a measurement of a real part
+labels: [print-report]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for building one! Reports from real prints and measured parts are the best way to make the defaults right.
+  - type: input
+    id: link
+    attributes:
+      label: Share link
+      description: The "Share link" of the design you printed.
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What are you reporting?
+      options:
+        - It fits and works
+        - Something does not fit
+        - A measurement of a real part
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: Which part, what you measured or observed, and by how much it is off. Photos (especially of calipers) help a lot.
+    validations:
+      required: true
+  - type: input
+    id: printer
+    attributes:
+      label: Printer, material and slicer settings
+      placeholder: Prusa MK4, PETG, 0.2 mm layers
+  - type: input
+    id: hardware
+    attributes:
+      label: Hardware used
+      description: Exact part names or links (ball supports, switches, controller, sensor board).

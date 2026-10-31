@@ -84,3 +84,35 @@ Yarn release on its first invocation. Dependencies use the standard
 After changing dependencies, run `yarn install` and commit `yarn.lock`.
 For a clean checkout or CI, use `just install`, which rejects unexpected lock
 file changes. Do not add a package-lock.json alongside yarn.lock.
+
+## CI and deployment
+
+Two GitHub Actions workflows share the `just` recipes and a setup action
+(`.github/actions/setup`) for Nix, dependency caches and the site base path:
+
+- **CI** (`.github/workflows/ci.yml`) runs on every pull request in two parallel
+  jobs, both required to merge into `main`:
+  - `checks`: formatting, lint, types, and unit and geometry tests with at least
+    95% coverage (summary on the run page, HTML report as an artifact);
+  - `e2e`: production build, preset thumbnails and browser tests (failure
+    screenshots and traces as an artifact).
+- **Deploy** (`.github/workflows/deploy.yml`) runs only on `main`: it repeats
+  `just ci` on exactly what was merged, then publishes `dist/` to GitHub Pages.
+
+`main` accepts changes only through pull requests with both checks green; force
+pushes and deletion are blocked, and history stays linear (squash or rebase
+merges).
+
+The site is served at <https://trackball.ridekay.com>. The repository variable
+`PAGES_BASE_PATH` is `/` for the custom domain; without it the base is
+`/<repository>/` (or `/` for an `<owner>.github.io` repository). To check a
+base locally:
+
+```sh
+BASE_PATH=/trackball/ just build
+BASE_PATH=/trackball/ just e2e
+BASE_PATH=/trackball/ just preview
+```
+
+Publish the whole `dist/` directory: it includes the WASM runtime, its GPL
+notice (`openscad/`) and `THIRD_PARTY_LICENSES.txt`.

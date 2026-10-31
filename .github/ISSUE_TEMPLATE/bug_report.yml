@@ -1,0 +1,37 @@
+name: Bug report
+description: Something in the configurator does not work as expected
+labels: [bug]
+body:
+  - type: input
+    id: link
+    attributes:
+      label: Share link
+      description: Click "Share link" in the configurator and paste it here, so we can open your exact design.
+      placeholder: https://trackball.ridekay.com/?ball=44&...
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open the link
+        2. Change ...
+        3. See ...
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and device
+      placeholder: Firefox 140 on Windows 11 / Safari on iPhone 16
+  - type: textarea
+    id: extra
+    attributes:
+      label: Screenshots or error messages
+      description: Paste any error shown on the page or in the browser console.
