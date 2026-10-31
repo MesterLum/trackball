@@ -25,6 +25,7 @@ import {
   math,
 } from '../math.js';
 import { _ } from '../i18n.js';
+import { POWER_SWITCHES, is_placement, place_power_switch } from './power.js';
 import { BallSupport, PressFitBTU } from '../geometry/supports.js';
 import { TILE_COUNTS, TILE_DEPTH_MIN, holder_boxes, positions, tile_depth } from '../geometry/tiles.js';
 export class SensorPCB {
@@ -180,6 +181,7 @@ export class Deck {
     this.palm_round = values.palm_round ?? 2.0;
     this.palm_pad_recess = values.palm_pad_recess ?? 0.0;
     this.palm_pad_inset = values.palm_pad_inset ?? 5.0;
+    this.palm_corners = values.palm_corners ?? 'square';
   }
 }
 export class MCU {
@@ -304,8 +306,8 @@ export class Battery {
     this.clearance = values.clearance ?? 0.5;
     this.frame_wall = values.frame_wall ?? 1.5;
     this.frame_extra_h = values.frame_extra_h ?? 1.0;
-    this.power_switch = values.power_switch ?? true;
-    this.power_switch_slot = values.power_switch_slot ?? [9.0, 4.5];
+    this.power_switch = values.power_switch ?? 'slide';
+    this.power_wall = values.power_wall ?? 'right';
   }
   get outer(): any {
     let f: any;
@@ -683,7 +685,9 @@ export class Design {
     function report(msg: any, padding_needed: any = null, alt: any = ''): any {
       let fix: any, hint: any;
       fix = truth(padding_needed !== null) ? { ['padding']: round(add(padding_needed, 0.25), 1) } : {};
-      hint = truth(fix) ? format(_('use --padding {value:g} or more'), { value: index(fix, 'padding') }) : '';
+      hint = truth(fix)
+        ? format(_('set padding to {value:g} mm or more'), { value: index(fix, 'padding') })
+        : '';
       if (truth(alt)) {
         hint = truth(hint) ? format(_('{hint}, or {alternative}'), { hint: hint, alternative: alt }) : alt;
       }
@@ -715,7 +719,7 @@ export class Design {
       if (truth(!contains(TILE_COUNTS, sw.count))) {
         near = minBy(TILE_COUNTS, (n: any) => [abs(sub(n, sw.count)), n]);
         probs.push({
-          ['message']: format(_('tiles come in {counts}: use --switches {near}'), {
+          ['message']: format(_('tiles come in {counts}: set switches to {near}'), {
             counts: TILE_COUNTS.map(String).join(', '),
             near: near,
           }),
@@ -757,7 +761,7 @@ export class Design {
           { mcu: m.name, needed: this.bay_depth, free: max(this.back_space, 0.0) },
         ),
         add(pad, sub(this.bay_depth, this.back_space)),
-        _('put it under the sensor with --mcu-place under'),
+        _('set MCU placement to under'),
       );
     }
     if (
@@ -827,7 +831,7 @@ export class Design {
         probs.push({
           ['message']: format(
             _(
-              'the cup scoops cut into the ball-support pockets: use --cup-cut {value:.1f} or less, or lower --polar / use smaller supports',
+              'the cup scoops cut into the ball-support pockets: set opening depth to {value:.1f} mm or less, lower the support angle, or use smaller supports',
             ),
             { value: max(sub(cup.cut, worst), 0) },
           ),
@@ -857,6 +861,27 @@ export class Design {
           add(pad, sub(bw, this.front_space)),
         );
       }
+    }
+    const power = this.power_switch_placement();
+    if (power !== null && !is_placement(power)) {
+      const name = POWER_SWITCHES[this.battery.power_switch as keyof typeof POWER_SWITCHES]?.name;
+      const wall = _(this.battery.power_wall);
+      if (power.reason === 'palm')
+        report(_('the palm rest covers the front wall: put the power switch on another wall'));
+      else if (power.reason === 'height')
+        report(
+          format(_('the {switch} needs {needed:.1f} mm of wall height but only {free:.1f} mm are free'), {
+            switch: name,
+            needed: power.needed,
+            free: power.free,
+          }),
+        );
+      else
+        report(
+          format(_('no room for the {switch} on the {wall} wall'), { switch: name, wall }),
+          this.padding_for_power_switch(),
+          _('try another wall'),
+        );
     }
     return probs;
   }
@@ -1313,6 +1338,10 @@ export class Design {
     w = this.deck_to_world([xd, yd, zd]);
     return [index(w, 0), index(w, 1)];
   }
+  /** A fused palm rest makes one rigid part: feet only at its outer corners, two here at the back. */
+  get palm_fused(): boolean {
+    return this.deck.palm_length > 0 && this.deck.palm_attachment === 'fused';
+  }
   feet_xy(): any {
     let i: any, pts: any;
     if (truth(this.tray.feet_dia <= 0)) {
@@ -1322,7 +1351,10 @@ export class Design {
     pts = (() => {
       const result: any = [];
       for (const sx of [-1, 1]) {
-        for (const yy of [-sub(this.front_length, i), sub(this.back_length, i)]) {
+        const ys = this.palm_fused
+          ? [sub(this.back_length, i)]
+          : [-sub(this.front_length, i), sub(this.back_length, i)];
+        for (const yy of ys) {
           result.push([mul(sx, sub(this.half_width, i)), yy]);
         }
       }
@@ -1346,6 +1378,8 @@ export class Design {
     ys = truth(sub(y1, y0) >= add(mul(2, i), this.tray.feet_dia))
       ? [add(y0, i), sub(y1, i)]
       : [add(y0, y1) / 2];
+    // Fused: the tray carries the back pair, so the rest needs only its front pair.
+    if (this.palm_fused) ys = [ys[0]];
     pts = (() => {
       const result: any = [];
       for (const sx of [-1, 1]) {
@@ -1389,6 +1423,26 @@ export class Design {
       note = format(_('; the MCU stack ({v:g} mm) sets the floor, not the header'), { v: this.mcu_stack });
     }
     return add(parts.join(' + '), note);
+  }
+  /** Lid front corners squared so a fused palm rest meets the lid without a notch. */
+  get palm_square_corners(): boolean {
+    return this.palm_fused && this.deck.palm_corners === 'square';
+  }
+  power_switch_placement() {
+    return place_power_switch(this);
+  }
+  /** Smallest padding (0.5 mm steps, up to +30) that makes room for the power switch, or null. */
+  padding_for_power_switch(): number | null {
+    const original = this.carrier.padding;
+    try {
+      for (let p = original + 0.5; p <= original + 30; p += 0.5) {
+        this.carrier.padding = p;
+        if (is_placement(place_power_switch(this))) return p;
+      }
+      return null;
+    } finally {
+      this.carrier.padding = original;
+    }
   }
   get palm_y_range(): any {
     let y1: any;
@@ -1456,8 +1510,18 @@ export class Design {
       items.push({
         ['item']: format(_('LiPo {l:g}x{w:g}x{t:g} mm'), { l: b.length, w: b.width, t: b.thickness }),
         ['qty']: 1,
-        ['note']: _('plus a slide switch for the side-wall slot'),
+        ['note']:
+          b.power_switch === 'none'
+            ? _('no power switch: unplug the battery to turn it off')
+            : _('JST plug to the controller battery pads'),
       });
+      const power = this.power_switch_placement();
+      if (power !== null && is_placement(power))
+        items.push({
+          ['item']: power.type.name,
+          ['qty']: 1,
+          ['note']: format(_('{wall} wall, between the battery and the controller'), { wall: _(power.wall) }),
+        });
     }
     items = add(items, [
       {
@@ -1470,7 +1534,9 @@ export class Design {
       {
         ['item']: format(_('Rubber feet Ø{d:g} mm'), { d: t.feet_dia }),
         ['qty']: add(length(this.feet_xy()), length(this.palm_feet_xy())),
-        ['note']: _('self-adhesive; 4 under the tray, the rest under the palm rest'),
+        ['note']: this.palm_fused
+          ? _('self-adhesive; 2 under the back of the tray, 2 under the front of the palm rest')
+          : _('self-adhesive; 4 under the tray, the rest under the palm rest'),
       },
       {
         ['item']: _('Wire (6 for the sensor SPI, 2 per switch)'),

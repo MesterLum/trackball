@@ -55,9 +55,13 @@ preview: build
 browsers: versions
     yarn playwright install --with-deps chromium
 
+# Render the preset gallery thumbnails from the built site (CI regenerates them on every build).
+presets: build browsers
+    yarn presets
+
 # Verify the browser rendering and download flow.
 e2e: build browsers
     yarn test:e2e
 
 # The same validation sequence is used in CI and locally.
-ci: setup format-check check test build browsers e2e
+ci: setup format-check check test build browsers presets e2e

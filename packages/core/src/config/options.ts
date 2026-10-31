@@ -28,10 +28,22 @@ export interface Option {
   unit: string;
   pattern: string | null;
   label: string;
+  /** Display names for choices whose values are codes (kept stable for shared links). */
+  choice_labels?: Record<string, string>;
 }
 export type Values = Record<string, string | number | boolean>;
 export const OPTIONS = data as Option[];
 export const BY_NAME = Object.fromEntries(OPTIONS.map((o) => [o.name, o]));
+/** Choice options whose values are shown as words (translated) rather than part numbers. */
+export const TRANSLATED_CHOICES = new Set(['palm_attachment', 'palm_corners', 'power_switch', 'power_wall']);
+/** Options that only matter for some configurations, hidden otherwise. */
+export function optionApplies(name: string, v: Partial<Values>): boolean {
+  if (name === 'palm_attachment') return Number(v.palm) > 0;
+  if (name === 'palm_corners') return Number(v.palm) > 0 && v.palm_attachment === 'fused';
+  if (name === 'power_switch') return String(v.battery ?? '').trim() !== '';
+  if (name === 'power_wall') return String(v.battery ?? '').trim() !== '' && v.power_switch !== 'none';
+  return true;
+}
 export const defaults = (): Values => Object.fromEntries(OPTIONS.map((o) => [o.name, o.default]));
 function copy<T extends object>(value: T, updates: Record<string, unknown> = {}): T {
   return Object.assign(Object.create(Object.getPrototypeOf(value)), value, updates);
@@ -121,8 +133,12 @@ export function makeDesign(values: Partial<Values>): Design {
       palm_drop: v.palm_drop,
       palm_round: v.edge_round,
       palm_pad_recess: v.palm_pad,
+      palm_corners: v.palm_corners,
     }),
-    battery: parseBattery(String(v.battery)),
+    battery: copy(parseBattery(String(v.battery)), {
+      power_switch: v.power_switch,
+      power_wall: v.power_wall,
+    }),
     fn: v.fn,
   });
 }

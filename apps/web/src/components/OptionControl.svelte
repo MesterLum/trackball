@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { TRANSLATED_CHOICES } from '@trackball/core';
   import type { Option } from '@trackball/core';
   let {
     option,
@@ -13,7 +14,7 @@
 <div class="option-row">
   {#if option.kind === 'bool'}
     <label class="flex items-center justify-between gap-4"
-      ><span class="font-medium">{title}</span><input
+      ><span class="option-label">{title}</span><input
         class="toggle toggle-sm toggle-primary"
         type="checkbox"
         bind:checked={value}
@@ -21,19 +22,15 @@
       /></label
     >
   {:else}
-    <label class="font-medium block mb-2" for={'option-' + option.name}
-      >{title}{#if option.unit}<span aria-hidden="true" class="float-right opacity-60 text-xs"
-          >{option.unit}</span
-        >{/if}</label
-    >
+    <label class="option-label mb-2" for={'option-' + option.name}>{title}</label>
     {#if option.kind === 'choice'}
       <select
         id={'option-' + option.name}
-        class="select select-bordered select-sm w-full"
+        class="select select-sm w-full"
         bind:value
         onchange={changed}
         >{#each option.choices as choice}<option value={choice}
-            >{option.name === 'palm_attachment' ? t(choice) : choice}</option
+            >{TRANSLATED_CHOICES.has(option.name) ? t(option.choice_labels?.[choice] ?? choice) : choice}</option
           >{/each}</select
       >
     {:else if option.kind === 'float' || option.kind === 'int'}
@@ -47,21 +44,22 @@
           step={option.step || 1}
           bind:value
           oninput={changed}
-        /><input
-          id={'option-' + option.name}
-          class="input input-bordered input-sm w-24 font-mono"
-          type="number"
-          min={option.min ?? undefined}
-          max={option.max ?? undefined}
-          step={option.step || 1}
-          bind:value
-          oninput={changed}
-        />
+        /><label class="input input-sm w-24 shrink-0 pr-2"
+          ><input
+            id={'option-' + option.name}
+            type="number"
+            min={option.min ?? undefined}
+            max={option.max ?? undefined}
+            step={option.step || 1}
+            bind:value
+            oninput={changed}
+          />{#if option.unit}<span class="muted text-xs" aria-hidden="true">{option.unit}</span>{/if}</label
+        >
       </div>
     {:else}
       <input
         id={'option-' + option.name}
-        class="input input-bordered input-sm w-full"
+        class="input input-sm w-full"
         type="text"
         bind:value
         oninput={changed}
@@ -69,12 +67,23 @@
       />
     {/if}
   {/if}
-  <p class="text-xs opacity-60 mt-2 leading-relaxed">{t(option.help)}</p>
+  <p class="muted text-xs mt-2 leading-relaxed">{t(option.help)}</p>
 </div>
 
 <style>
   .option-row {
-    padding: 1rem 0;
-    border-bottom: 1px solid color-mix(in srgb, currentColor 9%, transparent);
+    padding: 0.9rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .option-row:last-child {
+    border-bottom: 0;
+  }
+  .option-label {
+    display: inline-block;
+    font-size: 0.875rem;
+    font-weight: 550;
+  }
+  .option-label::first-letter {
+    text-transform: uppercase;
   }
 </style>

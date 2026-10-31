@@ -48,10 +48,11 @@ just check    # TypeScript and Svelte checks
 just test     # calculation and model regression tests
 just build    # static production build
 just browsers # install Chromium for browser tests
+just presets  # render preset thumbnails into public/ and dist/
 just e2e      # browser rendering and download tests
 just format   # format source files
 just format-check # check formatting without editing files
-just ci       # setup, checks, tests, build, browser setup and browser tests
+just ci       # setup, checks, tests, build, browser setup, thumbnails and browser tests
 ```
 
 CI runs the same recipes inside `nix develop --command just ci`. Update the

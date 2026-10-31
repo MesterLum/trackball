@@ -1,6 +1,16 @@
-export { makeDesign as createDesign, autofit, coerce, defaults, OPTIONS, BY_NAME } from './config/options.js';
+export {
+  makeDesign as createDesign,
+  autofit,
+  coerce,
+  defaults,
+  OPTIONS,
+  BY_NAME,
+  TRANSLATED_CHOICES,
+  optionApplies,
+} from './config/options.js';
 export type { Values, Option, Adjustment } from './config/options.js';
 export { Design, MCUS, SENSOR_PCBS } from './calculations/design.js';
+export { POWER_SWITCHES } from './calculations/power.js';
 export { setLanguage, _ as translate } from './i18n.js';
 export { Shape } from './scad/index.js';
 import presets from './config/presets.json' with { type: 'json' };
@@ -21,8 +31,9 @@ import {
   switches_preview,
 } from './geometry/assembly.js';
 import { mcu_preview, battery_preview } from './geometry/tray.js';
+import { power_switch_preview } from './geometry/power.js';
 export type PrintablePartName = 'cup' | 'carrier' | 'tray' | 'palmrest' | 'palm_key';
-export type PartName = PrintablePartName | 'mcu' | 'sensor' | 'switches' | 'battery';
+export type PartName = PrintablePartName | 'mcu' | 'sensor' | 'switches' | 'battery' | 'power_switch';
 export interface ModelPart {
   name: PartName;
   scad: string;
@@ -55,6 +66,7 @@ export function generatePreviewParts(design: Design): ModelPart[] {
     ['sensor', pcb_preview(design), 'deck', '#376e4b'],
     ['switches', switches_preview(design), 'deck', '#b8bec9'],
     ['battery', battery_preview(design), 'world', '#b6becb'],
+    ['power_switch', power_switch_preview(design), 'world', '#3b3f45'],
   ];
   return [
     ...generateParts(design),

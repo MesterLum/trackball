@@ -1,6 +1,7 @@
 [
   {
-    "name": "em06",
+    "name": "wireless-palm",
+    "rebaselined": "TypeScript 2026-10-30: BOM lists the placed power switch",
     "input": {
       "tilt": 10,
       "switch_type": "mx",
@@ -116,7 +117,12 @@
       {
         "item": "LiPo 50x34x5 mm",
         "qty": 1,
-        "note": "plus a slide switch for the side-wall slot"
+        "note": "JST plug to the controller battery pads"
+      },
+      {
+        "item": "SS12D00 mini slide switch",
+        "qty": 1,
+        "note": "right wall, between the battery and the controller"
       },
       {
         "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
@@ -146,7 +152,8 @@
     ]
   },
   {
-    "name": "em06-tiles",
+    "name": "tiles-palm",
+    "rebaselined": "TypeScript 2026-10-30: BOM lists the placed power switch",
     "input": {
       "buttons": "tiles",
       "switches": 8,
@@ -288,7 +295,12 @@
       {
         "item": "LiPo 50x34x5 mm",
         "qty": 1,
-        "note": "plus a slide switch for the side-wall slot"
+        "note": "JST plug to the controller battery pads"
+      },
+      {
+        "item": "SS12D00 mini slide switch",
+        "qty": 1,
+        "note": "right wall, between the battery and the controller"
       },
       {
         "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
@@ -462,7 +474,7 @@
     ]
   },
   {
-    "name": "nano-cradle",
+    "name": "lobe-cradle",
     "input": {
       "cup_shape": "dome",
       "cup_cut": 9,
@@ -584,7 +596,7 @@
     ]
   },
   {
-    "name": "nano-pikes",
+    "name": "pointed-lobes",
     "input": {
       "cup_shape": "dome",
       "cup_peak": "sharp",
@@ -1816,6 +1828,7 @@
   },
   {
     "name": "compact-wireless",
+    "rebaselined": "TypeScript 2026-10-30: BOM lists the placed power switch",
     "input": {
       "mcu": "xiao",
       "battery": "40x25x3",
@@ -1923,7 +1936,12 @@
       {
         "item": "LiPo 40x25x3 mm",
         "qty": 1,
-        "note": "plus a slide switch for the side-wall slot"
+        "note": "JST plug to the controller battery pads"
+      },
+      {
+        "item": "SS12D00 mini slide switch",
+        "qty": 1,
+        "note": "right wall, between the battery and the controller"
       },
       {
         "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
@@ -1954,6 +1972,7 @@
   },
   {
     "name": "big-wireless",
+    "rebaselined": "TypeScript 2026-10-30: BOM lists the placed power switch",
     "input": {
       "tilt": 12,
       "battery": "60x40x6",
@@ -2072,7 +2091,12 @@
       {
         "item": "LiPo 60x40x6 mm",
         "qty": 1,
-        "note": "plus a slide switch for the side-wall slot"
+        "note": "JST plug to the controller battery pads"
+      },
+      {
+        "item": "SS12D00 mini slide switch",
+        "qty": 1,
+        "note": "right wall, between the battery and the controller"
       },
       {
         "item": "M3 heat-set inserts (\u00d84 x 5 mm)",
@@ -6499,6 +6523,7 @@
   },
   {
     "name": "fused",
+    "rebaselined": "TypeScript 2026-10-30: a fused palm rest uses four corner feet",
     "input": {
       "palm": 40,
       "palm_attachment": "fused"
@@ -6628,8 +6653,8 @@
       },
       {
         "item": "Rubber feet \u00d810 mm",
-        "qty": 8,
-        "note": "self-adhesive; 4 under the tray, the rest under the palm rest"
+        "qty": 4,
+        "note": "self-adhesive; 2 under the back of the tray, 2 under the front of the palm rest"
       },
       {
         "item": "Wire (6 for the sensor SPI, 2 per switch)",
