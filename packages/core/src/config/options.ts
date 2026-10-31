@@ -11,7 +11,6 @@ import {
   MCUS,
   SENSOR_PCBS,
   SWITCH_TYPES,
-  SensorPCB,
 } from '../calculations/design.js';
 import { SUPPORTS } from '../geometry/supports.js';
 export interface Option {

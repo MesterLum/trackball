@@ -28,8 +28,10 @@ install [just](https://just.systems/).
 ```sh
 just          # list common commands
 just setup    # install locked dependencies and verified OpenSCAD WASM
+just hooks    # install git hooks: format + lint on commit, types + tests on push
 just dev      # Svelte development server with automatic updates
 just check    # TypeScript and Svelte diagnostics
+just lint     # ESLint for TypeScript, Svelte and scripts
 just test     # calculation and rendered-solid regression tests
 just coverage # the same tests with a coverage report (fails below 95%)
 just build    # produce dist/

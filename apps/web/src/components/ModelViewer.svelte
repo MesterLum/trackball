@@ -40,9 +40,12 @@
     controls: OrbitControls,
     ball: THREE.Mesh,
     grid: THREE.GridHelper;
-  let meshes = new Map<string, THREE.Mesh>(),
-    loaded = new Map<string, Uint8Array>(),
-    ready = $state(false),
+  // Three.js caches, not UI state: plain Maps on purpose.
+  // eslint-disable-next-line svelte/prefer-svelte-reactivity
+  const meshes = new Map<string, THREE.Mesh>();
+  // eslint-disable-next-line svelte/prefer-svelte-reactivity
+  const loaded = new Map<string, Uint8Array>();
+  let ready = $state(false),
     error = $state('');
   export function fit() {
     if (!scene || !camera) return;
@@ -76,6 +79,7 @@
       scene = new THREE.Scene();
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
       renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+      // eslint-disable-next-line svelte/no-dom-manipulating -- Three.js owns this canvas; Svelte renders nothing inside host
       host.append(renderer.domElement);
       camera = new THREE.PerspectiveCamera(38, 1, 0.1, 4000);
       camera.up.set(0, 0, 1);
@@ -151,7 +155,7 @@
     if (!ready) return;
     const wanted = new Set(parts.map((p) => p.name));
     for (const [name, mesh] of meshes)
-      if (!wanted.has(name as any)) {
+      if (!wanted.has(name as RenderedPart['name'])) {
         scene.remove(mesh);
         mesh.geometry.dispose();
         (mesh.material as THREE.Material).dispose();

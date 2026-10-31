@@ -1,24 +1,5 @@
 // Parametric model algorithms ported from checkpoint 1ed1441. All execution is TypeScript.
-import {
-  add,
-  sub,
-  mul,
-  mod,
-  index,
-  get,
-  truth,
-  contains,
-  range,
-  length,
-  abs,
-  min,
-  max,
-  round,
-  minBy,
-  format,
-  formatValue,
-  math,
-} from '../math.js';
+import { add, sub, mul, mod, index, truth, range, min, max, math } from '../math.js';
 import { _ } from '../i18n.js';
 import { cube, cylinder, hull, linear_extrude, offset, sphere, square } from '../scad/index.js';
 export const EPS = 0.01;

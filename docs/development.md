@@ -41,10 +41,12 @@ nix --extra-experimental-features 'nix-command flakes' develop
 
 ```sh
 just setup    # install locked dependencies and the rendering runtime
+just hooks    # install the git hooks (once per clone)
 just install  # yarn install --immutable from yarn.lock
 just wasm     # fetch and verify the pinned OpenSCAD runtime
 just dev      # development server with automatic updates
 just check    # TypeScript and Svelte checks
+just lint     # ESLint (TypeScript, Svelte, scripts)
 just test     # calculation and model regression tests
 just coverage # the same tests with coverage/index.html (fails below 95%)
 just build    # static production build
@@ -59,6 +61,17 @@ just ci       # setup, checks, coverage, build, browser setup, thumbnails and br
 CI runs the same recipes inside `nix develop --command just ci`. Update the
 locked development packages deliberately with `nix flake update nixpkgs`, then
 verify `just ci` before committing the updated lock file.
+
+## Git hooks
+
+Run `just hooks` once per clone. [Lefthook](https://lefthook.dev) (pinned in the
+flake) then formats and lints the staged files on every commit, and runs the
+type check and unit tests before every push. Hooks started outside the Nix shell,
+for example from an editor, enter it through `scripts/dev-shell.sh`. CI runs the
+same checks and remains the gate; `git commit --no-verify` skips the hooks.
+
+The geometry core (`packages/core`) keeps the untyped style of its Python port,
+so `no-explicit-any` and `prefer-const` are off there; tighten them file by file.
 
 ## Package manager
 

@@ -1,24 +1,5 @@
 // Parametric model algorithms ported from checkpoint 1ed1441. All execution is TypeScript.
-import {
-  add,
-  sub,
-  mul,
-  mod,
-  index,
-  get,
-  truth,
-  contains,
-  range,
-  length,
-  abs,
-  min,
-  max,
-  round,
-  minBy,
-  format,
-  formatValue,
-  math,
-} from '../math.js';
+import { add, sub, mul, truth, min } from '../math.js';
 import { _ } from '../i18n.js';
 import {
   circle,
@@ -34,16 +15,7 @@ import {
   square,
   union,
 } from '../scad/index.js';
-import {
-  EPS,
-  place_on_ball,
-  polar,
-  rounded_rect,
-  rounded_slab,
-  support_frames,
-  support_lowest_z,
-  zcyl,
-} from './common.js';
+import { EPS, place_on_ball, polar, rounded_rect, rounded_slab, support_frames, zcyl } from './common.js';
 export function lens_window_size(d: any): any {
   let c: any;
   c = d.lens.clearance;
@@ -66,7 +38,6 @@ export function cup(d: any): any {
     fn: any,
     h: any,
     inserts: any,
-    low: any,
     opening: any,
     pol: any,
     prof: any,
@@ -171,10 +142,6 @@ export function cup(d: any): any {
   cutters = [];
   for ([az, pol] of support_frames(c.support_count, c.support_polar_deg, c.azimuth0)) {
     cutters.push(place_on_ball(sup.cutter(fn), R, sup.contact_height, az, pol));
-  }
-  low = support_lowest_z(R, sup.contact_height, c.support_polar_deg, sup.body_reach(), sup.body_radius());
-  if (truth(low < add(z_bot, 0.8))) {
-    undefined;
   }
   inserts = [];
   for (ang of c.carrier_screw_angles) {

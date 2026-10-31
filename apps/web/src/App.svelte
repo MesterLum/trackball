@@ -14,7 +14,7 @@
     optionApplies,
     translate,
   } from '@trackball/core';
-  import type { Values, ModelPart, Adjustment } from '@trackball/core';
+  import type { Values, Adjustment } from '@trackball/core';
   import { BrowserRenderer } from '@trackball/renderer-browser';
   import type { RenderedPart } from '@trackball/renderer-browser';
   import { strToU8, zipSync } from 'fflate';
@@ -35,7 +35,9 @@
       try {
         if (value === null) localStorage.removeItem(key);
         else localStorage.setItem(key, value);
-      } catch {}
+      } catch {
+        // Not saved; the page works the same without it.
+      }
     },
   };
   /** Shared links keep every valid setting; an invalid one falls back to its default alone. */
@@ -45,7 +47,9 @@
       if (!(key in result)) continue;
       try {
         result = coerce({ ...result, [key]: value });
-      } catch {}
+      } catch {
+        // Invalid value: keep that setting's default.
+      }
     }
     return result;
   }
@@ -99,7 +103,6 @@
     renderedFor = '';
   const runtimeUrl = new URL(import.meta.env.BASE_URL + 'openscad/', location.origin).href;
   let calculated = $derived.by(() => {
-    language;
     setLanguage(language);
     try {
       const fitted = autoFit ? autofit(values) : { values: coerce(values), changes: [] as Adjustment[] };
@@ -161,6 +164,7 @@
     lastSnapshot = JSON.stringify(values);
   }
   function urlFor(config: Values) {
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity -- a throwaway builder, not state
     const query = new URLSearchParams();
     for (const [key, value] of Object.entries(config))
       if (String(value) !== String(defaultValues[key]) && String(value) !== '') query.set(key, String(value));
@@ -314,7 +318,8 @@
   onkeydown={(e) => {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && !(e.target instanceof HTMLInputElement)) {
       e.preventDefault();
-      e.shiftKey ? redo() : undo();
+      if (e.shiftKey) redo();
+      else undo();
     }
   }}
   onpopstate={() => {
@@ -365,13 +370,13 @@
         <div class="p-4 pb-3">
           <h2 class="sr-only">{t('Configuration')}</h2>
           <div class="segmented" role="tablist">
-            {#each groups as group}<button role="tab" aria-selected={tab === group} onclick={() => (tab = group)}
+            {#each groups as group (group)}<button role="tab" aria-selected={tab === group} onclick={() => (tab = group)}
                 >{t(group)}</button
               >{/each}
           </div>
         </div>
         <fieldset class="settings-scroll px-5" disabled={exporting}>
-          {#each OPTIONS.filter((o) => o.group === tab) as option}{#if optionApplies(option.name, values)}<OptionControl
+          {#each OPTIONS.filter((o) => o.group === tab) as option (option.name)}{#if optionApplies(option.name, values)}<OptionControl
                 {option}
                 bind:value={values[option.name]}
                 onchange={recordChange}
@@ -423,7 +428,7 @@
             </div>
           </div>
           <div class="px-4 py-3 border-t border-base-300 flex flex-wrap gap-2 items-center">
-            {#each Object.keys(visible).filter((n) => n === 'hardware' || n === 'cup' || n === 'carrier' || n === 'tray' || parts.some((p) => p.name === n)) as name}<label
+            {#each Object.keys(visible).filter((n) => n === 'hardware' || n === 'cup' || n === 'carrier' || n === 'tray' || parts.some((p) => p.name === n)) as name (name)}<label
                 class="part-chip"
                 style={`--swatch:${partColors[name]}`}
                 ><input type="checkbox" bind:checked={visible[name]} /><span class="swatch"></span>{partLabel(
@@ -523,7 +528,7 @@
             <div>
               <strong>{t('This configuration does not fit')}</strong>
               <ul class="list-disc ml-5 mt-1">
-                {#each calculated.problems as problem}<li>{problem}</li>{/each}
+                {#each calculated.problems as problem, i (i)}<li>{problem}</li>{/each}
               </ul>
             </div>
           </div>{/if}
@@ -534,7 +539,7 @@
                 <table class="table table-sm bom">
                   <thead><tr><th class="w-12">{t('Qty')}</th><th>{t('Part')}</th><th>{t('Notes')}</th></tr></thead
                   ><tbody
-                    >{#each calculated.design.bom() as item}<tr
+                    >{#each calculated.design.bom() as item, i (i)}<tr
                         ><td class="font-semibold">{item.qty}</td><td>{item.item}</td><td class="muted"
                           >{item.note}</td
                         ></tr
@@ -551,7 +556,7 @@
         <section class="pt-2">
           <h2 class="font-semibold mb-3 px-1">{t('Start with a preset')}</h2>
           <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-3">
-            {#each PRESETS as preset}<button
+            {#each PRESETS as preset (preset.key)}<button
                 class="preset"
                 disabled={exporting}
                 onclick={() => apply({ ...defaults(), ...preset.values } as Values)}

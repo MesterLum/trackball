@@ -22,8 +22,8 @@ jobs:
       - uses: ./.github/actions/setup
         with:
           pages-base: ${{ vars.PAGES_BASE_PATH }}
-      - name: Format, types, and tests with coverage (95% minimum)
-        run: nix develop --command just setup format-check check coverage
+      - name: Format, lint, types, and tests with coverage (95% minimum)
+        run: nix develop --command just setup format-check lint check coverage
       - name: Coverage summary
         if: always() && hashFiles('coverage/coverage-summary.json') != ''
         run: nix develop --command node scripts/coverage-summary.mjs >> "$GITHUB_STEP_SUMMARY"

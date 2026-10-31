@@ -12,7 +12,7 @@
         let pkgs = import nixpkgs { inherit system; };
         in {
           default = pkgs.mkShell {
-            packages = [ pkgs.nodejs_24 pkgs.just pkgs.git ];
+            packages = [ pkgs.nodejs_24 pkgs.just pkgs.git pkgs.lefthook ];
             shellHook = ''
               export COREPACK_HOME="$PWD/.cache/corepack"
               mkdir -p "$COREPACK_HOME/bin"

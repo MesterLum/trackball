@@ -16,7 +16,8 @@
     "setup:wasm": "node scripts/setup-wasm.mjs",
     "build:core": "tsc -p packages/core/tsconfig.json",
     "format": "prettier --write packages apps tests scripts *.json *.ts *.js",
-    "format:check": "prettier --check packages apps tests scripts *.json *.ts *.js"
+    "format:check": "prettier --check packages apps tests scripts *.json *.ts *.js",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@fontsource-variable/archivo": "^5",
@@ -25,6 +26,7 @@
     "three": "^0.180.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9",
     "@playwright/test": "^1.55.0",
     "@sveltejs/vite-plugin-svelte": "^6.0.0",
     "@tailwindcss/vite": "^4.0.0",
@@ -32,11 +34,15 @@
     "@types/three": "^0.180.0",
     "@vitest/coverage-v8": "4.1.12",
     "daisyui": "^5.0.0",
+    "eslint": "^9",
+    "eslint-plugin-svelte": "^3",
+    "globals": "^16",
     "prettier": "^3.0.0",
     "prettier-plugin-svelte": "^3.0.0",
     "svelte-check": "^4.0.0",
     "tailwindcss": "^4.0.0",
     "typescript": "^5.9.0",
+    "typescript-eslint": "^8",
     "vite": "^7.0.0",
     "vitest": "^4.1.12"
   },

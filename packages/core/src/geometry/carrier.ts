@@ -1,24 +1,5 @@
 // Parametric model algorithms ported from checkpoint 1ed1441. All execution is TypeScript.
-import {
-  add,
-  sub,
-  mul,
-  mod,
-  index,
-  get,
-  truth,
-  contains,
-  range,
-  length,
-  abs,
-  min,
-  max,
-  round,
-  minBy,
-  format,
-  formatValue,
-  math,
-} from '../math.js';
+import { add, sub, mul, index, truth } from '../math.js';
 import { _ } from '../i18n.js';
 import { cube, union } from '../scad/index.js';
 import { EPS, polar, rounded_rect, rounded_slab, zcyl } from './common.js';
@@ -44,8 +25,8 @@ export function _place(obj: any, x: any, y: any, ang: any): any {
   return obj.rotate([0, 0, ang]).translate([x, y, 0]);
 }
 export function key_switch_cutters(d: any): any {
-  let _: any, cuts: any, hole: any, pocket: any, st: any, sw: any, x: any, y: any, z0: any, z1: any;
-  [sw, st] = [d.switches, d.switches.type];
+  let _: any, cuts: any, hole: any, pocket: any, st: any, x: any, y: any, z0: any, z1: any;
+  st = d.switches.type;
   [z0, z1] = [d.z_pcb_face, d.z_carrier_top];
   cuts = [];
   for ([x, y, _] of d.switch_positions()) {
