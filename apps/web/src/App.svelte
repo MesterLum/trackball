@@ -71,6 +71,7 @@
     tray: true,
     palmrest: true,
     palm_key: true,
+    mcu_clamp: true,
     hardware: false,
   });
   const partColors: Record<string, string> = {
@@ -79,6 +80,7 @@
     tray: '#808080',
     palmrest: '#cd853f',
     palm_key: '#008080',
+    mcu_clamp: '#5b6ee1',
     hardware: '#2d986c',
   };
   let parts = $state<RenderedPart[]>([]),
@@ -124,8 +126,12 @@
     const locale = language;
     return (s: string) => translate(s, locale);
   });
-  const partLabel = (name: string) =>
-    t(name === 'palm_key' ? 'retaining key' : name === 'palmrest' ? 'palm rest' : name);
+  const PART_LABELS: Record<string, string> = {
+    palm_key: 'retaining key',
+    palmrest: 'palm rest',
+    mcu_clamp: 'controller clamp',
+  };
+  const partLabel = (name: string) => t(PART_LABELS[name] ?? name);
   function recordChange() {
     const next = JSON.stringify(values);
     if (next !== lastSnapshot) {
@@ -566,6 +572,11 @@
         </section>
       </main>
     </div>
+    <footer class="muted text-xs mt-10 pt-4 border-t border-base-300 flex flex-wrap gap-x-5 gap-y-1">
+      <span>{t('Free software under the GNU GPL, version 3 or later.')}</span>
+      <a class="link" href="https://github.com/MesterLum/trackball">{t('Source code')}</a>
+      <a class="link" href={import.meta.env.BASE_URL + 'THIRD_PARTY_LICENSES.txt'}>{t('Third-party licenses')}</a>
+    </footer>
   </div>
 {/if}
 {#if toast}<div class="toast toast-end"><div class="alert alert-info">{toast}</div></div>{/if}

@@ -26,6 +26,7 @@ import {
 } from '../math.js';
 import { _ } from '../i18n.js';
 import { POWER_SWITCHES, is_placement, place_power_switch } from './power.js';
+import { CLAMP, CLAMP_SIDE_EXTRA } from './clamp.js';
 import { BallSupport, PressFitBTU } from '../geometry/supports.js';
 import { TILE_COUNTS, TILE_DEPTH_MIN, holder_boxes, positions, tile_depth } from '../geometry/tiles.js';
 export class SensorPCB {
@@ -479,6 +480,9 @@ export class Tray {
     this.pocket_clear = values.pocket_clear ?? 0.4;
     this.bay_gap = values.bay_gap ?? 3.0;
     this.clearance = values.clearance ?? 1.0;
+    this.mcu_hold = values.mcu_hold ?? 'clamp';
+    this.clamp_length = values.clamp_length ?? 3.0;
+    this.clamp_width = values.clamp_width ?? 8.0;
   }
 }
 export class Design {
@@ -539,8 +543,15 @@ export class Design {
     let a: any, b: any, extra: any, m: any;
     m = this.tray.mcu;
     extra = truth(m.holes) ? 0.0 : add(3.0, mul(2, this.tray.pocket_clear));
-    [a, b] = [add(m.length, extra), add(m.width, extra)];
+    // The clamp's screw posts stand beside the pocket, across the board.
+    const posts = this.mcu_clamped ? 2 * CLAMP_SIDE_EXTRA : 0;
+    [a, b] = [add(m.length, extra), add(m.width, extra) + posts];
     return truth(this.mcu_rot === 0) ? [a, b] : [b, a];
+  }
+  /** A controller without mounting holes, held down by the screwed clamp bar. */
+  get mcu_clamped(): boolean {
+    const t = this.tray;
+    return !truth(t.mcu.holes) && t.mcu_hold === 'clamp';
   }
   get mcu_stack(): any {
     let t: any;
@@ -883,6 +894,32 @@ export class Design {
           _('try another wall'),
         );
     }
+    if (this.mcu_clamped) {
+      const m = t.mcu;
+      if (t.clamp_width > m.width - 1)
+        report(
+          format(_('the clamp pad ({width:g} mm) is wider than the {mcu} board ({board:g} mm)'), {
+            width: t.clamp_width,
+            mcu: m.name,
+            board: m.width,
+          }),
+        );
+      if (t.clamp_length > m.length / 2)
+        report(
+          format(_('the clamp pad ({length:g} mm) reaches past the middle of the {mcu} board'), {
+            length: t.clamp_length,
+            mcu: m.name,
+          }),
+        );
+      // The bar must leave the BOOT button free (it is pressed through a hole in the lid).
+      const span = Math.max(t.clamp_length, CLAMP.min_span);
+      if (m.bootsel !== null && m.bootsel[0] - CLAMP.button_half < -m.length / 2 + span)
+        report(
+          format(_('the clamp bar covers the BOOT button of the {mcu}: shorten the clamp pad'), {
+            mcu: m.name,
+          }),
+        );
+    }
     return probs;
   }
   validate(): any {
@@ -1138,7 +1175,8 @@ export class Design {
       ];
     }
     extra = add(t.pocket_clear, 1.5);
-    return [sub(-m.length / 2, extra), m.length / 2, add(m.width / 2, extra)];
+    const posts = this.mcu_clamped ? CLAMP_SIDE_EXTRA : 0;
+    return [sub(-m.length / 2, extra), m.length / 2, add(m.width / 2, extra) + posts];
   }
   mcu_center(floor_z: any = null): any {
     let a: any,
@@ -1468,7 +1506,11 @@ export class Design {
         ['qty']: 1,
         ['note']: add(
           truth(t.mcu.wireless) ? _('wireless capable') : 'USB',
-          truth(t.mcu.holes) ? _(', on 4x M2x6 self-tapping screws') : _(', friction pocket (dab of glue)'),
+          truth(t.mcu.holes)
+            ? _(', on 4x M2x6 self-tapping screws')
+            : this.mcu_clamped
+              ? _(', held by the printed clamp bar')
+              : _(', friction pocket (dab of glue)'),
         ),
       },
     ];
@@ -1544,6 +1586,12 @@ export class Design {
         ['note']: _('JST or direct solder'),
       },
     ]);
+    if (this.mcu_clamped)
+      items.push({
+        ['item']: _('M2x6 self-tapping screws'),
+        ['qty']: 2,
+        ['note']: _('controller clamp bar to its posts'),
+      });
     return (() => {
       const result: any = [];
       for (const i of items) {

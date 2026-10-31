@@ -29,6 +29,7 @@ import { circle, cube, hull, linear_extrude, polygon, union } from '../scad/inde
 import { EPS, half_space_above, rounded_rect, to_world, zcyl } from './common.js';
 import { tray_palm_joint } from './palmrest.js';
 import { power_switch_parts } from './power.js';
+import { clamp_posts } from './clamp.js';
 export function lid_screw_points(d: any): any {
   return d.lid_screw_points();
 }
@@ -191,6 +192,8 @@ export function tray(d: any): any {
       add(add(zf_top, frame_h), 1),
     );
     local = sub(sub(frame, pocket), usb_end);
+    const clamp = clamp_posts(d);
+    if (clamp) local = sub(add(local, clamp[0]), clamp[1]);
     rot = truth(t.usb_exit === 'back') ? 90.0 : truth(t.usb_side > 0) ? 0.0 : 180.0;
     adds.push(local.rotate([0, 0, rot]).translate([mx, my, 0]));
   }

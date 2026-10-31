@@ -32,7 +32,8 @@ import {
 } from './geometry/assembly.js';
 import { mcu_preview, battery_preview } from './geometry/tray.js';
 import { power_switch_preview } from './geometry/power.js';
-export type PrintablePartName = 'cup' | 'carrier' | 'tray' | 'palmrest' | 'palm_key';
+import { mcu_clamp } from './geometry/clamp.js';
+export type PrintablePartName = 'cup' | 'carrier' | 'tray' | 'palmrest' | 'palm_key' | 'mcu_clamp';
 export type PartName = PrintablePartName | 'mcu' | 'sensor' | 'switches' | 'battery' | 'power_switch';
 export interface ModelPart {
   name: PartName;
@@ -41,13 +42,14 @@ export interface ModelPart {
   color: string;
   lift: number;
 }
-const builders = { cup, carrier, tray, palmrest, palm_key };
+const builders = { cup, carrier, tray, palmrest, palm_key, mcu_clamp };
 const styles: Record<PrintablePartName, [ModelPart['frame'], string, number]> = {
   cup: ['deck', '#4682b4', 2],
   carrier: ['deck', '#daa520', 1],
   tray: ['world', '#808080', 0],
   palmrest: ['world', '#cd853f', 0],
   palm_key: ['world', '#008080', 0],
+  mcu_clamp: ['world', '#5b6ee1', 0],
 };
 export function generateParts(design: Design): ModelPart[] {
   return (Object.entries(builders) as [PrintablePartName, (d: Design) => Shape | null][]).flatMap(

@@ -7,6 +7,7 @@ import { join, resolve } from 'node:path';
 import reference from '../fixtures/python-geometry.json';
 import { createDesign, generateParts } from '../../packages/core/src/index';
 import type { Values } from '../../packages/core/src/index';
+import { CHECKPOINT } from './checkpoint';
 const exec = promisify(execFile);
 const runtime = resolve('.cache/openscad-node/openscad.js');
 
@@ -40,8 +41,7 @@ for (const row of reference)
   it(`solid parity: ${row.name}/${row.part}`, async () => {
     const dir = await mkdtemp(join(tmpdir(), 'trackball-parity-'));
     try {
-      // Settings added after the checkpoint, set to reproduce its behaviour where one exists.
-      const values = { palm_corners: 'rounded', ...row.values } as Values;
+      const values = { ...CHECKPOINT, ...row.values } as Values;
       const part = generateParts(createDesign(values)).find((p) => p.name === row.part)!;
       const metrics = [];
       for (const [name, scad] of [
