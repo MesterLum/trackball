@@ -6,6 +6,7 @@ import {
   Cup,
   Deck,
   Design,
+  Lens,
   Switches,
   Tray,
   MCUS,
@@ -112,6 +113,7 @@ export function makeDesign(values: Partial<Values>): Design {
     pcb: copy(SENSOR_PCBS[String(v.sensor_pcb) as keyof typeof SENSOR_PCBS], {
       header_height: v.header_height,
     }),
+    lens: new Lens({ lens_to_ball: v.sensor_distance }),
     carrier: new Carrier({ padding: v.padding, edge_round: v.edge_round }),
     tray: new Tray({
       mcu: copy(MCUS[String(v.mcu)]),

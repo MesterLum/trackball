@@ -234,8 +234,8 @@ a friction pocket), USB size, tallest component, BOOTSEL position.
   put the ball surface 6.0 mm above the PCB front face. These come from the
   PMW3360 datasheet assembly drawing (via community OpenSCAD models), not
   from measuring a Bastardkb board. Check Figure 4/5 of the PMW3360
-  datasheet or measure your lens. If tracking is poor, tune
-  `lens_to_ball` in ±0.2 mm steps.
+  datasheet or measure your lens. If tracking is poor, tune the
+  **sensor distance** setting (`sensor_distance`, 1.8–3.0 mm) in 0.1 mm steps.
 - **Bearing rollers**: `RollerBearing` assumes an M3 screw as the axle
   (3.3 mm clearance hole, 2.6 mm thread-forming hole). Check the screw
   length: it is the skirt-to-bearing distance printed by the cup plus 6 mm.
