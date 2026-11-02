@@ -168,7 +168,7 @@
     "name": "rim",
     "kind": "float",
     "default": 5.0,
-    "help": "how far below the ball's equator the cup opening sits (more = ball sits deeper)",
+    "help": "how far below the ball's equator the cup opening sits (more = more of the ball exposed)",
     "group": "Ball & cup",
     "flag": null,
     "choices": [],
@@ -223,6 +223,21 @@
     "unit": "mm",
     "pattern": null,
     "label": "header height"
+  },
+  {
+    "name": "sensor_distance",
+    "kind": "float",
+    "default": 2.4,
+    "help": "gap between the lens and the ball surface; the PMW3360 datasheet specifies 2.4. Fine-tune in 0.1 steps if tracking is poor",
+    "group": "Ball & cup",
+    "flag": null,
+    "choices": [],
+    "min": 1.8,
+    "max": 3.0,
+    "step": 0.1,
+    "unit": "mm",
+    "pattern": null,
+    "label": "sensor distance"
   },
   {
     "name": "switches",

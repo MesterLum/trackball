@@ -143,3 +143,13 @@ describe('rubber feet', () => {
     expect(feet({})).toEqual([4, 0]);
   });
 });
+
+describe('sensor distance', () => {
+  it('moves the sensor board, not the ball', () => {
+    const near = createDesign({ sensor_distance: 2.0 });
+    const far = createDesign({ sensor_distance: 2.8 });
+    expect(createDesign({}).lens.lens_to_ball).toBe(2.4);
+    expect(near.z_pcb_face - far.z_pcb_face).toBeCloseTo(0.8, 6);
+    expect(far.ball.r).toBe(near.ball.r);
+  });
+});
