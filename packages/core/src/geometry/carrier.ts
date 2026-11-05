@@ -2,7 +2,7 @@
 import { add, sub, mul, index, truth } from '../math.js';
 import { _ } from '../i18n.js';
 import { cube, union } from '../scad/index.js';
-import { EPS, polar, rounded_rect, rounded_slab, zcyl } from './common.js';
+import { EPS, rounded_rect, rounded_slab, zcyl } from './common.js';
 import { lens_window_size } from './cup.js';
 import { bootsel_deck_xy, lid_screw_points } from './tray.js';
 import { tile_cutters } from './tiles.js';
@@ -141,7 +141,6 @@ export function micro_switch_parts(d: any): any {
 }
 export function carrier(d: any): any {
   let after: any,
-    ang: any,
     bars: any,
     before: any,
     body: any,
@@ -187,8 +186,7 @@ export function carrier(d: any): any {
   cuts.push(
     rounded_rect(ww, wl, add(d.lens.corner_r, d.lens.clearance), add(sub(z1, z0), 2), fn).up(sub(z0, 1)),
   );
-  for (ang of d.cup.carrier_screw_angles) {
-    [x, y] = polar(d.cup.screw_radius(d.ball.r), ang);
+  for ([x, y] of d.shell_screw_points()) {
     hole = zcyl(cr.screw_clear_dia, sub(z0, 1), add(z1, 1), fn);
     cb = zcyl(cr.screw_head_dia, sub(z0, EPS), add(z0, cr.screw_head_depth), fn);
     cuts.push(add(hole, cb).translate([x, y, 0]));

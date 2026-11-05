@@ -205,6 +205,30 @@ describe('cradle pod', () => {
     expect(banded.shell).toEqual(bare.shell);
   });
 
+  it('hides the shell screws inside the cup, clear of the supports and the sensor screws', () => {
+    for (const ball of [20, 25, 34, 44, 60])
+      for (const skirt of [8, 14, 30])
+        for (const supports of [3, 4]) {
+          const d = cradle({ ball, skirt, supports }),
+            c = cradle_shape(d);
+          const step = 360 / supports;
+          const supports_at = Array.from({ length: supports }, (_, i) => d.cup.azimuth0 + i * step);
+          for (const [x, y] of d.shell_screw_points()) {
+            // Inside the cup, with a wall around the insert.
+            expect(Math.hypot(x, y)).toBeLessThanOrEqual(c.cup_r - d.cup.insert_dia / 2 - 1.5 + 1e-9);
+            const a = (Math.atan2(y, x) * 180) / Math.PI;
+            for (const s of supports_at)
+              expect(Math.abs(((a - s + 540) % 360) - 180)).toBeGreaterThanOrEqual(19.9);
+            for (const sy of [-1, 1])
+              expect(Math.hypot(x, y - (sy * d.pcb.hole_spacing) / 2)).toBeGreaterThan(
+                d.carrier.screw_head_dia / 2 + d.carrier.pcb_insert_dia / 2,
+              );
+          }
+        }
+    // Other builds keep the classic positions.
+    expect(createDesign({}).shell_screw_points()).toHaveLength(4);
+  });
+
   it('keeps the cup in proportion with the body for small balls', () => {
     const small = cradle({ ball: 20 }),
       large = cradle({ ball: 44 });
