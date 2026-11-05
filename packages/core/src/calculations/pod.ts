@@ -61,6 +61,8 @@ export const CRADLE = {
   notch_depth: 0.6,
   bevel: 1.2,
   seam_chamfer: 0.6,
+  /** The cup is at least this share of the body's half width. */
+  cup_share: 0.72,
   /** Recessed band around the base wall: depth and its span as shares of the wall's height. */
   band_depth: 0.6,
   band_from: 0.3,
@@ -72,9 +74,11 @@ export interface CradleShape {
   edge: number;
   /** Height of the cup's flat rim. */
   rim: number;
-  /** Outer radius of the cup, and the concave fillet where it meets the base. */
+  /** Outer radius of the cup, the concave fillet where it meets the base, and the bevel from the
+   * rim down into the ball (zero when the rim is narrow). */
   cup_r: number;
   fillet: number;
+  funnel: number;
   /** Half width of the front notch and the height of its rounded bottom. */
   notch_r: number;
   notch_bottom: number;
@@ -90,19 +94,18 @@ export function cradle_shape(d: any): CradleShape {
   const R = d.ball.r,
     edge = d.z_carrier_top + d.pod.wall + 2,
     rim = -d.cup.rim_below_center;
+  // Three millimetres over the cup wall keep the support bores inside it; with a small ball the
+  // body is set by the sensor board, so the cup follows the body instead to stay in proportion.
+  const half = Math.min(d.half_width, d.half_length),
+    cup_r = Math.max(d.cavity_r + d.cup.wall + 3, CRADLE.cup_share * half);
   return {
     edge,
     rim,
-    // Three millimetres over the cup wall keep the support bores inside it.
-    cup_r: d.cavity_r + d.cup.wall + 3,
+    cup_r,
     // The fillet stays on the base's flat top, inside its rounded edge.
-    fillet: Math.max(
-      Math.min(
-        CRADLE.fillet,
-        Math.min(d.half_width, d.half_length) - CRADLE.edge - (d.cavity_r + d.cup.wall + 3) - 0.5,
-      ),
-      1,
-    ),
+    fillet: Math.max(Math.min(CRADLE.fillet, half - CRADLE.edge - cup_r - 0.5), 1),
+    // A wide rim falls into the ball through a bevel.
+    funnel: Math.min(Math.max((cup_r - d.cavity_r - d.cup.wall - 3) * 0.5, 0), 4),
     // As wide as the share allows, but clear of the two supports either side of the front.
     notch_r: Math.max(
       Math.min(
