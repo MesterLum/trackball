@@ -120,18 +120,39 @@ export function cradle_base(d: any): any {
   ]);
   return sub(
     outside,
-    union()(slab(plan(d, d.pod.wall, d.z_floor_top), c.seam - d.z_floor_top + 1), cradle_band(d)),
+    union()(slab(plan(d, d.pod.wall, d.z_floor_top), c.seam - d.z_floor_top + 1), ...cradle_side(d)),
   );
 }
-/** A shallow band recessed around the base wall, with 45° edges so it prints without support. */
-function cradle_band(d: any): any {
+/**
+ * Design on the cradle's lower wall (the base's wall, or the shell's straight sides when it comes
+ * down to the desk): a shallow recessed band or a few V grooves, all with 45° edges so they print
+ * without support and leave the wall solid.
+ */
+export function cradle_side(d: any): any[] {
   const c = cradle_shape(d),
-    t = CRADLE.band_depth,
     zb = d.z_floor_bottom,
-    z0 = zb + (c.seam - zb) * CRADLE.band_from,
-    z1 = zb + (c.seam - zb) * CRADLE.band_to;
-  const recessed = banded([plan(d, 0, z0), plan(d, t, z0 + t), plan(d, t, z1 - t), plan(d, 0, z1)]);
-  return sub(slab(plan(d, -1, z0 + EPS), z1 - z0 - 2 * EPS), recessed);
+    top = d.pod.walled ? c.seam : c.edge - CRADLE.edge;
+  // Cut what lies outside the recessed surface, within z0..z1.
+  const recess = (levels: PodLevel[]) =>
+    sub(
+      slab(plan(d, -1, levels[0].z + EPS), levels[levels.length - 1].z - levels[0].z - 2 * EPS),
+      banded(levels),
+    );
+  if (d.pod.side === 'band') {
+    const t = CRADLE.band_depth,
+      z0 = zb + (top - zb) * CRADLE.band_from,
+      z1 = zb + (top - zb) * CRADLE.band_to;
+    return [recess([plan(d, 0, z0), plan(d, t, z0 + t), plan(d, t, z1 - t), plan(d, 0, z1)])];
+  }
+  if (d.pod.side === 'grooves') {
+    const g = CRADLE.groove_depth,
+      h = CRADLE.groove_half;
+    return Array.from({ length: CRADLE.grooves }, (_, i) => {
+      const z = zb + ((top - zb) * (i + 1)) / (CRADLE.grooves + 1);
+      return recess([plan(d, 0, z - h), plan(d, g, z), plan(d, 0, z + h)]);
+    });
+  }
+  return [];
 }
 /** U shape (in x and height) of the front notch, widened by grow. */
 function notch_profile(c: CradleShape, grow: number): any {
@@ -158,7 +179,8 @@ export function cradle_cuts(d: any): any {
     along(notch_profile(c, b + 0.6), c.cup_r + 0.6, c.cup_r + 0.6 + EPS),
   );
   const shaft = zcyl(2 * d.cavity_r, 0, c.rim + 40, d.fn);
-  const cuts = [notch, shaft];
+  // Without a walled base, the side design goes on the shell's own lower wall.
+  const cuts = [notch, shaft, ...(d.pod.walled ? [] : cradle_side(d))];
   if (c.funnel > 0) {
     const r = Math.sqrt(Math.max(d.cavity_r ** 2 - Math.min(c.rim, 0) ** 2, 1));
     cuts.push(

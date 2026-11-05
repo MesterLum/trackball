@@ -129,7 +129,7 @@ export function tray(d: any): any {
   );
   // A pod's shell comes down to the desk around a flat base plate.
   // A cradle pod's base is a walled tray up to the seam with its shell.
-  body = d.pod.cradle
+  body = d.pod.walled
     ? cradle_base(d)
     : d.is_pod
       ? pod_plate(d, zf_bot, zf_top)

@@ -177,6 +177,27 @@ describe('cradle pod', () => {
     expect(c.seam).toBeGreaterThan(d.z_floor_top);
   });
 
+  it('offers a walled base or the shell down to the desk, with a side design', () => {
+    const shown = (v: Values) => OPTIONS.filter((o) => optionApplies(o.name, v)).map((o) => o.name);
+    expect(shown({ build: 'cradle' })).toEqual(expect.arrayContaining(['pod_base', 'pod_side']));
+    expect(shown({ build: 'pod' })).not.toContain('pod_base');
+    const walled = cradle(),
+      covered = cradle({ pod_base: 'covered' });
+    expect(walled.pod.walled).toBe(true);
+    expect(covered.pod.walled).toBe(false);
+    expect(cradle_shape(covered).seam).toBeCloseTo(covered.z_floor_bottom, 6);
+    // Covered: the base is a flat plate and the side design is cut into the shell instead.
+    const parts = (d: any) => Object.fromEntries(generateParts(d).map((p) => [p.name, p.scad]));
+    const grooves = parts(cradle({ pod_base: 'covered', pod_side: 'grooves' })),
+      plain = parts(cradle({ pod_base: 'covered', pod_side: 'none' }));
+    expect(grooves.shell.length).toBeGreaterThan(plain.shell.length);
+    expect(grooves.tray).toEqual(plain.tray);
+    const banded = parts(cradle({ pod_side: 'band' })),
+      bare = parts(cradle({ pod_side: 'none' }));
+    expect(banded.tray.length).toBeGreaterThan(bare.tray.length);
+    expect(banded.shell).toEqual(bare.shell);
+  });
+
   it('keeps the cup in proportion with the body for small balls', () => {
     const small = cradle({ ball: 20 }),
       large = cradle({ ball: 44 });

@@ -649,6 +649,45 @@
     "label": "weights"
   },
   {
+    "name": "pod_base",
+    "kind": "choice",
+    "default": "walled",
+    "help": "cradle pod: a base with a solid wall around the electronics that meets the shell at a seam, or the shell coming down to the desk over a flat base plate",
+    "group": "Body",
+    "flag": null,
+    "choices": ["walled", "covered"],
+    "choice_labels": {
+      "walled": "Walled base with a seam",
+      "covered": "Shell down to the desk"
+    },
+    "min": null,
+    "max": null,
+    "step": null,
+    "unit": null,
+    "pattern": null,
+    "label": "base"
+  },
+  {
+    "name": "pod_side",
+    "kind": "choice",
+    "default": "band",
+    "help": "cradle pod: design on the lower wall",
+    "group": "Body",
+    "flag": null,
+    "choices": ["band", "grooves", "none"],
+    "choice_labels": {
+      "band": "Recessed band",
+      "grooves": "Grooves",
+      "none": "Plain"
+    },
+    "min": null,
+    "max": null,
+    "step": null,
+    "unit": null,
+    "pattern": null,
+    "label": "side detail"
+  },
+  {
     "name": "fn",
     "kind": "int",
     "default": 96,
