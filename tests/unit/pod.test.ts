@@ -176,6 +176,17 @@ describe('cradle pod', () => {
     expect(c.seam).toBeGreaterThan(d.z_floor_top);
   });
 
+  it('a walled base closes the electronics bay up to the seam under the sensor plate', () => {
+    const d = cradle(),
+      c = cradle_shape(d);
+    expect(c.seam).toBeCloseTo(d.z_pcb_face - 1, 6);
+    // The controller stack and the sensor below its plate stay inside the walled base.
+    expect(d.z_floor_top + d.mcu_stack).toBeLessThanOrEqual(c.seam + 1);
+    const base = generateParts(d).find((p) => p.name === 'tray')!.scad;
+    // Built from scaled extrusions, never one big hull.
+    expect(base).toContain('scale=[');
+  });
+
   it('keeps the front notch between two ball supports', () => {
     for (const supports of [3, 4]) {
       const d = cradle({ supports }),

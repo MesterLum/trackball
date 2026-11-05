@@ -225,11 +225,13 @@ Buttons, palm rest, tilt, tent and battery are dropped (`POD_FIXED` in
   cradle turns so the front falls between two of them. The cup wall is 3 mm
   thicker than `cup_wall` so the support bores stay inside it. The rim may sit
   above the ball's middle, so only a straight shaft above the equator is
-  cleared and the ball still lifts out. The base's top just clears the sensor
-  plate and the cup stays solid, so the notch never opens into the inside; a
-  shallow groove around the lower body marks a seam. The base is built in
-  bands (one small hull per pair of outlines), since one big hull of near-flat
-  slices can trip CGAL.
+  cleared and the ball still lifts out. The shell's top just clears the
+  sensor plate and the cup stays solid, so the notch never opens into the
+  inside. The base is a tray whose solid wall closes the electronics bay up to
+  a seam 1 mm under the sensor plate, where the shell starts; both edges of the
+  seam are chamfered. Rounded edges are built as bands of scaled extrusions
+  (a smaller soft square is an exact scaled copy), never as hulls, which CGAL
+  can fail on.
 - **Rounded** (`build pod`): the pebble described below; the internals are the
   same for both.
 

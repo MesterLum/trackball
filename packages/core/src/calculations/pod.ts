@@ -51,7 +51,7 @@ export class Pod {
 /**
  * Cradle pod: rounded top edge of the base, concave fillet where the cup rises from it, rounded
  * rim lip, the front notch (width and depth as shares of the ball radius) and its bevel, and the
- * seam groove around the lower body.
+ * chamfer on both sides of the seam between the shell and the walled base.
  */
 export const CRADLE = {
   edge: 4.0,
@@ -60,8 +60,7 @@ export const CRADLE = {
   notch_w: 0.45,
   notch_depth: 0.6,
   bevel: 1.2,
-  groove_depth: 0.7,
-  groove_h: 0.8,
+  seam_chamfer: 0.6,
 };
 
 export interface CradleShape {
@@ -75,7 +74,7 @@ export interface CradleShape {
   /** Half width of the front notch and the height of its rounded bottom. */
   notch_r: number;
   notch_bottom: number;
-  /** Height of the seam groove. */
+  /** Height of the seam: the base's wall rises to it, the shell starts there. */
   seam: number;
 }
 /**
@@ -112,7 +111,8 @@ export function cradle_shape(d: any): CradleShape {
       0.25 * R,
     ),
     notch_bottom: Math.max(rim - CRADLE.notch_depth * R, edge + 1.5),
-    seam: d.z_floor_top + 1.5,
+    // Just under the sensor plate's underside, so the base's wall closes the electronics bay.
+    seam: d.z_pcb_face - 1,
   };
 }
 
