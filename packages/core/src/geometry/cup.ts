@@ -15,6 +15,7 @@ import {
   square,
   union,
 } from '../scad/index.js';
+import { pod_shroud } from './pod.js';
 import { EPS, place_on_ball, polar, rounded_rect, rounded_slab, support_frames, zcyl } from './common.js';
 export function lens_window_size(d: any): any {
   let c: any;
@@ -104,6 +105,7 @@ export function cup(d: any): any {
       body = hull()(base, blk);
     }
   }
+  if (d.is_pod) body = add(body, pod_shroud(d));
   cavity = sphere(d.cavity_r, undefined, fn);
   big = mul(2, d.skirt_dia);
   opening = cube([big, big, add(R, 20)]).translate([-big / 2, -big / 2, z_rim]);

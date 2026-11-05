@@ -1,5 +1,24 @@
 [
   {
+    "name": "build",
+    "kind": "choice",
+    "default": "full",
+    "help": "a full trackball with buttons and an optional palm rest, or a compact ball-only pod for the desk",
+    "group": "Ball & cup",
+    "flag": null,
+    "choices": ["full", "pod"],
+    "choice_labels": {
+      "full": "Full trackball",
+      "pod": "Compact pod"
+    },
+    "min": null,
+    "max": null,
+    "step": null,
+    "unit": null,
+    "pattern": null,
+    "label": "build"
+  },
+  {
     "name": "ball",
     "kind": "float",
     "default": 34.0,
@@ -593,6 +612,40 @@
     "unit": "mm",
     "pattern": null,
     "label": "feet"
+  },
+  {
+    "name": "shell",
+    "kind": "choice",
+    "default": "solid",
+    "help": "pod shell: solid for any filament, or clear with even, thicker walls for transparent filament that shows the parts inside",
+    "group": "Body",
+    "flag": null,
+    "choices": ["solid", "clear"],
+    "choice_labels": {
+      "solid": "Solid",
+      "clear": "Clear (transparent filament)"
+    },
+    "min": null,
+    "max": null,
+    "step": null,
+    "unit": null,
+    "pattern": null,
+    "label": "shell"
+  },
+  {
+    "name": "weights",
+    "kind": "int",
+    "default": 1,
+    "help": "steel washers stacked in a pocket under the pod's base so it stays put; the largest size that fits is used (0 = no pocket)",
+    "group": "Body",
+    "flag": null,
+    "choices": [],
+    "min": 0,
+    "max": 3,
+    "step": 1,
+    "unit": null,
+    "pattern": null,
+    "label": "weights"
   },
   {
     "name": "fn",

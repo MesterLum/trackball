@@ -33,7 +33,7 @@ import {
 import { mcu_preview, battery_preview } from './geometry/tray.js';
 import { power_switch_preview } from './geometry/power.js';
 import { mcu_clamp } from './geometry/clamp.js';
-export type PrintablePartName = 'cup' | 'carrier' | 'tray' | 'palmrest' | 'palm_key' | 'mcu_clamp';
+export type PrintablePartName = 'cup' | 'shell' | 'carrier' | 'tray' | 'palmrest' | 'palm_key' | 'mcu_clamp';
 export type PartName = PrintablePartName | 'mcu' | 'sensor' | 'switches' | 'battery' | 'power_switch';
 export interface ModelPart {
   name: PartName;
@@ -42,9 +42,19 @@ export interface ModelPart {
   color: string;
   lift: number;
 }
-const builders = { cup, carrier, tray, palmrest, palm_key, mcu_clamp };
+// A pod's cup grows into the whole top shell, so it is exported under that name.
+const builders = {
+  cup: (d: Design) => (d.is_pod ? null : cup(d)),
+  shell: (d: Design) => (d.is_pod ? cup(d) : null),
+  carrier,
+  tray,
+  palmrest,
+  palm_key,
+  mcu_clamp,
+};
 const styles: Record<PrintablePartName, [ModelPart['frame'], string, number]> = {
   cup: ['deck', '#4682b4', 2],
+  shell: ['deck', '#7fa7c4', 2],
   carrier: ['deck', '#daa520', 1],
   tray: ['world', '#808080', 0],
   palmrest: ['world', '#cd853f', 0],

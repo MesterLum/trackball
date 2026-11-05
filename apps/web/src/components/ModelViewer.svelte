@@ -17,6 +17,8 @@
     dark = false,
     onframe = () => {},
     fill = false,
+    xray = false,
+    clear = [],
   }: {
     parts: RenderedPart[];
     tilt?: number;
@@ -32,7 +34,12 @@
     onframe?: () => void;
     /** Take the whole window (thumbnail rendering). */
     fill?: boolean;
+    /** Show printed parts see-through so the hardware inside is visible. */
+    xray?: boolean;
+    /** Printed parts meant for transparent filament, always drawn see-through. */
+    clear?: string[];
   } = $props();
+  const HARDWARE = new Set(['mcu', 'sensor', 'switches', 'battery', 'power_switch']);
   let host: HTMLDivElement;
   let scene: THREE.Scene,
     renderer: THREE.WebGLRenderer,
@@ -194,6 +201,12 @@
         mesh.rotation.y = THREE.MathUtils.degToRad(tent);
       }
       mesh.position.z = part.lift * explode;
+      const material = mesh.material as THREE.MeshStandardMaterial,
+        glass = !HARDWARE.has(part.name) && (xray || clear.includes(part.name));
+      material.transparent = glass;
+      material.opacity = glass ? (xray ? 0.22 : 0.38) : 1;
+      material.depthWrite = !glass;
+      material.roughness = glass ? 0.15 : 0.65;
       mesh.visible = visible[part.name] ?? visible.hardware ?? false;
     }
     ball.scale.setScalar(ballRadius);
