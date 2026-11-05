@@ -6,6 +6,7 @@ import { EPS, half_space_above, rounded_rect, to_world, zcyl } from './common.js
 import { tray_palm_joint } from './palmrest.js';
 import { power_switch_parts } from './power.js';
 import { clamp_posts } from './clamp.js';
+import { pod_plate } from './pod.js';
 export function lid_screw_points(d: any): any {
   return d.lid_screw_points();
 }
@@ -125,7 +126,8 @@ export function tray(d: any): any {
       .translate([cx, cy, 0]),
     d.deck,
   );
-  body = sub(mul(outer, hs_bot), mul(inner, hs_top));
+  // A pod's shell comes down to the desk around a flat base plate.
+  body = d.is_pod ? pod_plate(d, zf_bot, zf_top) : sub(mul(outer, hs_bot), mul(inner, hs_top));
   [posts, post_holes] = [[], []];
   for ([x, y] of lid_screw_points(d)) {
     posts.push(to_world(zcyl(t.post_dia, sub(z0, tall), z0, fn).translate([x, y, 0]), d.deck));

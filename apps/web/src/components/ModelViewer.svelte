@@ -3,6 +3,7 @@
   import * as THREE from 'three';
   import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
   import { STLLoader } from 'three/addons/loaders/STLLoader.js';
+  import { toCreasedNormals } from 'three/addons/utils/BufferGeometryUtils.js';
   import type { RenderedPart } from '@trackball/renderer-browser';
   let {
     parts,
@@ -182,8 +183,8 @@
           part.bytes.byteOffset,
           part.bytes.byteOffset + part.bytes.byteLength,
         ) as ArrayBuffer;
-        const geometry = new STLLoader().parse(buffer);
-        geometry.computeVertexNormals();
+        // Smooth shading across curved surfaces, hard edges kept where faces meet at an angle.
+        const geometry = toCreasedNormals(new STLLoader().parse(buffer), THREE.MathUtils.degToRad(35));
         const mesh = new THREE.Mesh(
           geometry,
           new THREE.MeshStandardMaterial({ color: part.color, metalness: 0.05, roughness: 0.65 }),

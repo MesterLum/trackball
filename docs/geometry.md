@@ -215,26 +215,35 @@ right|left|front|back`): the switch moves along the chosen wall to the first
 
 `build pod` turns the model into a ball-only desk pod. Buttons, palm rest, tilt,
 tent and battery are dropped (`POD_FIXED` in `config/options.ts`) and the
-controller sits under the sensor, so the footprint follows the cup (or the
-sensor board, for small balls).
+controller sits under the sensor.
 
-- **Shell**: the cup grows a rounded-square shell (`geometry/pod.ts`), hulled
-  from slices of a quarter-ellipse profile: the full footprint where it sits on
-  the sensor plate, round and flat at the rim. It is hollow underneath with an
-  even wall: 2.0 mm `solid`, 2.4 mm `clear` for transparent filament. It is
-  exported as `shell` and screwed to the plate from below like the cup.
-- **Screws from below**: the shell covers the plate, so the plate is fixed to
-  the base by 4 M3 thread-forming screws coming up through the base posts into
-  2.6 mm pilot holes in the plate. The screws sit under the rubber feet, which
-  move inward until their recesses clear the rounded corners.
+- **Shell**: one rounded cover from the desk to the ball (`geometry/pod.ts`),
+  hulled from slices of a profile (`pod_levels`): straight sides on a
+  soft-square plan (a squircle, exponent 4), then a quarter-ellipse shoulder
+  that turns the plan into a circle and ends flat at the rim, with small
+  chamfers at the foot and at the ball opening. It is hollow with an even
+  wall, 2.0 mm `solid` or 2.4 mm `clear`, and carries the cup, so it is
+  exported as `shell` and screwed to the sensor plate from below like the cup.
+  The USB opening is cut through it. Printed in clear filament it shows the
+  sensor, controller and wiring inside.
+- **Plates**: the sensor plate (`carrier`) and the base plate (`tray`) are flat
+  squircle slabs that fit inside the shell with a 0.3 mm gap. The tray's wall
+  thickness becomes the shell wall plus that gap, so the usual fit checks use
+  the room inside the shell.
+- **Posts and screws**: four posts stand on the base plate's diagonals, as far
+  out as the shell allows (`pod_post_points`), and must clear the round sensor
+  board; auto fit adds padding when they do not, which sets the minimum size
+  for small balls. M3 thread-forming screws come up through the posts into
+  2.6 mm pilot holes in the sensor plate, hidden under the rubber feet.
 - **Weights**: `weights` steel washers (DIN 125) stack in a round pocket under
-  the base. The largest washer whose pocket keeps a solid rim inside the walls
-  and clears the feet is used; the base grows by the stack height.
+  the base plate. The largest washer whose pocket keeps a solid rim and clears
+  the feet is used; the base grows by the stack height.
 
-Pod assembly: inserts in the shell and plate, BTUs into the shell, sensor on
-the plate, shell onto the plate (4 screws from below), controller into the base,
-plate onto the base (4 screws from under the base), washers glued into the
-pocket, feet over the screw heads, ball in.
+Pod assembly: inserts in the shell and sensor plate, BTUs into the shell,
+sensor on the plate, shell onto the plate (4 screws from below), controller on
+the base plate, wires, base plate into the shell (4 screws from under the base),
+washers glued into the pocket, feet over the screw heads, ball in. Flash the
+controller before closing the pod: its BOOT button ends up inside.
 
 ## Assembly
 

@@ -12,7 +12,11 @@ import {
   POD_SCREW,
   POD_WALL,
   WASHERS,
-  pod_outline,
+  pod_levels,
+  pod_post_points,
+  inside_squircle,
+  POD_FIT,
+  POD_SIDE_N,
   washer_mass,
 } from '../../packages/core/src/calculations/pod';
 
@@ -53,10 +57,10 @@ describe('compact pod geometry', () => {
     it(`fits a ${ball} mm ball`, () => {
       const d = pod({ ball });
       expect(d.validate()).toEqual([]);
-      // The body hugs the cup: no wider than the cup or sensor board plus the walls.
+      // The body hugs the cup, or for small balls the sensor board with the posts beside it.
       const [w, l] = d.footprint;
       expect(w).toBeCloseTo(l, 6);
-      expect(w).toBeLessThanOrEqual(Math.max(d.skirt_dia, d.pcb.diameter + 2 * d.tray.wall) + 2 * 6 + 1e-6);
+      expect(w).toBeLessThanOrEqual(Math.max(d.skirt_dia + 12, d.pcb.diameter + 2 * (d.tray.post_dia + 6)));
     });
 
   it('exports a shell instead of a cup', () => {
@@ -66,14 +70,29 @@ describe('compact pod geometry', () => {
     expect(generateParts(createDesign({})).map((p) => p.name)).toContain('cup');
   });
 
-  it('shell narrows from the plate to the rim', () => {
+  it('shell runs from the desk to the rim, round at the top', () => {
     const d = pod();
-    const bottom = pod_outline(d, 0),
-      top = pod_outline(d, 1);
-    expect(bottom.w).toBeCloseTo(d.footprint[0], 6);
-    expect(top.w / 2).toBeCloseTo(d.cavity_r + d.cup.wall + 1.5, 6);
-    // Fully round at the rim.
-    expect(top.r).toBeCloseTo(top.w / 2, 6);
+    const levels = pod_levels(d),
+      top = levels[levels.length - 1];
+    expect(levels[0].z).toBeCloseTo(d.z_floor_bottom, 6);
+    expect(levels[1].a).toBeCloseTo(d.footprint[0] / 2, 6);
+    expect(top.z).toBeCloseTo(-d.cup.rim_below_center, 6);
+    expect(top.a).toBeCloseTo(d.cavity_r + d.cup.wall + 1.5, 6);
+    expect(top.n).toBe(2);
+  });
+
+  it('posts and feet stay inside the shell and clear the sensor board', () => {
+    for (const ball of [20, 34, 55]) {
+      const d = pod({ ball });
+      const a = d.footprint[0] / 2 - d.pod.wall - POD_FIT;
+      const r = Math.max(d.tray.post_dia, d.tray.feet_dia) / 2;
+      for (const [x, y] of pod_post_points(d)) {
+        expect(
+          inside_squircle(Math.abs(x) + r / Math.SQRT2, Math.abs(y) + r / Math.SQRT2, a, a, POD_SIDE_N),
+        ).toBe(true);
+        expect(Math.hypot(x, y) - d.post_r).toBeGreaterThanOrEqual(d.pcb.r + 0.5);
+      }
+    }
   });
 
   it('clear shells get thicker walls', () => {
@@ -90,11 +109,6 @@ describe('compact pod geometry', () => {
       expect(x).toBeCloseTo(screws[i][0], 6);
       expect(y).toBeCloseTo(screws[i][1], 6);
     });
-    const corner = d.half_width - d.carrier.corner_r,
-      [x, y] = feet[3];
-    expect(Math.hypot(Math.abs(x) - corner, Math.abs(y) - corner) + d.tray.feet_dia / 2).toBeLessThan(
-      d.carrier.corner_r,
-    );
   });
 });
 

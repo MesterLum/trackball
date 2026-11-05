@@ -14,7 +14,7 @@ import {
   SWITCH_TYPES,
 } from '../calculations/design.js';
 import { SUPPORTS } from '../geometry/supports.js';
-import { Pod } from '../calculations/pod.js';
+import { POD_FIT, POD_WALL, Pod } from '../calculations/pod.js';
 export interface Option {
   name: string;
   kind: string;
@@ -63,6 +63,8 @@ const POD_HIDDEN = new Set([
   'cup_scoop',
   'cup_peak',
   'cup_round',
+  'wall',
+  'edge_round',
 ]);
 /** Options that only matter for some configurations, hidden otherwise. */
 export function optionApplies(name: string, v: Partial<Values>): boolean {
@@ -153,7 +155,9 @@ export function makeDesign(values: Partial<Values>): Design {
       clamp_width: v.clamp_width,
       usb_exit: v.usb === 'back' ? 'back' : 'side',
       usb_side: v.usb === 'left' ? -1 : 1,
-      wall: v.wall,
+      // A pod's walls are its shell: the room inside ends at the shell plus a fitting gap.
+      wall: v.build === 'pod' ? POD_WALL[v.shell as keyof typeof POD_WALL] + POD_FIT : v.wall,
+      post_dia: v.build === 'pod' ? 6.5 : undefined,
       floor: v.floor,
       feet_dia: v.feet,
     }),

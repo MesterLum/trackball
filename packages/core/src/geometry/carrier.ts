@@ -6,7 +6,7 @@ import { EPS, polar, rounded_rect, rounded_slab, zcyl } from './common.js';
 import { lens_window_size } from './cup.js';
 import { bootsel_deck_xy, lid_screw_points } from './tray.js';
 import { tile_cutters } from './tiles.js';
-import { pod_plate_holes } from './pod.js';
+import { pod_plate, pod_plate_holes } from './pod.js';
 export function pcb_features(d: any): any {
   let cr: any, cuts: any, fn: any, sy: any, y: any, z0: any;
   fn = d.fn;
@@ -166,7 +166,9 @@ export function carrier(d: any): any {
   cr = d.carrier;
   [z0, z1] = [d.z_pcb_face, d.z_carrier_top];
   [w, l, cx, cy] = d.footprint;
-  plate = rounded_slab(w, l, cr.corner_r, sub(z1, z0), cr.edge_round, fn).up(z0).translate([cx, cy, 0]);
+  plate = d.is_pod
+    ? pod_plate(d, z0, z1)
+    : rounded_slab(w, l, cr.corner_r, sub(z1, z0), cr.edge_round, fn).up(z0).translate([cx, cy, 0]);
   if (d.palm_square_corners) {
     // A fused palm rest continues the tray straight forward: square the lid's front corners to
     // meet it, keeping only the edge round-over (corner radius 0 lets it pick the smallest).
