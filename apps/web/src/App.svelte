@@ -68,9 +68,14 @@
   const groups = [...new Set(OPTIONS.map((o) => o.group))];
   let tab = $state(groups[0]),
     explode = $state(0),
-    showBall = $state(true);
+    showBall = $state(true),
+    xray = $state(false);
+  // Tabs whose settings all are hidden for this build (a pod has no buttons or deck) disappear.
+  let shownGroups = $derived(groups.filter((g) => OPTIONS.some((o) => o.group === g && optionApplies(o.name, values))));
+  let activeTab = $derived(shownGroups.includes(tab) ? tab : shownGroups[0]);
   let visible = $state<Record<string, boolean>>({
     cup: true,
+    shell: true,
     carrier: true,
     tray: true,
     palmrest: true,
@@ -80,6 +85,7 @@
   });
   const partColors: Record<string, string> = {
     cup: '#4682b4',
+    shell: '#7fa7c4',
     carrier: '#daa520',
     tray: '#808080',
     palmrest: '#cd853f',
@@ -124,6 +130,9 @@
       };
     }
   });
+  let clearParts = $derived(
+    calculated.values.build === 'pod' && calculated.values.shell === 'clear' ? ['shell'] : [],
+  );
   let fits = $derived(Boolean(calculated.design && !calculated.error && !calculated.problems.length));
   let t = $derived.by(() => {
     const locale = language;
@@ -336,6 +345,7 @@
     floor={calculated.design?.z_floor_bottom ?? -40}
     visible={{ ...visible, hardware: false }}
     showGrid={false}
+    clear={clearParts}
     fill
     onframe={() => (document.documentElement.dataset.framed = String(parts.length))}
   />
@@ -370,13 +380,16 @@
         <div class="p-4 pb-3">
           <h2 class="sr-only">{t('Configuration')}</h2>
           <div class="segmented" role="tablist">
-            {#each groups as group (group)}<button role="tab" aria-selected={tab === group} onclick={() => (tab = group)}
+            {#each shownGroups as group (group)}<button
+                role="tab"
+                aria-selected={activeTab === group}
+                onclick={() => (tab = group)}
                 >{t(group)}</button
               >{/each}
           </div>
         </div>
         <fieldset class="settings-scroll px-5" disabled={exporting}>
-          {#each OPTIONS.filter((o) => o.group === tab) as option (option.name)}{#if optionApplies(option.name, values)}<OptionControl
+          {#each OPTIONS.filter((o) => o.group === activeTab) as option (option.name)}{#if optionApplies(option.name, values)}<OptionControl
                 {option}
                 bind:value={values[option.name]}
                 onchange={recordChange}
@@ -406,9 +419,25 @@
               {visible}
               {showBall}
               {dark}
+              {xray}
+              clear={clearParts}
             />
             <div class="absolute top-3 right-3 flex gap-1">
               <button
+                class="btn btn-sm btn-square bg-base-100"
+                class:btn-active={xray}
+                aria-label={t('X-ray view')}
+                aria-pressed={xray}
+                title={t('X-ray view')}
+                onclick={() => (xray = !xray)}
+                ><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"
+                  ><rect x="4" y="4" width="16" height="16" rx="4" stroke-dasharray="3 2.5" /><circle
+                    cx="12"
+                    cy="12"
+                    r="3.5"
+                  /></svg
+                ></button
+              ><button
                 class="btn btn-sm btn-square bg-base-100"
                 aria-label={t('Fit view')}
                 title={t('Fit view')}
@@ -428,7 +457,7 @@
             </div>
           </div>
           <div class="px-4 py-3 border-t border-base-300 flex flex-wrap gap-2 items-center">
-            {#each Object.keys(visible).filter((n) => n === 'hardware' || n === 'cup' || n === 'carrier' || n === 'tray' || parts.some((p) => p.name === n)) as name (name)}<label
+            {#each Object.keys(visible).filter((n) => n === 'hardware' || n === (calculated.values.build === 'pod' ? 'shell' : 'cup') || n === 'carrier' || n === 'tray' || parts.some((p) => p.name === n)) as name (name)}<label
                 class="part-chip"
                 style={`--swatch:${partColors[name]}`}
                 ><input type="checkbox" bind:checked={visible[name]} /><span class="swatch"></span>{partLabel(

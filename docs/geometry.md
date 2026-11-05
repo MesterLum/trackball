@@ -211,6 +211,31 @@ right|left|front|back`): the switch moves along the chosen wall to the first
     out on the bar after 0.5 mm. Print the lid in PETG for the flexures.
     Wire each switch between a GPIO and GND and use the internal pull-up.
 
+## Compact pod
+
+`build pod` turns the model into a ball-only desk pod. Buttons, palm rest, tilt,
+tent and battery are dropped (`POD_FIXED` in `config/options.ts`) and the
+controller sits under the sensor, so the footprint follows the cup (or the
+sensor board, for small balls).
+
+- **Shell**: the cup grows a rounded-square shell (`geometry/pod.ts`), hulled
+  from slices of a quarter-ellipse profile: the full footprint where it sits on
+  the sensor plate, round and flat at the rim. It is hollow underneath with an
+  even wall: 2.0 mm `solid`, 2.4 mm `clear` for transparent filament. It is
+  exported as `shell` and screwed to the plate from below like the cup.
+- **Screws from below**: the shell covers the plate, so the plate is fixed to
+  the base by 4 M3 thread-forming screws coming up through the base posts into
+  2.6 mm pilot holes in the plate. The screws sit under the rubber feet, which
+  move inward until their recesses clear the rounded corners.
+- **Weights**: `weights` steel washers (DIN 125) stack in a round pocket under
+  the base. The largest washer whose pocket keeps a solid rim inside the walls
+  and clears the feet is used; the base grows by the stack height.
+
+Pod assembly: inserts in the shell and plate, BTUs into the shell, sensor on
+the plate, shell onto the plate (4 screws from below), controller into the base,
+plate onto the base (4 screws from under the base), washers glued into the
+pocket, feet over the screw heads, ball in.
+
 ## Assembly
 
 1. Press inserts: 4 in the cup bottom, 2 in the carrier underside,

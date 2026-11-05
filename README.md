@@ -28,7 +28,10 @@ on your own computer.
   toggle) on the wall of your choice, placed clear of the USB plug and everything inside.
 - **Ergonomics:** tilt, tent and a palm rest that is separate, anchored with a key, or fused
   to the base.
-- **21 presets** to start from, shareable links, undo/redo, English and Spanish.
+- **Compact desk pod:** a ball-only build for any ball size, with a rounded shell around the
+  cup (solid, or clear for transparent filament), the controller under the sensor and steel
+  washers in the base as weight. An x-ray view in the preview shows the parts inside.
+- **23 presets** to start from, shareable links, undo/redo, English and Spanish.
 
 ## Build your own
 

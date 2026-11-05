@@ -1,5 +1,38 @@
 [
   {
+    "key": "desk-pod",
+    "title": "Desk pod",
+    "blurb": "Compact ball-only pod for a 34 mm ball: XIAO under the sensor, USB-C out the back, a steel weight in the base. Clicks come from your keyboard.",
+    "values": {
+      "build": "pod",
+      "mcu": "xiao",
+      "usb": "back",
+      "padding": 2,
+      "skirt": 8,
+      "rim": 3,
+      "header_height": 3
+    },
+    "tags": ["pod", "compact"]
+  },
+  {
+    "key": "clear-pod",
+    "title": "Clear pod, 44 mm ball",
+    "blurb": "A larger pod with a clear shell for transparent filament, RP2040-Zero under the sensor and two steel weights.",
+    "values": {
+      "build": "pod",
+      "ball": 44,
+      "shell": "clear",
+      "weights": 2,
+      "mcu": "rp2040-zero",
+      "usb": "back",
+      "padding": 2,
+      "skirt": 8,
+      "rim": 3,
+      "header_height": 3
+    },
+    "tags": ["pod", "clear"]
+  },
+  {
     "key": "wireless-palm",
     "title": "Wireless with palm rest",
     "blurb": "10\u00b0 tilt, two 1.5u MX keys in front, 40 mm palm rest, nice!nano with a battery under the sensor.",

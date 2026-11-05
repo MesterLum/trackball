@@ -14,6 +14,7 @@ import {
   SWITCH_TYPES,
 } from '../calculations/design.js';
 import { SUPPORTS } from '../geometry/supports.js';
+import { Pod } from '../calculations/pod.js';
 export interface Option {
   name: string;
   kind: string;
@@ -36,14 +37,38 @@ export const OPTIONS = data as Option[];
 export const BY_NAME = Object.fromEntries(OPTIONS.map((o) => [o.name, o]));
 /** Choice options whose values are shown as words (translated) rather than part numbers. */
 export const TRANSLATED_CHOICES = new Set([
+  'build',
+  'shell',
   'mcu_hold',
   'palm_attachment',
   'palm_corners',
   'power_switch',
   'power_wall',
 ]);
+/** A pod has no buttons, palm rest, tilt or battery; its controller sits under the sensor. */
+const POD_FIXED: Values = {
+  switches: 0,
+  palm: 0,
+  tilt: 0,
+  tent: 0,
+  mcu_place: 'under',
+  battery: '',
+  cup_shape: 'cone',
+};
+const POD_HIDDEN = new Set([
+  ...Object.keys(POD_FIXED),
+  'power_switch',
+  'power_wall',
+  'cup_cut',
+  'cup_scoop',
+  'cup_peak',
+  'cup_round',
+]);
 /** Options that only matter for some configurations, hidden otherwise. */
 export function optionApplies(name: string, v: Partial<Values>): boolean {
+  const pod = v.build === 'pod';
+  if (name === 'shell' || name === 'weights') return pod;
+  if (pod && (POD_HIDDEN.has(name) || ['Buttons', 'Deck'].includes(BY_NAME[name]?.group))) return false;
   const holeless = !MCUS[String(v.mcu)]?.holes?.length;
   if (name === 'mcu_hold') return holeless;
   if (name === 'clamp_length' || name === 'clamp_width') return holeless && v.mcu_hold !== 'glue';
@@ -78,6 +103,7 @@ export function coerce(values: Partial<Values>): Values {
     out[name] = v;
   }
   if (out.buttons === 'tiles') out.switch_type = 'micro';
+  if (out.build === 'pod') Object.assign(out, POD_FIXED);
   if (out.battery) parseBattery(String(out.battery));
   return out;
 }
@@ -155,6 +181,7 @@ export function makeDesign(values: Partial<Values>): Design {
       power_switch: v.power_switch,
       power_wall: v.power_wall,
     }),
+    pod: new Pod({ enabled: v.build === 'pod', shell: v.shell, weights: v.weights }),
     fn: v.fn,
   });
 }

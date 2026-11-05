@@ -129,12 +129,15 @@ export function tray(d: any): any {
   [posts, post_holes] = [[], []];
   for ([x, y] of lid_screw_points(d)) {
     posts.push(to_world(zcyl(t.post_dia, sub(z0, tall), z0, fn).translate([x, y, 0]), d.deck));
-    post_holes.push(
-      to_world(
-        zcyl(t.post_insert_dia, sub(z0, t.post_insert_depth), add(z0, 1), fn).translate([x, y, 0]),
-        d.deck,
-      ),
-    );
+    // A pod is screwed together from below (its shell covers the lid): clearance hole and head
+    // counterbore from the underside instead of an insert at the top.
+    const hole = d.is_pod
+      ? add(
+          zcyl(d.carrier.screw_clear_dia, sub(zf_bot, 1), add(z0, 1), fn),
+          zcyl(d.carrier.screw_head_dia, sub(zf_bot, 1), add(zf_bot, d.carrier.screw_head_depth), fn),
+        )
+      : zcyl(t.post_insert_dia, sub(z0, t.post_insert_depth), add(z0, 1), fn);
+    post_holes.push(to_world(hole.translate([x, y, 0]), d.deck));
   }
   posts_w = mul(union()(...posts), half_space_above(sub(zf_top, EPS), box, [cx, cy], tall));
   [adds, cuts] = [[posts_w], [union()(...post_holes)]];
@@ -201,6 +204,9 @@ export function tray(d: any): any {
     if (cradle) adds.push(cradle);
     if (opening) cuts.push(opening);
   }
+  const ballast = d.ballast;
+  if (ballast)
+    cuts.push(zcyl(ballast.dia, sub(zf_bot, 1), add(zf_bot, ballast.depth), fn).translate([cx, cy, 0]));
   for ([fx, fy] of d.feet_xy()) {
     cuts.push(zcyl(t.feet_dia, sub(zf_bot, 1), add(zf_bot, t.feet_depth), fn).translate([fx, fy, 0]));
   }

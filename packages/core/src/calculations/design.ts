@@ -20,6 +20,7 @@ import {
 import { _ } from '../i18n.js';
 import { POWER_SWITCHES, is_placement, place_power_switch } from './power.js';
 import { CLAMP, CLAMP_SIDE_EXTRA } from './clamp.js';
+import { POD_SCREW, Pod, pod_ballast, type Ballast } from './pod.js';
 import { PressFitBTU } from '../geometry/supports.js';
 import { TILE_COUNTS, TILE_DEPTH_MIN, holder_boxes, positions, tile_depth } from '../geometry/tiles.js';
 export class SensorPCB {
@@ -489,7 +490,22 @@ export class Design {
     this.switches = values.switches ?? new Switches();
     this.deck = values.deck ?? new Deck();
     this.battery = values.battery ?? new Battery();
+    this.pod = values.pod ?? new Pod();
     this.fn = values.fn ?? 96;
+  }
+  get is_pod(): boolean {
+    return this.pod.enabled;
+  }
+  /** Longest standard screw that passes the base post and bites the sensor plate's pilot hole. */
+  get pod_screw_length(): number {
+    const grip = this.z_pcb_face - (this.z_floor_bottom + this.carrier.screw_head_depth);
+    const lengths = [6, 8, 10, 12, 14, 16, 18, 20, 22, 25, 30, 35, 40];
+    const fit = lengths.filter((l) => l <= grip + POD_SCREW.pilot_depth - 0.5);
+    return fit[fit.length - 1] ?? lengths[0];
+  }
+  /** Steel weights under a pod's base, or null. */
+  get ballast(): Ballast | null {
+    return pod_ballast(this);
   }
   get skirt_dia(): any {
     return this.cup.skirt_dia(this.ball.r);
@@ -565,9 +581,11 @@ export class Design {
   lid_screw_points(): any {
     let cr: any, sw: any, x: any, y_back: any, y_front: any;
     cr = this.carrier;
-    x = sub(this.half_width, cr.lid_screw_inset);
-    y_back = sub(this.back_length, cr.lid_screw_inset);
-    y_front = -sub(this.front_length, cr.lid_screw_inset);
+    // A pod's feet sit over these screws: keep the foot recess inside the rounded corner.
+    const inset = this.is_pod ? max(cr.lid_screw_inset, this.tray.feet_dia / 2 + 2) : cr.lid_screw_inset;
+    x = sub(this.half_width, inset);
+    y_back = sub(this.back_length, inset);
+    y_front = -sub(this.front_length, inset);
     sw = this.switches;
     if (truth(truth(sw.count) && truth(sw.placement === 'front'))) {
       y_front = add(add(-add(this.skirt_dia / 2, sw.gap_to_cup), cr.screw_head_dia / 2), 1.0);
@@ -1102,7 +1120,8 @@ export class Design {
     return t.standoff_h;
   }
   get z_floor_bottom(): any {
-    return sub(this.z_floor_top, this.tray.floor);
+    // A pod's weight pocket opens under the floor, so the base grows by its depth.
+    return sub(sub(this.z_floor_top, this.tray.floor), this.ballast?.depth ?? 0);
   }
   get usb_kind(): any {
     return truth(this.tray.usb_type === 'auto') ? this.tray.mcu.usb_type : this.tray.usb_type;
@@ -1376,6 +1395,8 @@ export class Design {
     if (truth(this.tray.feet_dia <= 0)) {
       return [];
     }
+    // A pod is screwed together from below: its feet cover the four screw heads.
+    if (this.is_pod) return this.lid_screw_points().map(([x, y]: number[]) => this.floor_xy(x, y));
     i = this.tray.feet_inset;
     pts = (() => {
       const result: any = [];
@@ -1442,6 +1463,7 @@ export class Design {
     if (truth(t.mcu_place === 'under')) {
       parts.push(format(_('MCU under {v:g}'), { v: this.mcu_stack }));
     }
+    if (this.ballast) parts.push(format(_('weights {v:g}'), { v: this.ballast.depth }));
     note = '';
     if (
       truth(
@@ -1556,23 +1578,47 @@ export class Design {
           ['note']: format(_('{wall} wall, between the battery and the controller'), { wall: _(power.wall) }),
         });
     }
+    const ballast = this.ballast;
+    if (ballast)
+      items.push({
+        ['item']: format(_('Steel washers {size} (Ø{od:g} x {t:g} mm)'), ballast.washer),
+        ['qty']: ballast.count,
+        ['note']: format(_('weights: about {g:.0f} g, glued into the pocket under the base'), {
+          g: ballast.mass,
+        }),
+      });
     items = add(items, [
-      {
-        ['item']: _('M3 heat-set inserts (Ø4 x 5 mm)'),
-        ['qty']: 10,
-        ['note']: _('4 cup, 2 sensor PCB, 4 tray posts'),
-      },
-      { ['item']: _('M3x8 screws'), ['qty']: 8, ['note']: _('cup to carrier (4), lid to tray (4)') },
+      this.is_pod
+        ? { ['item']: _('M3 heat-set inserts (Ø4 x 5 mm)'), ['qty']: 6, ['note']: _('4 shell, 2 sensor PCB') }
+        : {
+            ['item']: _('M3 heat-set inserts (Ø4 x 5 mm)'),
+            ['qty']: 10,
+            ['note']: _('4 cup, 2 sensor PCB, 4 tray posts'),
+          },
+      this.is_pod
+        ? { ['item']: _('M3x8 screws'), ['qty']: 4, ['note']: _('shell to the sensor plate') }
+        : { ['item']: _('M3x8 screws'), ['qty']: 8, ['note']: _('cup to carrier (4), lid to tray (4)') },
+      this.is_pod
+        ? {
+            ['item']: format(_('M3x{l:g} thread-forming screws'), { l: this.pod_screw_length }),
+            ['qty']: 4,
+            ['note']: _('from under the base into the sensor plate'),
+          }
+        : null,
       { ['item']: _('M3x6 screws'), ['qty']: 2, ['note']: _('sensor PCB to carrier') },
       {
         ['item']: format(_('Rubber feet Ø{d:g} mm'), { d: t.feet_dia }),
         ['qty']: add(length(this.feet_xy()), length(this.palm_feet_xy())),
-        ['note']: this.palm_fused
-          ? _('self-adhesive; 2 under the back of the tray, 2 under the front of the palm rest')
-          : _('self-adhesive; 4 under the tray, the rest under the palm rest'),
+        ['note']: this.is_pod
+          ? _('self-adhesive, over the four screw heads')
+          : this.palm_fused
+            ? _('self-adhesive; 2 under the back of the tray, 2 under the front of the palm rest')
+            : _('self-adhesive; 4 under the tray, the rest under the palm rest'),
       },
       {
-        ['item']: _('Wire (6 for the sensor SPI, 2 per switch)'),
+        ['item']: this.is_pod
+          ? _('Wire (6 for the sensor SPI)')
+          : _('Wire (6 for the sensor SPI, 2 per switch)'),
         ['qty']: 1,
         ['note']: _('JST or direct solder'),
       },
@@ -1586,7 +1632,7 @@ export class Design {
     return (() => {
       const result: any = [];
       for (const i of items) {
-        if (!truth(index(i, 'qty'))) continue;
+        if (!i || !truth(index(i, 'qty'))) continue;
         result.push(i);
       }
       return result;

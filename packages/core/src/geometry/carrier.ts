@@ -6,6 +6,7 @@ import { EPS, polar, rounded_rect, rounded_slab, zcyl } from './common.js';
 import { lens_window_size } from './cup.js';
 import { bootsel_deck_xy, lid_screw_points } from './tray.js';
 import { tile_cutters } from './tiles.js';
+import { pod_plate_holes } from './pod.js';
 export function pcb_features(d: any): any {
   let cr: any, cuts: any, fn: any, sy: any, y: any, z0: any;
   fn = d.fn;
@@ -190,11 +191,13 @@ export function carrier(d: any): any {
     cb = zcyl(cr.screw_head_dia, sub(z0, EPS), add(z0, cr.screw_head_depth), fn);
     cuts.push(add(hole, cb).translate([x, y, 0]));
   }
-  for ([x, y] of lid_screw_points(d)) {
-    hole = zcyl(cr.screw_clear_dia, sub(z0, 1), add(z1, 1), fn);
-    cb = zcyl(cr.screw_head_dia, sub(z1, cr.screw_head_depth), add(z1, EPS), fn);
-    cuts.push(add(hole, cb).translate([x, y, 0]));
-  }
+  if (d.is_pod) cuts.push(...pod_plate_holes(d, lid_screw_points(d)));
+  else
+    for ([x, y] of lid_screw_points(d)) {
+      hole = zcyl(cr.screw_clear_dia, sub(z0, 1), add(z1, 1), fn);
+      cb = zcyl(cr.screw_head_dia, sub(z1, cr.screw_head_depth), add(z1, EPS), fn);
+      cuts.push(add(hole, cb).translate([x, y, 0]));
+    }
   bs = bootsel_deck_xy(d);
   if (truth(bs !== null)) {
     cuts.push(
