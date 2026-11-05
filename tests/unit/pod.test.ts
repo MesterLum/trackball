@@ -177,6 +177,21 @@ describe('cradle pod', () => {
     expect(c.seam).toBeGreaterThan(d.z_floor_top);
   });
 
+  it('keeps the cup in proportion with the body for small balls', () => {
+    const small = cradle({ ball: 20 }),
+      large = cradle({ ball: 44 });
+    const cs = cradle_shape(small),
+      cl = cradle_shape(large);
+    const half = (d: any) => Math.min(d.half_width, d.half_length);
+    // A small ball's body is set by the sensor board; its cup follows the body, with a bevel down
+    // into the ball, while a large ball's cup follows the ball.
+    expect(cs.cup_r).toBeCloseTo(CRADLE.cup_share * half(small), 6);
+    expect(cs.funnel).toBeGreaterThan(0);
+    expect(cl.cup_r).toBeCloseTo(large.cavity_r + large.cup.wall + 3, 6);
+    expect(cl.funnel).toBe(0);
+    expect(cs.cup_r + cs.fillet).toBeLessThanOrEqual(half(small) - CRADLE.edge);
+  });
+
   it('a walled base closes the electronics bay up to the seam under the sensor plate', () => {
     const d = cradle(),
       c = cradle_shape(d);

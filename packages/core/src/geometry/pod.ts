@@ -158,7 +158,18 @@ export function cradle_cuts(d: any): any {
     along(notch_profile(c, b + 0.6), c.cup_r + 0.6, c.cup_r + 0.6 + EPS),
   );
   const shaft = zcyl(2 * d.cavity_r, 0, c.rim + 40, d.fn);
-  return union()(notch, shaft);
+  const cuts = [notch, shaft];
+  if (c.funnel > 0) {
+    const r = Math.sqrt(Math.max(d.cavity_r ** 2 - Math.min(c.rim, 0) ** 2, 1));
+    cuts.push(
+      cylinder(c.funnel + EPS, undefined, undefined, r, r + c.funnel + EPS, undefined, d.fn).translate([
+        0,
+        0,
+        c.rim - c.funnel,
+      ]),
+    );
+  }
+  return union()(...cuts);
 }
 
 /** A plate that fits inside the shell (base or sensor plate), from z0 to z1. */
