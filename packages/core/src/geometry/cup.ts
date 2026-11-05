@@ -19,7 +19,7 @@ import { cradle_cuts, pod_rim_chamfer, pod_shroud } from './pod.js';
 import { cradle_shape } from '../calculations/pod.js';
 import { usb_cutout } from './tray.js';
 import { power_switch_parts } from './power.js';
-import { EPS, place_on_ball, polar, rounded_rect, rounded_slab, support_frames, zcyl } from './common.js';
+import { EPS, place_on_ball, rounded_rect, rounded_slab, support_frames, zcyl } from './common.js';
 export function lens_window_size(d: any): any {
   let c: any;
   c = d.lens.clearance;
@@ -27,7 +27,6 @@ export function lens_window_size(d: any): any {
 }
 export function cup(d: any): any {
   let R: any,
-    ang: any,
     axis: any,
     az: any,
     base: any,
@@ -160,8 +159,7 @@ export function cup(d: any): any {
     cutters.push(place_on_ball(sup.cutter(fn), R, sup.contact_height, az, pol));
   }
   inserts = [];
-  for (ang of c.carrier_screw_angles) {
-    [x, y] = polar(c.screw_radius(R), ang);
+  for ([x, y] of d.shell_screw_points()) {
     inserts.push(zcyl(c.insert_dia, sub(z_bot, EPS), add(z_bot, c.insert_depth), fn).translate([x, y, 0]));
   }
   result = sub(sub(sub(sub(sub(body, cavity), opening), window), union()(...cutters)), union()(...inserts));

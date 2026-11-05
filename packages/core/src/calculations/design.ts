@@ -24,12 +24,14 @@ import {
   POD_SCREW,
   POD_SIDE_N,
   Pod,
+  cradle_shape,
   inside_squircle,
   pod_ballast,
   pod_post_points,
   type Ballast,
 } from './pod.js';
 import { PressFitBTU } from '../geometry/supports.js';
+import { polar } from '../geometry/common.js';
 import { TILE_COUNTS, TILE_DEPTH_MIN, holder_boxes, positions, tile_depth } from '../geometry/tiles.js';
 export class SensorPCB {
   [key: string]: any;
@@ -1529,6 +1531,24 @@ export class Design {
     return this.lid_screw_points().some(
       ([x, y]: number[]) => Math.hypot(x, y) - this.post_r < this.pcb.r + 0.5,
     );
+  }
+  /**
+   * Where the screws holding the cup (or a pod's shell) to the sensor plate go. A cradle pod's base
+   * top sits low around its cup, so they move inside the cup's footprint, between the ball supports,
+   * clear of the sensor board's own screws on the front-back axis; the front pair sits under the
+   * notch, whose floor stays above them.
+   */
+  shell_screw_points(): number[][] {
+    const c = this.cup;
+    if (!this.pod.cradle)
+      return c.carrier_screw_angles.map((a: number) => polar(c.screw_radius(this.ball.r), a));
+    const n = Math.max(c.support_count, 1),
+      step = 360 / n;
+    const off_axis = (a: number) => [90, 270].every((axis) => Math.abs(((a - axis + 540) % 360) - 180) >= 25);
+    const between = Array.from({ length: n }, (_, k) => (c.azimuth0 + step / 2 + k * step) % 360);
+    const angles = [...between.filter(off_axis), 250, 290];
+    const r = Math.min(c.screw_radius(this.ball.r), cradle_shape(this).cup_r - c.insert_dia / 2 - 1.5);
+    return angles.map((a) => polar(r, a));
   }
   get battery_beside(): boolean {
     return this.is_pod && this.battery.enabled;
