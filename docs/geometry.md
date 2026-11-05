@@ -229,7 +229,8 @@ Buttons, palm rest, tilt, tent and battery are dropped (`POD_FIXED` in
   sensor plate and the cup stays solid, so the notch never opens into the
   inside. The base is a tray whose solid wall closes the electronics bay up to
   a seam 1 mm under the sensor plate, where the shell starts; both edges of the
-  seam are chamfered. Rounded edges are built as bands of scaled extrusions
+  seam are chamfered, and a shallow band (0.6 mm, 45° edges) is recessed
+  around the middle of the base wall. Rounded edges are built as bands of scaled extrusions
   (a smaller soft square is an exact scaled copy), never as hulls, which CGAL
   can fail on.
 - **Rounded** (`build pod`): the pebble described below; the internals are the

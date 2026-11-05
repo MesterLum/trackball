@@ -118,7 +118,20 @@ export function cradle_base(d: any): any {
     plan(d, 0, c.seam - k),
     plan(d, k, c.seam),
   ]);
-  return sub(outside, slab(plan(d, d.pod.wall, d.z_floor_top), c.seam - d.z_floor_top + 1));
+  return sub(
+    outside,
+    union()(slab(plan(d, d.pod.wall, d.z_floor_top), c.seam - d.z_floor_top + 1), cradle_band(d)),
+  );
+}
+/** A shallow band recessed around the base wall, with 45° edges so it prints without support. */
+function cradle_band(d: any): any {
+  const c = cradle_shape(d),
+    t = CRADLE.band_depth,
+    zb = d.z_floor_bottom,
+    z0 = zb + (c.seam - zb) * CRADLE.band_from,
+    z1 = zb + (c.seam - zb) * CRADLE.band_to;
+  const recessed = banded([plan(d, 0, z0), plan(d, t, z0 + t), plan(d, t, z1 - t), plan(d, 0, z1)]);
+  return sub(slab(plan(d, -1, z0 + EPS), z1 - z0 - 2 * EPS), recessed);
 }
 /** U shape (in x and height) of the front notch, widened by grow. */
 function notch_profile(c: CradleShape, grow: number): any {

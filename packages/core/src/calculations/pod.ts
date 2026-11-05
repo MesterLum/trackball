@@ -61,6 +61,10 @@ export const CRADLE = {
   notch_depth: 0.6,
   bevel: 1.2,
   seam_chamfer: 0.6,
+  /** Recessed band around the base wall: depth and its span as shares of the wall's height. */
+  band_depth: 0.6,
+  band_from: 0.3,
+  band_to: 0.7,
 };
 
 export interface CradleShape {
