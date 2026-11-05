@@ -36,9 +36,16 @@ const POD: Values = {
 const pod = (extra: Values = {}) => createDesign(autofit({ ...POD, ...extra }).values);
 
 describe('compact pod settings', () => {
-  it('drops buttons, palm rest, tilt and battery', () => {
+  it('drops buttons, palm rest and tilt, keeps the battery', () => {
     const v = coerce({ build: 'pod', switches: 4, palm: 40, tilt: 10, tent: 5, battery: '30x20x5' });
-    expect([v.switches, v.palm, v.tilt, v.tent, v.battery, v.mcu_place]).toEqual([0, 0, 0, 0, '', 'under']);
+    expect([v.switches, v.palm, v.tilt, v.tent, v.battery, v.mcu_place]).toEqual([
+      0,
+      0,
+      0,
+      0,
+      '30x20x5',
+      'under',
+    ]);
   });
   it('shows only the settings that apply', () => {
     const shown = (v: Values) => OPTIONS.filter((o) => optionApplies(o.name, v)).map((o) => o.name);
@@ -47,7 +54,7 @@ describe('compact pod settings', () => {
     expect(full).not.toContain('shell');
     expect(full).not.toContain('weights');
     expect(compact).toEqual(expect.arrayContaining(['shell', 'weights', 'ball', 'mcu', 'sensor_adjust']));
-    for (const name of ['switches', 'buttons', 'palm', 'tilt', 'mcu_place', 'battery', 'cup_shape'])
+    for (const name of ['switches', 'buttons', 'palm', 'tilt', 'mcu_place', 'cup_shape'])
       expect(compact).not.toContain(name);
   });
   it('a full build is unchanged', () => {
@@ -263,4 +270,52 @@ describe('pod electronics bay', () => {
       `h=${(held.mcu_standoff_h + POD_STANDOFF_SINK + 1).toFixed(1).replace(/\.0$/, '')}`,
     );
   });
+});
+
+describe('pod battery', () => {
+  const WIRELESS: Values = { ...POD, build: 'cradle', padding: 6, rim: 1, battery: '30x20x5' };
+  const fitted = (extra: Values = {}) => autofit({ ...WIRELESS, ...extra });
+
+  it('lies beside the controller without stacking under it', () => {
+    const d = createDesign(fitted().values),
+      bare = createDesign(fitted({ battery: '' }).values);
+    expect(d.validate()).toEqual([]);
+    expect(d.battery_beside).toBe(true);
+    expect(d.battery.extra_height).toBe(0);
+    expect(d.mcu_standoff_h).toBe(bare.mcu_standoff_h);
+    // In front of the controller, inside the shell and clear of the posts.
+    const front = Math.min(...d.mcu_mount_corners().map((p: number[]) => p[1]));
+    expect(d.battery_center()[1] + d.battery.outer[1] / 2).toBeLessThanOrEqual(front - 1 + 1e-6);
+    expect(d.pod_battery_fits()).toBe(true);
+    // Only as much taller as the battery is over the controller.
+    expect(bare.z_floor_top - d.z_floor_top).toBeCloseTo(
+      Math.max(d.battery.stack + d.tray.clearance - d.mcu_stack, 0),
+      6,
+    );
+    expect(d.height_breakdown()).toContain('MCU and battery under');
+  });
+
+  it('asks for room when the battery does not fit', () => {
+    const { values, changes } = fitted({ battery: '30x30x5' });
+    expect(changes.map((c) => c.option)).toContain('padding');
+    expect(createDesign(values).validate()).toEqual([]);
+    const tight = createDesign({ ...values, padding: 2 } as Values);
+    expect(tight.validate().some((m: string) => m.includes('does not fit beside the controller'))).toBe(true);
+  });
+
+  for (const pod_base of ['walled', 'covered'])
+    it(`places a power switch through the ${pod_base} base`, () => {
+      const d = createDesign(fitted({ pod_base }).values);
+      const p = d.power_switch_placement();
+      expect(p && 'u' in p).toBe(true);
+      const parts = Object.fromEntries(generateParts(d).map((x) => [x.name, x.scad]));
+      const plain = Object.fromEntries(
+        generateParts(createDesign(fitted({ pod_base, power_switch: 'none' }).values)).map((x) => [
+          x.name,
+          x.scad,
+        ]),
+      );
+      // Without a walled base the switch opening is cut through the shell as well.
+      expect(parts.shell === plain.shell).toBe(pod_base === 'walled');
+    });
 });

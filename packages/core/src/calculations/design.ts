@@ -20,7 +20,15 @@ import {
 import { _ } from '../i18n.js';
 import { POWER_SWITCHES, is_placement, place_power_switch } from './power.js';
 import { CLAMP, CLAMP_SIDE_EXTRA } from './clamp.js';
-import { POD_SCREW, Pod, pod_ballast, pod_post_points, type Ballast } from './pod.js';
+import {
+  POD_SCREW,
+  POD_SIDE_N,
+  Pod,
+  inside_squircle,
+  pod_ballast,
+  pod_post_points,
+  type Ballast,
+} from './pod.js';
 import { PressFitBTU } from '../geometry/supports.js';
 import { TILE_COUNTS, TILE_DEPTH_MIN, holder_boxes, positions, tile_depth } from '../geometry/tiles.js';
 export class SensorPCB {
@@ -305,6 +313,12 @@ export class Battery {
     this.frame_extra_h = values.frame_extra_h ?? 1.0;
     this.power_switch = values.power_switch ?? 'slide';
     this.power_wall = values.power_wall ?? 'right';
+    /** In a pod the battery lies beside the controller under the sensor, not under it. */
+    this.beside = values.beside ?? false;
+  }
+  /** Height of the battery in its frame. */
+  get stack(): number {
+    return this.thickness + this.frame_extra_h;
   }
   get outer(): any {
     let f: any;
@@ -312,7 +326,7 @@ export class Battery {
     return [add(this.length, f), add(this.width, f)];
   }
   get extra_height(): any {
-    return truth(this.enabled) ? add(this.thickness, this.frame_extra_h) : 0.0;
+    return truth(this.enabled) && !this.beside ? add(this.thickness, this.frame_extra_h) : 0.0;
   }
 }
 export class SwitchType {
@@ -860,7 +874,16 @@ export class Design {
         });
       }
     }
-    if (truth(this.battery.enabled)) {
+    if (this.battery_beside && !this.pod_battery_fits())
+      report(
+        format(_('the {l:g}x{w:g} mm battery does not fit beside the controller'), {
+          l: this.battery.length,
+          w: this.battery.width,
+        }),
+        this.padding_for_pod_battery(),
+        _('or use a smaller battery'),
+      );
+    if (truth(this.battery.enabled) && !this.battery_beside) {
       [bl, bw] = this.battery.outer;
       if (truth(bl > sub(inner_w, 2.0))) {
         report(
@@ -1067,6 +1090,8 @@ export class Design {
       }
     }
     allowance = add(this.battery.extra_height, truth(t.mcu_place === 'under') ? this.mcu_stack : 0);
+    // Side by side under the sensor, the taller of the controller and the battery sets the floor.
+    if (this.battery_beside) allowance = max(allowance, this.battery.stack + t.clearance);
     floor = sub(
       min(
         (() => {
@@ -1375,6 +1400,14 @@ export class Design {
   battery_center(): any {
     let b: any, y: any;
     b = this.battery;
+    // In a pod, in front of the controller (which sits against its USB wall).
+    if (this.battery_beside) {
+      const front = Math.min(...this.mcu_mount_corners().map((p: number[]) => p[1]));
+      return [
+        0.0,
+        Math.max(front - 1.0 - b.outer[1] / 2, -this.front_length + this.tray.wall + b.outer[1] / 2),
+      ];
+    }
     y = min(0.0, sub(sub(this.bay_y0, 1.0), index(b.outer, 1) / 2));
     return [0.0, y];
   }
@@ -1459,10 +1492,16 @@ export class Design {
       format(_('air {v:g}'), { v: t.clearance }),
       format(_('floor {v:g}'), { v: t.floor }),
     ];
-    if (truth(this.battery.enabled)) {
+    if (truth(this.battery.enabled) && !this.battery_beside) {
       parts.push(format(_('battery {v:g}'), { v: this.battery.extra_height }));
     }
-    if (truth(t.mcu_place === 'under')) {
+    if (this.battery_beside)
+      parts.push(
+        format(_('MCU and battery under {v:g}'), {
+          v: Math.max(this.mcu_stack, this.battery.stack + t.clearance),
+        }),
+      );
+    else if (truth(t.mcu_place === 'under')) {
       parts.push(format(_('MCU under {v:g}'), { v: this.mcu_stack }));
     }
     if (this.ballast) parts.push(format(_('weights {v:g}'), { v: this.ballast.depth }));
@@ -1490,6 +1529,40 @@ export class Design {
     return this.lid_screw_points().some(
       ([x, y]: number[]) => Math.hypot(x, y) - this.post_r < this.pcb.r + 0.5,
     );
+  }
+  get battery_beside(): boolean {
+    return this.is_pod && this.battery.enabled;
+  }
+  /** A pod's battery frame stays inside the shell, clear of the posts and in front of the controller. */
+  pod_battery_fits(): boolean {
+    const [bx, by] = this.battery_center();
+    const [bl, bw] = this.battery.outer;
+    const front = Math.min(...this.mcu_mount_corners().map((p: number[]) => p[1]));
+    if (by + bw / 2 > front - 1.0 + 1e-6) return false;
+    const [w, l, cx, cy] = this.footprint;
+    const [a, b] = [w / 2 - this.tray.wall - 0.5, l / 2 - this.tray.wall - 0.5];
+    const corners = [-1, 1].flatMap((sx) =>
+      [-1, 1].map((sy) => [bx + (sx * bl) / 2 - cx, by + (sy * bw) / 2 - cy]),
+    );
+    if (corners.some(([x, y]) => !inside_squircle(x, y, a, b, POD_SIDE_N))) return false;
+    const clear = this.post_r + 0.5;
+    return this.lid_screw_points().every(([x, y]: number[]) => {
+      const dx = Math.max(Math.abs(x - bx) - bl / 2, 0),
+        dy = Math.max(Math.abs(y - by) - bw / 2, 0);
+      return Math.hypot(dx, dy) >= clear;
+    });
+  }
+  padding_for_pod_battery(): number | null {
+    const original = this.carrier.padding;
+    try {
+      for (let p = original + 0.5; p <= original + 30; p += 0.5) {
+        this.carrier.padding = p;
+        if (this.pod_battery_fits()) return p;
+      }
+      return null;
+    } finally {
+      this.carrier.padding = original;
+    }
   }
   padding_for_pod_posts(): number | null {
     const original = this.carrier.padding;
@@ -1777,14 +1850,20 @@ export class Design {
             ? format(_(' (+{h:g} mm height)'), { h: this.mcu_stack })
             : '',
         ),
-        truth(this.battery.enabled)
-          ? format(_('; battery {l:g}x{w:g}x{t:g} under the sensor (+{h:g} mm)'), {
+        this.battery_beside
+          ? format(_('; battery {l:g}x{w:g}x{t:g} beside the controller'), {
               l: this.battery.length,
               w: this.battery.width,
               t: this.battery.thickness,
-              h: this.battery.extra_height,
             })
-          : '',
+          : truth(this.battery.enabled)
+            ? format(_('; battery {l:g}x{w:g}x{t:g} under the sensor (+{h:g} mm)'), {
+                l: this.battery.length,
+                w: this.battery.width,
+                t: this.battery.thickness,
+                h: this.battery.extra_height,
+              })
+            : '',
       ),
       add(
         add(

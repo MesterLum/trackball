@@ -30,8 +30,8 @@ on your own computer.
   to the base.
 - **Compact desk pods:** ball-only builds for any ball size, either a cradle (a round cup with
   a notch in front, rising from a rounded base on a curve) or a rounded pebble. One shell from
-  the desk to the ball (solid, or clear to show the electronics), the controller under the
-  sensor and steel washers in the base as weight. An x-ray view in the preview shows the parts
+  the desk to the ball (solid, or clear to show the electronics), the controller and an
+  optional battery under the sensor, and steel washers in the base as weight. An x-ray view in the preview shows the parts
   inside.
 - **24 presets** to start from, shareable links, undo/redo, English and Spanish.
 

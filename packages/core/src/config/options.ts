@@ -54,13 +54,10 @@ const POD_FIXED: Values = {
   tilt: 0,
   tent: 0,
   mcu_place: 'under',
-  battery: '',
   cup_shape: 'cone',
 };
 const POD_HIDDEN = new Set([
   ...Object.keys(POD_FIXED),
-  'power_switch',
-  'power_wall',
   'cup_cut',
   'cup_scoop',
   'cup_peak',
@@ -192,6 +189,7 @@ export function makeDesign(values: Partial<Values>): Design {
     battery: copy(parseBattery(String(v.battery)), {
       power_switch: v.power_switch,
       power_wall: v.power_wall,
+      beside: v.build !== 'full',
     }),
     pod: new Pod({
       enabled: v.build !== 'full',

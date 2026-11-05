@@ -223,11 +223,13 @@ export function place_power_switch(d: any): PowerSwitchPlacement | PowerSwitchPr
     const trial = { type, wall, frame: f, u, w_center: 0, roll };
     const lowest = Math.min(...switch_corners(trial, 0, depth).map(world_z));
     const placed = { ...trial, w_center: (d.z_floor_top + lift - lowest) / rate };
-    // The body must stay under the lid, whose underside sits at the sensor PCB face.
+    // The body must stay under the lid, whose underside sits at the sensor PCB face; in a walled pod
+    // base, also clear of the seam a millimetre lower.
+    const ceiling = d.pod?.walled ? z0 - 2 : z0 - 0.5;
     const corners = switch_corners(placed, wall_t, depth, type.cradle ? 2 : 0);
     const top = Math.max(...corners.map((p) => p[2]));
-    free = Math.max(free, z0 - 0.5 - (top - bw));
-    if (top > z0 - 0.5) return null;
+    free = Math.max(free, ceiling - (top - bw));
+    if (top > ceiling) return null;
     if (boxes.some((o) => overlaps(box_of(corners), o))) return null;
     return placed;
   };

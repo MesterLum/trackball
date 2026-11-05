@@ -393,5 +393,9 @@
   "cradle pod: design on the lower wall": "pod cuna: diseño en la pared inferior",
   "Recessed band": "Franja rebajada",
   "Grooves": "Ranuras",
-  "Plain": "Liso"
+  "Plain": "Liso",
+  "MCU and battery under {v:g}": "MCU y batería debajo {v:g}",
+  "; battery {l:g}x{w:g}x{t:g} beside the controller": "; batería {l:g}x{w:g}x{t:g} junto al controlador",
+  "the {l:g}x{w:g} mm battery does not fit beside the controller": "la batería de {l:g}x{w:g} mm no cabe junto al controlador",
+  "or use a smaller battery": "o usa una batería más pequeña"
 }

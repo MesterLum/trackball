@@ -214,8 +214,15 @@ right|left|front|back`): the switch moves along the chosen wall to the first
 ## Compact pod
 
 `build cradle` and `build pod` turn the model into a ball-only desk pod.
-Buttons, palm rest, tilt, tent and battery are dropped (`POD_FIXED` in
-`config/options.ts`) and the controller sits under the sensor.
+Buttons, palm rest, tilt and tent are dropped (`POD_FIXED` in
+`config/options.ts`) and the controller sits under the sensor, flat on the
+floor when it has no mounting holes, on 1 mm standoffs when it has.
+
+- **Battery** (wireless controller): it lies beside the controller under the
+  sensor, in front of it, instead of under it (`Battery.beside`); the taller
+  of the two sets the floor. Auto fit adds padding until the frame clears the
+  corner posts and stays inside the shell. The power switch goes in the base
+  wall, below the seam, or through the shell when it comes down to the desk.
 
 - **Cradle** (`build cradle`): a low soft-square base with a rounded top edge,
   and a round cup rising from it on a concave fillet up to a flat rim (at the
