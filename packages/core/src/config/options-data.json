@@ -3,13 +3,14 @@
     "name": "build",
     "kind": "choice",
     "default": "full",
-    "help": "a full trackball with buttons and an optional palm rest, or a compact ball-only pod for the desk",
+    "help": "a full trackball with buttons and an optional palm rest, or a compact ball-only pod for the desk: a cradle with a saddle around the ball, or a rounded pebble",
     "group": "Ball & cup",
     "flag": null,
-    "choices": ["full", "pod"],
+    "choices": ["full", "cradle", "pod"],
     "choice_labels": {
       "full": "Full trackball",
-      "pod": "Compact pod"
+      "cradle": "Cradle pod",
+      "pod": "Rounded pod"
     },
     "min": null,
     "max": null,

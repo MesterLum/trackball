@@ -68,7 +68,7 @@ const POD_HIDDEN = new Set([
 ]);
 /** Options that only matter for some configurations, hidden otherwise. */
 export function optionApplies(name: string, v: Partial<Values>): boolean {
-  const pod = v.build === 'pod';
+  const pod = v.build === 'pod' || v.build === 'cradle';
   if (name === 'shell' || name === 'weights') return pod;
   if (pod && (POD_HIDDEN.has(name) || ['Buttons', 'Deck'].includes(BY_NAME[name]?.group))) return false;
   const holeless = !MCUS[String(v.mcu)]?.holes?.length;
@@ -105,7 +105,7 @@ export function coerce(values: Partial<Values>): Values {
     out[name] = v;
   }
   if (out.buttons === 'tiles') out.switch_type = 'micro';
-  if (out.build === 'pod') Object.assign(out, POD_FIXED);
+  if (out.build !== 'full') Object.assign(out, POD_FIXED);
   if (out.battery) parseBattery(String(out.battery));
   return out;
 }
@@ -156,8 +156,8 @@ export function makeDesign(values: Partial<Values>): Design {
       usb_exit: v.usb === 'back' ? 'back' : 'side',
       usb_side: v.usb === 'left' ? -1 : 1,
       // A pod's walls are its shell: the room inside ends at the shell plus a fitting gap.
-      wall: v.build === 'pod' ? POD_WALL[v.shell as keyof typeof POD_WALL] + POD_FIT : v.wall,
-      post_dia: v.build === 'pod' ? 6.5 : undefined,
+      wall: v.build !== 'full' ? POD_WALL[v.shell as keyof typeof POD_WALL] + POD_FIT : v.wall,
+      post_dia: v.build !== 'full' ? 6.5 : undefined,
       floor: v.floor,
       feet_dia: v.feet,
     }),
@@ -185,7 +185,12 @@ export function makeDesign(values: Partial<Values>): Design {
       power_switch: v.power_switch,
       power_wall: v.power_wall,
     }),
-    pod: new Pod({ enabled: v.build === 'pod', shell: v.shell, weights: v.weights }),
+    pod: new Pod({
+      enabled: v.build !== 'full',
+      style: v.build === 'cradle' ? 'cradle' : 'round',
+      shell: v.shell,
+      weights: v.weights,
+    }),
     fn: v.fn,
   });
 }

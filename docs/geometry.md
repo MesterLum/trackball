@@ -213,9 +213,21 @@ right|left|front|back`): the switch moves along the chosen wall to the first
 
 ## Compact pod
 
-`build pod` turns the model into a ball-only desk pod. Buttons, palm rest, tilt,
-tent and battery are dropped (`POD_FIXED` in `config/options.ts`) and the
-controller sits under the sensor.
+`build cradle` and `build pod` turn the model into a ball-only desk pod.
+Buttons, palm rest, tilt, tent and battery are dropped (`POD_FIXED` in
+`config/options.ts`) and the controller sits under the sensor.
+
+- **Cradle** (`build cradle`): a low soft-square body with a rounded top edge,
+  hulled with a collar around the ball, then carved by a saddle: a cylinder
+  along the front-back axis that dips to the rim depth in front of and behind
+  the ball and leaves wings at the sides, a quarter of the ball's diameter
+  higher (`cradle_shape`). The wings may rise past the ball's middle, so only a
+  straight shaft above the equator is cleared and the ball still lifts out. The
+  body's top edge sits just above the sensor plate and the collar stays solid,
+  so the saddle never opens into the inside. A shallow groove around the lower
+  body marks a seam.
+- **Rounded** (`build pod`): the pebble described below; the internals are the
+  same for both.
 
 - **Shell**: one rounded cover from the desk to the ball (`geometry/pod.ts`),
   hulled from slices of a profile (`pod_levels`): straight sides on a

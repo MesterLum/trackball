@@ -28,16 +28,56 @@ export function washer_mass(w: Washer): number {
   return (Math.PI / 4) * (w.od ** 2 - w.id ** 2) * w.t * STEEL;
 }
 
+export type PodStyle = 'round' | 'cradle';
 export class Pod {
   [key: string]: any;
   constructor(values: Record<string, any> = {}) {
     this.enabled = values.enabled ?? false;
+    this.style = values.style ?? 'round';
     this.shell = values.shell ?? 'solid';
     this.weights = values.weights ?? 1;
   }
   get wall(): number {
     return POD_WALL[this.shell as keyof typeof POD_WALL] ?? POD_WALL.solid;
   }
+  get cradle(): boolean {
+    return this.enabled && this.style === 'cradle';
+  }
+}
+
+/** Cradle pod: rounded top edge, the collar's tube, the wings' rise (share of the ball) and the
+ * seam groove around the body. */
+export const CRADLE = { edge: 4.0, tube: 3.0, lip: 1.0, wing: 0.25, groove_depth: 0.7, groove_h: 0.8 };
+
+export interface CradleShape {
+  /** Height of the body's outer top edge. */
+  edge: number;
+  /** Lowest point of the rim, in front of and behind the ball. */
+  valley: number;
+  /** Top of the wings beside the ball. */
+  wing: number;
+  /** Radius of the collar's tube centre around the ball. */
+  ring: number;
+  /** Radius of the saddle cut (a cylinder along the front-back axis). */
+  saddle: number;
+  /** Height of the seam groove. */
+  seam: number;
+}
+/** Cradle pod: a saddle-shaped rim, dipping front and back (to the rim depth) and rising into
+ * wings at the sides; the body's top edge just clears the plates inside. */
+export function cradle_shape(d: any): CradleShape {
+  const valley = -d.cup.rim_below_center,
+    wing = valley + CRADLE.wing * d.ball.diameter,
+    ring = d.cavity_r + CRADLE.lip + CRADLE.tube,
+    rise = wing - valley;
+  return {
+    edge: d.z_carrier_top + d.pod.wall + 2,
+    valley,
+    wing,
+    ring,
+    saddle: (ring ** 2 + rise ** 2) / (2 * rise),
+    seam: d.z_floor_top + 1.5,
+  };
 }
 
 export interface Ballast {
