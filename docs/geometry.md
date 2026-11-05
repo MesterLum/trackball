@@ -184,7 +184,7 @@ a friction pocket), USB size, tallest component, BOOTSEL position.
   sensor (L along X, W along Y). Useful with the wireless boards
   (nice!nano, Supermini, XIAO nRF52840, Pico W with a LiPo shim).
 - Power switch (`power_switch slide|rocker|toggle|none`, `power_wall
-  right|left|front|back`): the switch moves along the chosen wall to the first
+right|left|front|back`): the switch moves along the chosen wall to the first
   spot clear of the USB plug (a 12 mm moulded plug plus margin), controller,
   battery frame, lid posts, sensor PCB and the button bodies under the lid, and
   sits 1-1.5 mm above the floor. The front wall is refused while a palm rest is
@@ -196,9 +196,9 @@ a friction pocket), USB size, tallest component, BOOTSEL position.
     1.5 mm for the tabs, about 16.5 mm deep inside with terminals.
   - `toggle`: MTS-102 (ON-OFF) or MTS-103 (ON-OFF-ON, same body), 6.3 mm hole,
     wall thinned to 2.5 mm for the nut, about 16 mm deep inside.
-  These dimensions are typical datasheet values, not yet measured against
-  real parts (`packages/core/src/calculations/power.ts`); print a test wall
-  first.
+    These dimensions are typical datasheet values, not yet measured against
+    real parts (`packages/core/src/calculations/power.ts`); print a test wall
+    first.
 - Click switches, three types:
   - `choc-v1` (default): 13.8 mm plate cutout with a relief pocket under
     the 5 mm lid, leaving a 1.3 mm plate for the clips.
@@ -209,7 +209,7 @@ a friction pocket), USB size, tallest component, BOOTSEL position.
     Omron D2F / Kailh GM microswitch (12.8 x 5.8 x 6.5 mm) pushed in from
     below; the plunger touches the paddle at rest and the paddle bottoms
     out on the bar after 0.5 mm. Print the lid in PETG for the flexures.
-  Wire each switch between a GPIO and GND and use the internal pull-up.
+    Wire each switch between a GPIO and GND and use the internal pull-up.
 
 ## Assembly
 
@@ -239,7 +239,9 @@ a friction pocket), USB size, tallest component, BOOTSEL position.
   PMW3360 datasheet assembly drawing (via community OpenSCAD models), not
   from measuring a Bastardkb board. Check Figure 4/5 of the PMW3360
   datasheet or measure your lens. If tracking is poor, tune the
-  **sensor distance** setting (`sensor_distance`, 1.8–3.0 mm) in 0.1 mm steps.
+  **sensor distance adjustment** setting (`sensor_adjust`, ±0.6 mm) in
+  0.1 mm steps. Each sensor board carries its own datasheet lens stack
+  (`SensorPCB.lens`); the adjustment is added to it.
 - **Bearing rollers**: `RollerBearing` assumes an M3 screw as the axle
   (3.3 mm clearance hole, 2.6 mm thread-forming hole). Check the screw
   length: it is the skirt-to-bearing distance printed by the cup plus 6 mm.

@@ -36,6 +36,8 @@ export class SensorPCB {
     this.fpc_center = values.fpc_center ?? [-16.75, 0.0];
     this.fpc_size = values.fpc_size ?? [6.0, 12.0];
     this.fpc_height = values.fpc_height ?? 3.0;
+    // Lens stack from the sensor's datasheet: LM19-LSI lens on a PMW3360 / PMW3389.
+    this.lens = values.lens ?? { top_above_pcb: 3.6, lens_to_ball: 2.4 };
   }
   get r(): any {
     return this.diameter / 2;

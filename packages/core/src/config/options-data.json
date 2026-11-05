@@ -225,19 +225,19 @@
     "label": "header height"
   },
   {
-    "name": "sensor_distance",
+    "name": "sensor_adjust",
     "kind": "float",
-    "default": 2.4,
-    "help": "gap between the lens and the ball surface; the PMW3360 datasheet specifies 2.4. Fine-tune in 0.1 steps if tracking is poor",
+    "default": 0.0,
+    "help": "moves the ball away from (+) or toward (-) the sensor lens, on top of the distance from the sensor's datasheet; adjust in 0.1 steps if tracking is poor",
     "group": "Ball & cup",
     "flag": null,
     "choices": [],
-    "min": 1.8,
-    "max": 3.0,
+    "min": -0.6,
+    "max": 0.6,
     "step": 0.1,
     "unit": "mm",
     "pattern": null,
-    "label": "sensor distance"
+    "label": "sensor distance adjustment"
   },
   {
     "name": "switches",
