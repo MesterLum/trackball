@@ -82,7 +82,14 @@ export const polygon = (points: number[][]) => shape('polygon', { points });
 export const offset = (r?: number, delta?: number, fn?: number) => (part: Shape) =>
   new Shape('offset', { r, delta, $fn: fn } as any, [part]);
 export const linear_extrude =
-  (height: number, center = false, convexity?: number, twist?: number, slices?: number, scale?: number) =>
+  (
+    height: number,
+    center = false,
+    convexity?: number,
+    twist?: number,
+    slices?: number,
+    scale?: number | number[],
+  ) =>
   (part: Shape) =>
     new Shape('linear_extrude', { height, center, convexity, twist, slices, scale } as any, [part]);
 export const rotate_extrude = (fn?: number) => (part: Shape) =>
