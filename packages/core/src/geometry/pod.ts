@@ -1,35 +1,57 @@
-// Compact desk pod: the shell that wraps the cup and the parts that change in the base and plate.
+// Compact desk pod: one rounded shell from the ball down to the desk, over a flat base plate.
 import { sub } from '../math.js';
-import { hull } from '../scad/index.js';
-import { POD_SCREW, POD_SLICES, pod_outline } from '../calculations/pod.js';
-import { EPS, rounded_rect, zcyl } from './common.js';
+import { cylinder, hull, linear_extrude, polygon } from '../scad/index.js';
+import {
+  POD_FIT,
+  POD_RIM_CHAMFER,
+  POD_SCREW,
+  POD_SIDE_N,
+  pod_levels,
+  squircle,
+  type PodLevel,
+} from '../calculations/pod.js';
+import { EPS, zcyl } from './common.js';
 
-/** Thin slices of the shell profile from the plate (z0) up to z1, hulled into a smooth body. */
-function body(d: any, z0: number, z1: number, inset: number): any {
-  const slices = [];
-  for (let i = 0; i <= POD_SLICES; i++) {
-    const s = i / POD_SLICES;
-    const o = pod_outline(d, s, inset);
-    const z = z0 + (z1 - z0) * s;
-    slices.push(
-      rounded_rect(o.w, o.l, o.r, EPS, d.fn)
-        .translate([o.x, o.y, 0])
-        .up(i === POD_SLICES ? z - EPS : z),
-    );
-  }
-  return hull()(...slices);
+function slab(lv: PodLevel, h: number): any {
+  return linear_extrude(h)(polygon(squircle(lv.a, lv.b, lv.n))).translate([lv.x, lv.y, lv.z]);
+}
+function body(levels: PodLevel[]): any {
+  return hull()(...levels.map((lv, i) => slab(i === levels.length - 1 ? { ...lv, z: lv.z - EPS } : lv, EPS)));
 }
 
 /**
- * Rounded-square shell from the sensor plate up to the cup rim, hollow underneath. The cup is
- * added to it and the cavity, supports and openings are cut afterwards, so they cut both.
+ * The pod's shell: hollow underneath with an even wall, its inside straight down to the desk so
+ * the base plate drops in. The cup is added to it and the cavity, supports and openings are cut
+ * afterwards, so they cut both.
  */
 export function pod_shroud(d: any): any {
   const wall = d.pod.wall;
-  const [z0, z1] = [d.z_cup_bottom, -d.cup.rim_below_center];
-  const outer = body(d, z0, z1, 0);
-  const inner = body(d, z0 - 1, z1 - wall, wall);
-  return sub(outer, inner);
+  const inner = pod_levels(d, wall, wall);
+  // Straight inside down past the bottom chamfer, so the base plate fits all the way in.
+  inner[0] = { ...inner[1], z: d.z_floor_bottom - 1 };
+  return sub(body(pod_levels(d)), body(inner));
+}
+
+/** A plate that fits inside the shell (base or sensor plate), from z0 to z1. */
+export function pod_plate(d: any, z0: number, z1: number): any {
+  const [w, l, cx, cy] = d.footprint;
+  const inset = d.pod.wall + POD_FIT;
+  return slab({ z: z0, a: w / 2 - inset, b: l / 2 - inset, n: POD_SIDE_N, x: cx, y: cy }, z1 - z0);
+}
+
+/** Soft edge where the shell meets the ball opening. */
+export function pod_rim_chamfer(d: any): any {
+  const z = -d.cup.rim_below_center,
+    r = Math.sqrt(Math.max(d.cavity_r ** 2 - z ** 2, 1));
+  return cylinder(
+    POD_RIM_CHAMFER + EPS,
+    undefined,
+    undefined,
+    r,
+    r + POD_RIM_CHAMFER + EPS,
+    undefined,
+    d.fn,
+  ).translate([0, 0, z - POD_RIM_CHAMFER]);
 }
 
 /** Pilot holes in the sensor plate's underside for the screws coming up through the base. */

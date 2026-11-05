@@ -20,7 +20,7 @@ import {
 import { _ } from '../i18n.js';
 import { POWER_SWITCHES, is_placement, place_power_switch } from './power.js';
 import { CLAMP, CLAMP_SIDE_EXTRA } from './clamp.js';
-import { POD_SCREW, Pod, pod_ballast, type Ballast } from './pod.js';
+import { POD_SCREW, Pod, pod_ballast, pod_post_points, type Ballast } from './pod.js';
 import { PressFitBTU } from '../geometry/supports.js';
 import { TILE_COUNTS, TILE_DEPTH_MIN, holder_boxes, positions, tile_depth } from '../geometry/tiles.js';
 export class SensorPCB {
@@ -581,11 +581,11 @@ export class Design {
   lid_screw_points(): any {
     let cr: any, sw: any, x: any, y_back: any, y_front: any;
     cr = this.carrier;
-    // A pod's feet sit over these screws: keep the foot recess inside the rounded corner.
-    const inset = this.is_pod ? max(cr.lid_screw_inset, this.tray.feet_dia / 2 + 2) : cr.lid_screw_inset;
-    x = sub(this.half_width, inset);
-    y_back = sub(this.back_length, inset);
-    y_front = -sub(this.front_length, inset);
+    // A pod's base posts stand as far out as its rounded shell allows.
+    if (this.is_pod) return pod_post_points(this);
+    x = sub(this.half_width, cr.lid_screw_inset);
+    y_back = sub(this.back_length, cr.lid_screw_inset);
+    y_front = -sub(this.front_length, cr.lid_screw_inset);
     sw = this.switches;
     if (truth(truth(sw.count) && truth(sw.placement === 'front'))) {
       y_front = add(add(-add(this.skirt_dia / 2, sw.gap_to_cup), cr.screw_head_dia / 2), 1.0);
@@ -930,6 +930,8 @@ export class Design {
           }),
         );
     }
+    if (this.is_pod && this.pod_posts_hit_sensor())
+      report(_('the base posts run into the sensor board'), this.padding_for_pod_posts());
     return probs;
   }
   validate(): any {
@@ -1483,6 +1485,24 @@ export class Design {
     return place_power_switch(this);
   }
   /** Smallest padding (0.5 mm steps, up to +30) that makes room for the power switch, or null. */
+  /** A pod's corner posts reach up to the sensor plate, beside the round sensor board. */
+  pod_posts_hit_sensor(): boolean {
+    return this.lid_screw_points().some(
+      ([x, y]: number[]) => Math.hypot(x, y) - this.post_r < this.pcb.r + 0.5,
+    );
+  }
+  padding_for_pod_posts(): number | null {
+    const original = this.carrier.padding;
+    try {
+      for (let p = original + 0.5; p <= original + 30; p += 0.5) {
+        this.carrier.padding = p;
+        if (!this.pod_posts_hit_sensor()) return p;
+      }
+      return null;
+    } finally {
+      this.carrier.padding = original;
+    }
+  }
   padding_for_power_switch(): number | null {
     const original = this.carrier.padding;
     try {

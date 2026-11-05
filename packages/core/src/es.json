@@ -382,5 +382,6 @@
   "Compact ball-only pod for a 34 mm ball: XIAO under the sensor, USB-C out the back, a steel weight in the base. Clicks come from your keyboard.": "Pod compacto solo con bola de 34 mm: XIAO bajo el sensor, USB-C por detrás y un contrapeso de acero en la base. Los clics los hace tu teclado.",
   "Clear pod, 44 mm ball": "Pod transparente, bola de 44 mm",
   "A larger pod with a clear shell for transparent filament, RP2040-Zero under the sensor and two steel weights.": "Un pod más grande con carcasa para filamento transparente, RP2040-Zero bajo el sensor y dos contrapesos de acero.",
-  "X-ray view": "Vista de rayos X"
+  "X-ray view": "Vista de rayos X",
+  "the base posts run into the sensor board": "los postes de la base chocan con la placa del sensor"
 }

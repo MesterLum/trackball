@@ -4,8 +4,6 @@
 export const POD_WALL = { solid: 2.0, clear: 2.4 } as const;
 /** Flat ring around the cup opening before the shell starts to fall away. */
 export const POD_LIP = 1.5;
-/** Vertical slices that approximate the shell's rounded profile. */
-export const POD_SLICES = 10;
 /** Screws from under the base into the sensor plate: thread-forming M3 into a pilot hole. */
 export const POD_SCREW = { pilot_dia: 2.6, pilot_depth: 4.0 };
 
@@ -76,15 +74,100 @@ export function pod_ballast(d: any): Ballast | null {
   };
 }
 
-/** Outline of the shell at height fraction s (0 = sitting on the plate, 1 = the cup rim). */
-export function pod_outline(d: any, s: number, inset = 0) {
+/** Gap between the shell's inside and the plates it covers. */
+export const POD_FIT = 0.3;
+/** Small chamfer at the shell's bottom edge (also keeps the first layer from flaring). */
+export const POD_FOOT_CHAMFER = 0.6;
+/** Chamfer where the shell meets the ball opening. */
+export const POD_RIM_CHAMFER = 1.0;
+/** Share of the body height taken by the rounded shoulder up to the rim. */
+export const POD_SHOULDER = 0.5;
+
+/** Squircle outline (|x/a|^n + |y/b|^n = 1): n = 2 is an ellipse, larger n squarer. */
+export function squircle(a: number, b: number, n: number, points = 72): number[][] {
+  const out: number[][] = [];
+  for (let i = 0; i < points; i++) {
+    const t = (2 * Math.PI * i) / points,
+      c = Math.cos(t),
+      s = Math.sin(t);
+    out.push([a * Math.sign(c) * Math.abs(c) ** (2 / n), b * Math.sign(s) * Math.abs(s) ** (2 / n)]);
+  }
+  return out;
+}
+export function inside_squircle(x: number, y: number, a: number, b: number, n: number): boolean {
+  return Math.abs(x / a) ** n + Math.abs(y / b) ** n <= 1;
+}
+/** Plan shape of the pod's sides: a soft square. */
+export const POD_SIDE_N = 4;
+
+export interface PodLevel {
+  z: number;
+  /** Half sizes across (x) and along (y). */
+  a: number;
+  b: number;
+  n: number;
+  x: number;
+  y: number;
+}
+/**
+ * The shell's outside, bottom to top: straight sides on a soft-square plan, then a rounded
+ * shoulder (a quarter ellipse) that turns the plan into a circle and ends flat at the rim.
+ */
+export function pod_levels(d: any, inset = 0, drop = 0, steps = 12): PodLevel[] {
   const [w, l, cx, cy] = d.footprint;
+  const zb = d.z_floor_bottom,
+    zr = -d.cup.rim_below_center;
   const top = d.cavity_r + d.cup.wall + POD_LIP;
-  // Quarter ellipse: vertical where it meets the plate, flat at the rim.
-  const k = Math.sqrt(Math.max(1 - s * s, 0));
-  const hw = top + (w / 2 - top) * k - inset;
-  const hl = top + (l / 2 - top) * k - inset;
-  const r0 = Math.max(d.carrier.corner_r - inset, 0.5);
-  const r = r0 + (Math.min(hw, hl) - r0) * s * s;
-  return { w: 2 * hw, l: 2 * hl, r, x: cx * (1 - s), y: cy * (1 - s) };
+  const zs = zr - POD_SHOULDER * (zr - zb);
+  const levels: PodLevel[] = [
+    {
+      z: zb,
+      a: w / 2 - POD_FOOT_CHAMFER - inset,
+      b: l / 2 - POD_FOOT_CHAMFER - inset,
+      n: POD_SIDE_N,
+      x: cx,
+      y: cy,
+    },
+    { z: zb + POD_FOOT_CHAMFER, a: w / 2 - inset, b: l / 2 - inset, n: POD_SIDE_N, x: cx, y: cy },
+  ];
+  for (let i = 0; i <= steps; i++) {
+    const u = i / steps,
+      k = Math.sqrt(1 - u * u);
+    levels.push({
+      z: zs + (zr - drop - zs) * u,
+      a: top + (w / 2 - top) * k - inset,
+      b: top + (l / 2 - top) * k - inset,
+      n: POD_SIDE_N - (POD_SIDE_N - 2) * u * u,
+      x: cx * (1 - u),
+      y: cy * (1 - u),
+    });
+  }
+  return levels;
+}
+
+/**
+ * Where the base posts (and the feet over their screws) go: on the diagonals, as far out as the
+ * post still fits inside the shell with some margin.
+ */
+export function pod_post_points(d: any): number[][] {
+  const [w, l, cx, cy] = d.footprint;
+  const a = w / 2 - d.pod.wall - POD_FIT,
+    b = l / 2 - d.pod.wall - POD_FIT;
+  const r = Math.max(d.tray.post_dia, d.tray.feet_dia, d.carrier.screw_head_dia) / 2 + 0.8;
+  const ring = squircle(r, r, 2, 24);
+  let t = 1;
+  for (let k = 0.99; k > 0.3; k -= 0.01) {
+    const [x, y] = [a * k, b * k];
+    if (ring.every(([dx, dy]) => inside_squircle(x + dx, y + dy, a, b, POD_SIDE_N))) {
+      t = k;
+      break;
+    }
+  }
+  const [x, y] = [a * t, b * t];
+  return [
+    [cx - x, cy - y],
+    [cx + x, cy - y],
+    [cx - x, cy + y],
+    [cx + x, cy + y],
+  ];
 }
