@@ -133,7 +133,12 @@ export function cradle_shape(d: any): CradleShape {
       ),
       0.25 * R,
     ),
-    notch_bottom: Math.max(rim - CRADLE.notch_depth * R, edge + 1.5),
+    // The notch floor stays above the base and over the shell's insert holes beside it.
+    notch_bottom: Math.max(
+      rim - CRADLE.notch_depth * R,
+      edge + 1.5,
+      d.z_cup_bottom + d.cup.insert_depth + 1.5,
+    ),
     // Just under the sensor plate's underside, so the base's wall closes the electronics bay; with
     // the shell down to the desk there is no seam above the floor.
     seam: d.pod.walled ? d.z_pcb_face - 1 : d.z_floor_bottom,

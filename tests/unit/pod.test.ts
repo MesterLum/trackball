@@ -225,6 +225,13 @@ describe('cradle pod', () => {
       expect(c.edge).toBeCloseTo(d.z_carrier_top + d.pod.wall + POD_FIT, 6);
     }
     expect(cs.rim).toBeGreaterThan(0);
+    // The notch floor covers the insert holes for the shell screws at every size.
+    for (const ball of [20, 25, 30, 34, 44, 60]) {
+      const d = cradle({ ball });
+      expect(cradle_shape(d).notch_bottom).toBeGreaterThanOrEqual(
+        d.z_cup_bottom + d.cup.insert_depth + 1.5 - 1e-9,
+      );
+    }
     expect(cl.rim).toBeCloseTo(-1, 6);
   });
 
