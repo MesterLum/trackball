@@ -152,7 +152,7 @@ describe('pod weights', () => {
 });
 
 describe('cradle pod', () => {
-  const CRADLE_POD: Values = { ...POD, build: 'cradle', padding: 4, rim: 4 };
+  const CRADLE_POD: Values = { ...POD, build: 'cradle', padding: 6, rim: 1 };
   const cradle = (extra: Values = {}) => createDesign(autofit({ ...CRADLE_POD, ...extra }).values);
 
   for (const ball of [20, 34, 44, 60])
@@ -160,19 +160,32 @@ describe('cradle pod', () => {
       expect(cradle({ ball }).validate()).toEqual([]);
     });
 
-  it('dips front and back and rises into wings at the sides', () => {
+  it('a round cup with a flat rim rises from the base, notched in front', () => {
     const d = cradle(),
       c = cradle_shape(d);
-    expect(c.valley).toBeCloseTo(-4, 6);
-    expect(c.wing - c.valley).toBeCloseTo(0.25 * d.ball.diameter, 6);
-    // The saddle cylinder passes through the valley on the axis and the wing top at the collar.
-    const at = (x: number) => c.valley + c.saddle - Math.sqrt(c.saddle ** 2 - x ** 2);
-    expect(at(0)).toBeCloseTo(c.valley, 6);
-    expect(at(c.ring)).toBeCloseTo(c.wing, 6);
-    // The body's top edge clears the sensor plate inside, and the saddle never reaches it.
+    expect(c.rim).toBeCloseTo(-1, 6);
+    expect(c.cup_r).toBeCloseTo(d.cavity_r + d.cup.wall + 3, 6);
+    // The fillet stays on the base's flat top.
+    expect(c.cup_r + c.fillet).toBeLessThanOrEqual(d.half_width - 4 - 0.5 + 1e-9);
+    // The notch dips below the rim but stops above the base, which clears the plates inside.
+    expect(c.notch_bottom).toBeLessThan(c.rim);
+    expect(c.notch_bottom).toBeGreaterThan(c.edge);
     expect(c.edge - d.pod.wall).toBeGreaterThan(d.z_carrier_top);
-    expect(c.valley).toBeGreaterThan(c.edge - d.pod.wall);
     expect(c.seam).toBeGreaterThan(d.z_floor_top);
+  });
+
+  it('keeps the front notch between two ball supports', () => {
+    for (const supports of [3, 4]) {
+      const d = cradle({ supports }),
+        c = cradle_shape(d);
+      const step = 360 / supports;
+      const angles = Array.from({ length: supports }, (_, i) => (d.cup.azimuth0 + i * step) % 360);
+      // Nearest support to the front (270°) is half a step away, outside the notch's angle.
+      const nearest = Math.min(...angles.map((a) => Math.abs(((a - 270 + 540) % 360) - 180)));
+      expect(nearest).toBeCloseTo(step / 2, 6);
+      const reach = (d.ball.r + 1.6) * Math.sin((d.cup.support_polar_deg * Math.PI) / 180);
+      expect(reach * Math.sin((nearest * Math.PI) / 180)).toBeGreaterThan(c.notch_r + 3.75);
+    }
   });
 
   it('exports a shell instead of a cup', () => {

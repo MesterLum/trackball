@@ -217,15 +217,19 @@ right|left|front|back`): the switch moves along the chosen wall to the first
 Buttons, palm rest, tilt, tent and battery are dropped (`POD_FIXED` in
 `config/options.ts`) and the controller sits under the sensor.
 
-- **Cradle** (`build cradle`): a low soft-square body with a rounded top edge,
-  hulled with a collar around the ball, then carved by a saddle: a cylinder
-  along the front-back axis that dips to the rim depth in front of and behind
-  the ball and leaves wings at the sides, a quarter of the ball's diameter
-  higher (`cradle_shape`). The wings may rise past the ball's middle, so only a
-  straight shaft above the equator is cleared and the ball still lifts out. The
-  body's top edge sits just above the sensor plate and the collar stays solid,
-  so the saddle never opens into the inside. A shallow groove around the lower
-  body marks a seam.
+- **Cradle** (`build cradle`): a low soft-square base with a rounded top edge,
+  and a round cup rising from it on a concave fillet up to a flat rim (at the
+  rim depth) with a rounded lip (`cradle_shape`). A bevelled U-shaped notch in
+  the front of the cup shows more of the ball and leaves a horn on each side;
+  it narrows to stay clear of the supports either side of the front, which the
+  cradle turns so the front falls between two of them. The cup wall is 3 mm
+  thicker than `cup_wall` so the support bores stay inside it. The rim may sit
+  above the ball's middle, so only a straight shaft above the equator is
+  cleared and the ball still lifts out. The base's top just clears the sensor
+  plate and the cup stays solid, so the notch never opens into the inside; a
+  shallow groove around the lower body marks a seam. The base is built in
+  bands (one small hull per pair of outlines), since one big hull of near-flat
+  slices can trip CGAL.
 - **Rounded** (`build pod`): the pebble described below; the internals are the
   same for both.
 
