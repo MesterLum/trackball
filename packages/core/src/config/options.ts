@@ -94,6 +94,7 @@ export function parseBattery(spec: string): Battery {
 }
 export function makeDesign(values: Partial<Values>): Design {
   const v = coerce(values);
+  const pcb = SENSOR_PCBS[String(v.sensor_pcb) as keyof typeof SENSOR_PCBS];
   return new Design({
     ball: new Ball({ diameter: v.ball }),
     cup: new Cup({
@@ -110,10 +111,12 @@ export function makeDesign(values: Partial<Values>): Design {
       saddle_r: v.cup_scoop,
       peak: v.cup_peak,
     }),
-    pcb: copy(SENSOR_PCBS[String(v.sensor_pcb) as keyof typeof SENSOR_PCBS], {
-      header_height: v.header_height,
+    pcb: copy(pcb, { header_height: v.header_height }),
+    // The board's datasheet distance plus the builder's adjustment.
+    lens: new Lens({
+      top_above_pcb: pcb.lens.top_above_pcb,
+      lens_to_ball: pcb.lens.lens_to_ball + Number(v.sensor_adjust),
     }),
-    lens: new Lens({ lens_to_ball: v.sensor_distance }),
     carrier: new Carrier({ padding: v.padding, edge_round: v.edge_round }),
     tray: new Tray({
       mcu: copy(MCUS[String(v.mcu)]),

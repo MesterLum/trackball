@@ -144,11 +144,18 @@ describe('rubber feet', () => {
   });
 });
 
-describe('sensor distance', () => {
+describe('sensor distance adjustment', () => {
+  it("starts from the board's datasheet distance", () => {
+    for (const sensor_pcb of ['bastardkb', 'pmw3389-round']) {
+      const d = createDesign({ sensor_pcb });
+      expect(d.lens.lens_to_ball).toBe(d.pcb.lens.lens_to_ball);
+      expect(d.lens.top_above_pcb).toBe(d.pcb.lens.top_above_pcb);
+    }
+  });
   it('moves the sensor board, not the ball', () => {
-    const near = createDesign({ sensor_distance: 2.0 });
-    const far = createDesign({ sensor_distance: 2.8 });
-    expect(createDesign({}).lens.lens_to_ball).toBe(2.4);
+    const near = createDesign({ sensor_adjust: -0.4 });
+    const far = createDesign({ sensor_adjust: 0.4 });
+    expect(far.lens.lens_to_ball).toBeCloseTo(2.8, 6);
     expect(near.z_pcb_face - far.z_pcb_face).toBeCloseTo(0.8, 6);
     expect(far.ball.r).toBe(near.ball.r);
   });
