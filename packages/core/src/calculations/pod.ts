@@ -4,6 +4,9 @@
 export const POD_WALL = { solid: 2.0, clear: 2.4 } as const;
 /** Flat ring around the cup opening before the shell starts to fall away. */
 export const POD_LIP = 1.5;
+/** Short controller standoffs in a pod; their screw holes continue into the floor below. */
+export const POD_STANDOFF = 1.0;
+export const POD_STANDOFF_SINK = 2.5;
 /** Screws from under the base into the sensor plate: thread-forming M3 into a pilot hole. */
 export const POD_SCREW = { pilot_dia: 2.6, pilot_depth: 4.0 };
 

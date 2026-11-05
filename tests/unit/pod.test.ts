@@ -17,6 +17,8 @@ import {
   inside_squircle,
   POD_FIT,
   POD_SIDE_N,
+  POD_STANDOFF,
+  POD_STANDOFF_SINK,
   cradle_shape,
   washer_mass,
 } from '../../packages/core/src/calculations/pod';
@@ -195,5 +197,20 @@ describe('cradle pod', () => {
     expect(names).toContain('shell');
     expect(names).not.toContain('cup');
     expect(generateParts(d).find((p) => p.name === 'shell')!.scad).toContain('rotate_extrude');
+  });
+});
+
+describe('pod electronics bay', () => {
+  it('keeps boards low: flat without holes, short standoffs with holes', () => {
+    const flat = createDesign(autofit({ ...POD, mcu: 'xiao' }).values),
+      held = createDesign(autofit({ ...POD, mcu: 'pico' }).values);
+    expect(flat.tray.standoff_h).toBe(0);
+    expect(held.tray.standoff_h).toBe(POD_STANDOFF);
+    expect(createDesign({ mcu: 'pico' }).tray.standoff_h).toBe(3);
+    // The screw holes of the short standoffs continue into the floor.
+    const tray = generateParts(held).find((p) => p.name === 'tray')!.scad;
+    expect(tray).toContain(
+      `h=${(held.mcu_standoff_h + POD_STANDOFF_SINK + 1).toFixed(1).replace(/\.0$/, '')}`,
+    );
   });
 });
