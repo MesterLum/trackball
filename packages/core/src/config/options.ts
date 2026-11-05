@@ -133,6 +133,8 @@ export function makeDesign(values: Partial<Values>): Design {
       wall: v.cup_wall,
       rim_below_center: v.rim,
       skirt_extra: v.skirt,
+      // A cradle pod's front notch sits between two supports.
+      support_azimuth_deg: v.build === 'cradle' ? 270 + 180 / Number(v.supports) : undefined,
       shape: v.cup_shape,
       cut: v.cup_cut,
       round: v.cup_round,

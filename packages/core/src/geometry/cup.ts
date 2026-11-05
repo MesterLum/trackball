@@ -16,6 +16,7 @@ import {
   union,
 } from '../scad/index.js';
 import { cradle_cuts, pod_rim_chamfer, pod_shroud } from './pod.js';
+import { cradle_shape } from '../calculations/pod.js';
 import { usb_cutout } from './tray.js';
 import { EPS, place_on_ball, polar, rounded_rect, rounded_slab, support_frames, zcyl } from './common.js';
 export function lens_window_size(d: any): any {
@@ -105,6 +106,14 @@ export function cup(d: any): any {
       blk = rounded_slab(side, side, 7.0, sub(z_rim, z_bot), rr, fn).up(z_bot);
       body = hull()(base, blk);
     }
+  }
+  // A cradle's cup is a straight cylinder above its base: trim the cone to it there.
+  if (d.pod.cradle) {
+    const c = cradle_shape(d);
+    body = add(
+      intersection()(body, zcyl(2 * c.cup_r, sub(z_bot, 1), add(R, 20), fn)),
+      intersection()(body, zcyl(mul(4, d.skirt_dia), sub(z_bot, 1), c.edge, fn)),
+    );
   }
   if (d.is_pod) body = add(body, pod_shroud(d));
   cavity = sphere(d.cavity_r, undefined, fn);

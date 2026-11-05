@@ -28,8 +28,8 @@ on your own computer.
   toggle) on the wall of your choice, placed clear of the USB plug and everything inside.
 - **Ergonomics:** tilt, tent and a palm rest that is separate, anchored with a key, or fused
   to the base.
-- **Compact desk pods:** ball-only builds for any ball size, either a cradle whose saddle dips
-  in front of the ball and rises into wings at its sides, or a rounded pebble. One shell from
+- **Compact desk pods:** ball-only builds for any ball size, either a cradle (a round cup with
+  a notch in front, rising from a rounded base on a curve) or a rounded pebble. One shell from
   the desk to the ball (solid, or clear to show the electronics), the controller under the
   sensor and steel washers in the base as weight. An x-ray view in the preview shows the parts
   inside.

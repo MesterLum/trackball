@@ -1,6 +1,15 @@
 // Compact desk pod: one rounded shell from the ball down to the desk, over a flat base plate.
-import { sub } from '../math.js';
-import { circle, cylinder, hull, linear_extrude, polygon, rotate_extrude, union } from '../scad/index.js';
+import { add, sub } from '../math.js';
+import {
+  circle,
+  cylinder,
+  hull,
+  linear_extrude,
+  polygon,
+  rotate_extrude,
+  square,
+  union,
+} from '../scad/index.js';
 import {
   CRADLE,
   POD_FIT,
@@ -9,6 +18,7 @@ import {
   POD_SCREW,
   POD_SIDE_N,
   cradle_shape,
+  type CradleShape,
   pod_levels,
   squircle,
   type PodLevel,
@@ -42,49 +52,76 @@ function plan(d: any, inset: number, z: number): PodLevel {
 }
 
 /**
- * Cradle pod outside: straight sides on the soft-square plan with a rounded top edge, hulled
- * with a collar around the ball. The saddle cut (cradle_cuts) then carves the top into a valley
- * front and back with wings at the sides.
+ * Cradle pod outside: a low soft-square base with a rounded top edge, and a round cup rising
+ * from it on a concave fillet up to a flat rim with a rounded lip.
  */
 function cradle_body(d: any): any {
   const c = cradle_shape(d),
     e = CRADLE.edge,
+    f = c.fillet,
+    l = CRADLE.lip,
     zb = d.z_floor_bottom;
   const levels = [plan(d, POD_FOOT_CHAMFER, zb), plan(d, 0, zb + POD_FOOT_CHAMFER)];
-  for (let i = 0; i <= 4; i++) {
-    const t = (i / 4) * (Math.PI / 2);
+  for (let i = 0; i <= 8; i++) {
+    const t = (i / 8) * (Math.PI / 2);
     levels.push(plan(d, e - e * Math.cos(t), c.edge - e + e * Math.sin(t)));
   }
-  const collar = rotate_extrude(d.fn)(
-    circle(CRADLE.tube, undefined, Math.max(Math.floor(d.fn / 4), 12)).translate([c.ring, 0]),
-  ).translate([0, 0, c.wing - CRADLE.tube]);
-  return hull()(...levels.map((lv) => slab(lv, EPS)), collar);
+  // Banded: one small hull per pair of levels is robust where one big hull of near-flat slices
+  // trips CGAL.
+  const base = union()(
+    ...levels.slice(1).map((lv, i) => hull()(slab(levels[i], EPS), slab({ ...lv, z: lv.z - EPS }, EPS))),
+  );
+  // Cup profile (radius, height), reaching into the base: the wall, a foot that the fillet circle
+  // hollows into a concave curve, and the rim's outer corner rounded into a lip.
+  let profile = union()(
+    square([c.cup_r, c.rim - c.edge + 4]).translate([0, c.edge - 4]),
+    square([c.cup_r + f, f + 4]).translate([0, c.edge - 4]),
+  );
+  profile = sub(profile, circle(f, undefined, d.fn).translate([c.cup_r + f, c.edge + f]));
+  profile = add(
+    sub(profile, square([l + EPS, l + EPS]).translate([c.cup_r - l, c.rim - l])),
+    circle(l, undefined, 24).translate([c.cup_r - l, c.rim - l]),
+  );
+  return union()(base, rotate_extrude(d.fn)(profile));
 }
 /** Cradle pod inside: straight down from just above the sensor plate, so the plates drop in. The
- * collar stays solid, so the saddle cut never opens into the inside. */
+ * cup stays solid, so the notch never opens into the inside. */
 function cradle_inside(d: any): any {
   const wall = d.pod.wall,
     zb = d.z_floor_bottom;
   return slab(plan(d, wall, zb - 1), cradle_shape(d).edge - wall - zb + 1);
 }
+/** U shape (in x and height) of the front notch, widened by grow. */
+function notch_profile(c: CradleShape, grow: number): any {
+  const r = c.notch_r + grow;
+  return hull()(
+    circle(r, undefined, 48).translate([0, c.notch_bottom + c.notch_r]),
+    square([2 * r, 1]).translate([-r, c.rim + 20]),
+  );
+}
 /**
- * Cradle pod cuts: the saddle, a straight shaft above the ball's equator (the wings may rise past
- * it, yet the ball still lifts out) and a shallow seam groove around the lower body.
+ * Cradle pod cuts: the bevelled front notch, a straight shaft above the ball's equator (the rim
+ * may sit above it, yet the ball still lifts out) and a shallow seam groove around the lower body.
  */
 export function cradle_cuts(d: any): any {
   const c = cradle_shape(d),
-    big = 4 * d.half_length + 40,
+    b = CRADLE.bevel,
     g = CRADLE.groove_h / 2;
-  const saddle = cylinder(big, c.saddle, undefined, undefined, undefined, undefined, d.fn * 2)
-    .translate([0, 0, -big / 2])
-    .rotate([90, 0, 0])
-    .translate([0, 0, c.valley + c.saddle]);
-  const shaft = zcyl(2 * d.cavity_r, 0, c.wing + 40, d.fn);
+  // Extruded towards the front (-y); the wider slice at the cup's face bevels the notch edge.
+  const along = (shape: any, y0: number, y1: number) =>
+    linear_extrude(y1 - y0)(shape)
+      .translate([0, 0, y0])
+      .rotate([90, 0, 0]);
+  const notch = hull()(
+    along(notch_profile(c, 0), 0, c.cup_r - b),
+    along(notch_profile(c, b + 0.6), c.cup_r + 0.6, c.cup_r + 0.6 + EPS),
+  );
+  const shaft = zcyl(2 * d.cavity_r, 0, c.rim + 40, d.fn);
   const seam = sub(
     slab(plan(d, -1, c.seam - g), 2 * g),
     slab(plan(d, CRADLE.groove_depth, c.seam - g - EPS), 2 * g + 2 * EPS),
   );
-  return union()(saddle, shaft, seam);
+  return union()(notch, shaft, seam);
 }
 
 /** A plate that fits inside the shell (base or sensor plate), from z0 to z1. */

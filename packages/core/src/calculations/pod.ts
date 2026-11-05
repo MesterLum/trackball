@@ -45,37 +45,70 @@ export class Pod {
   }
 }
 
-/** Cradle pod: rounded top edge, the collar's tube, the wings' rise (share of the ball) and the
- * seam groove around the body. */
-export const CRADLE = { edge: 4.0, tube: 3.0, lip: 1.0, wing: 0.25, groove_depth: 0.7, groove_h: 0.8 };
+/**
+ * Cradle pod: rounded top edge of the base, concave fillet where the cup rises from it, rounded
+ * rim lip, the front notch (width and depth as shares of the ball radius) and its bevel, and the
+ * seam groove around the lower body.
+ */
+export const CRADLE = {
+  edge: 4.0,
+  fillet: 4.0,
+  lip: 1.2,
+  notch_w: 0.45,
+  notch_depth: 0.6,
+  bevel: 1.2,
+  groove_depth: 0.7,
+  groove_h: 0.8,
+};
 
 export interface CradleShape {
-  /** Height of the body's outer top edge. */
+  /** Height of the base's top, where the cup rises from it. */
   edge: number;
-  /** Lowest point of the rim, in front of and behind the ball. */
-  valley: number;
-  /** Top of the wings beside the ball. */
-  wing: number;
-  /** Radius of the collar's tube centre around the ball. */
-  ring: number;
-  /** Radius of the saddle cut (a cylinder along the front-back axis). */
-  saddle: number;
+  /** Height of the cup's flat rim. */
+  rim: number;
+  /** Outer radius of the cup, and the concave fillet where it meets the base. */
+  cup_r: number;
+  fillet: number;
+  /** Half width of the front notch and the height of its rounded bottom. */
+  notch_r: number;
+  notch_bottom: number;
   /** Height of the seam groove. */
   seam: number;
 }
-/** Cradle pod: a saddle-shaped rim, dipping front and back (to the rim depth) and rising into
- * wings at the sides; the body's top edge just clears the plates inside. */
+/**
+ * Cradle pod: a round cup with a flat rim (at the rim depth) rising from a low soft-square base,
+ * with a U-shaped notch in front that leaves a horn on each side. The base's top just clears the
+ * plates inside; the notch stops above it.
+ */
 export function cradle_shape(d: any): CradleShape {
-  const valley = -d.cup.rim_below_center,
-    wing = valley + CRADLE.wing * d.ball.diameter,
-    ring = d.cavity_r + CRADLE.lip + CRADLE.tube,
-    rise = wing - valley;
+  const R = d.ball.r,
+    edge = d.z_carrier_top + d.pod.wall + 2,
+    rim = -d.cup.rim_below_center;
   return {
-    edge: d.z_carrier_top + d.pod.wall + 2,
-    valley,
-    wing,
-    ring,
-    saddle: (ring ** 2 + rise ** 2) / (2 * rise),
+    edge,
+    rim,
+    // Three millimetres over the cup wall keep the support bores inside it.
+    cup_r: d.cavity_r + d.cup.wall + 3,
+    // The fillet stays on the base's flat top, inside its rounded edge.
+    fillet: Math.max(
+      Math.min(
+        CRADLE.fillet,
+        Math.min(d.half_width, d.half_length) - CRADLE.edge - (d.cavity_r + d.cup.wall + 3) - 0.5,
+      ),
+      1,
+    ),
+    // As wide as the share allows, but clear of the two supports either side of the front.
+    notch_r: Math.max(
+      Math.min(
+        CRADLE.notch_w * R,
+        (R + 2) *
+          Math.sin((d.cup.support_polar_deg * Math.PI) / 180) *
+          Math.sin(Math.PI / Math.max(d.cup.support_count, 2)) -
+          5.2,
+      ),
+      0.25 * R,
+    ),
+    notch_bottom: Math.max(rim - CRADLE.notch_depth * R, edge + 1.5),
     seam: d.z_floor_top + 1.5,
   };
 }
