@@ -39,6 +39,8 @@ export const BY_NAME = Object.fromEntries(OPTIONS.map((o) => [o.name, o]));
 export const TRANSLATED_CHOICES = new Set([
   'build',
   'shell',
+  'pod_base',
+  'pod_side',
   'mcu_hold',
   'palm_attachment',
   'palm_corners',
@@ -70,6 +72,7 @@ const POD_HIDDEN = new Set([
 export function optionApplies(name: string, v: Partial<Values>): boolean {
   const pod = v.build === 'pod' || v.build === 'cradle';
   if (name === 'shell' || name === 'weights') return pod;
+  if (name === 'pod_base' || name === 'pod_side') return v.build === 'cradle';
   if (pod && (POD_HIDDEN.has(name) || ['Buttons', 'Deck'].includes(BY_NAME[name]?.group))) return false;
   const holeless = !MCUS[String(v.mcu)]?.holes?.length;
   if (name === 'mcu_hold') return holeless;
@@ -195,6 +198,8 @@ export function makeDesign(values: Partial<Values>): Design {
       style: v.build === 'cradle' ? 'cradle' : 'round',
       shell: v.shell,
       weights: v.weights,
+      base: v.pod_base,
+      side: v.pod_side,
     }),
     fn: v.fn,
   });

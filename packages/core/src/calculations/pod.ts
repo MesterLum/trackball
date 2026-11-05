@@ -39,6 +39,13 @@ export class Pod {
     this.style = values.style ?? 'round';
     this.shell = values.shell ?? 'solid';
     this.weights = values.weights ?? 1;
+    /** Cradle pod: a walled base meeting the shell at a seam, or the shell down to the desk. */
+    this.base = values.base ?? 'walled';
+    /** Cradle pod: design on the lower wall. */
+    this.side = values.side ?? 'band';
+  }
+  get walled(): boolean {
+    return this.cradle && this.base === 'walled';
   }
   get wall(): number {
     return POD_WALL[this.shell as keyof typeof POD_WALL] ?? POD_WALL.solid;
@@ -63,10 +70,14 @@ export const CRADLE = {
   seam_chamfer: 0.6,
   /** The cup is at least this share of the body's half width. */
   cup_share: 0.72,
-  /** Recessed band around the base wall: depth and its span as shares of the wall's height. */
+  /** Recessed band around the lower wall: depth and its span as shares of the wall's height. */
   band_depth: 0.6,
   band_from: 0.3,
   band_to: 0.7,
+  /** Grooves around the lower wall: count, depth and half height of their V. */
+  grooves: 3,
+  groove_depth: 0.5,
+  groove_half: 0.5,
 };
 
 export interface CradleShape {
@@ -118,8 +129,9 @@ export function cradle_shape(d: any): CradleShape {
       0.25 * R,
     ),
     notch_bottom: Math.max(rim - CRADLE.notch_depth * R, edge + 1.5),
-    // Just under the sensor plate's underside, so the base's wall closes the electronics bay.
-    seam: d.z_pcb_face - 1,
+    // Just under the sensor plate's underside, so the base's wall closes the electronics bay; with
+    // the shell down to the desk there is no seam above the floor.
+    seam: d.pod.walled ? d.z_pcb_face - 1 : d.z_floor_bottom,
   };
 }
 
