@@ -17,6 +17,7 @@ import {
   inside_squircle,
   POD_FIT,
   POD_SIDE_N,
+  CRADLE,
   POD_STANDOFF,
   POD_STANDOFF_SINK,
   cradle_shape,
@@ -183,8 +184,10 @@ describe('cradle pod', () => {
     // The controller stack and the sensor below its plate stay inside the walled base.
     expect(d.z_floor_top + d.mcu_stack).toBeLessThanOrEqual(c.seam + 1);
     const base = generateParts(d).find((p) => p.name === 'tray')!.scad;
-    // Built from scaled extrusions, never one big hull.
+    // Built from scaled extrusions, never one big hull; the recessed band leaves the wall solid.
     expect(base).toContain('scale=[');
+    expect(CRADLE.band_depth).toBeLessThan(d.pod.wall - 1);
+    expect(CRADLE.band_from).toBeLessThan(CRADLE.band_to);
   });
 
   it('keeps the front notch between two ball supports', () => {
