@@ -226,7 +226,11 @@ floor when it has no mounting holes, on 1 mm standoffs when it has.
 
 - **Cradle** (`build cradle`): a low soft-square base with a rounded top edge,
   and a round cup rising from it on a concave fillet up to a flat rim (at the
-  rim depth) with a rounded lip (`cradle_shape`). A bevelled U-shaped notch in
+  rim depth) with a rounded lip (`cradle_shape`). The base's top just covers
+  the sensor plate, and the cup rises at least 10 mm above it: on small balls
+  the rim moves above the ball's middle for that, so less of the ball shows.
+  The cup is also at least 72% of the body's half width, so it stays in
+  proportion when the sensor board, not the ball, sets the body's size. A bevelled U-shaped notch in
   the front of the cup shows more of the ball and leaves a horn on each side;
   it narrows to stay clear of the supports either side of the front, which the
   cradle turns so the front falls between two of them. The cup wall is 3 mm

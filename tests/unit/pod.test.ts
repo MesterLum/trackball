@@ -218,6 +218,14 @@ describe('cradle pod', () => {
     expect(cl.cup_r).toBeCloseTo(large.cavity_r + large.cup.wall + 3, 6);
     expect(cl.funnel).toBe(0);
     expect(cs.cup_r + cs.fillet).toBeLessThanOrEqual(half(small) - CRADLE.edge);
+    // Every cup rises a minimum height above the base: a small ball's rim moves above its middle.
+    for (const d of [small, large]) {
+      const c = cradle_shape(d);
+      expect(c.rim - c.edge).toBeGreaterThanOrEqual(CRADLE.min_cup - 1e-9);
+      expect(c.edge).toBeCloseTo(d.z_carrier_top + d.pod.wall + POD_FIT, 6);
+    }
+    expect(cs.rim).toBeGreaterThan(0);
+    expect(cl.rim).toBeCloseTo(-1, 6);
   });
 
   it('a walled base closes the electronics bay up to the seam under the sensor plate', () => {

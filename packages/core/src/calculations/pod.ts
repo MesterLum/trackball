@@ -61,7 +61,9 @@ export class Pod {
  * chamfer on both sides of the seam between the shell and the walled base.
  */
 export const CRADLE = {
-  edge: 4.0,
+  edge: 5.0,
+  /** The cup rises at least this far above the base: on small balls the rim moves up for it. */
+  min_cup: 10.0,
   fillet: 4.0,
   lip: 1.2,
   notch_w: 0.45,
@@ -102,9 +104,12 @@ export interface CradleShape {
  * plates inside; the notch stops above it.
  */
 export function cradle_shape(d: any): CradleShape {
+  // The top just covers the sensor plate (wall plus a fitting gap) ...
   const R = d.ball.r,
-    edge = d.z_carrier_top + d.pod.wall + 2,
-    rim = -d.cup.rim_below_center;
+    edge = d.z_carrier_top + d.pod.wall + POD_FIT,
+    // ... and the cup keeps a minimum height, so a small ball's rim rises above its middle (the
+    // wall is straight there, so the ball still lifts out).
+    rim = Math.max(-d.cup.rim_below_center, edge + CRADLE.min_cup);
   // Three millimetres over the cup wall keep the support bores inside it; with a small ball the
   // body is set by the sensor board, so the cup follows the body instead to stay in proportion.
   const half = Math.min(d.half_width, d.half_length),
