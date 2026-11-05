@@ -17,6 +17,7 @@ import {
   inside_squircle,
   POD_FIT,
   POD_SIDE_N,
+  cradle_shape,
   washer_mass,
 } from '../../packages/core/src/calculations/pod';
 
@@ -147,5 +148,39 @@ describe('pod weights', () => {
     const grip = d.z_pcb_face - (d.z_floor_bottom + d.carrier.screw_head_depth);
     expect(d.pod_screw_length).toBeLessThanOrEqual(grip + POD_SCREW.pilot_depth);
     expect(d.pod_screw_length).toBeGreaterThan(grip);
+  });
+});
+
+describe('cradle pod', () => {
+  const CRADLE_POD: Values = { ...POD, build: 'cradle', padding: 4, rim: 4 };
+  const cradle = (extra: Values = {}) => createDesign(autofit({ ...CRADLE_POD, ...extra }).values);
+
+  for (const ball of [20, 34, 44, 60])
+    it(`fits a ${ball} mm ball`, () => {
+      expect(cradle({ ball }).validate()).toEqual([]);
+    });
+
+  it('dips front and back and rises into wings at the sides', () => {
+    const d = cradle(),
+      c = cradle_shape(d);
+    expect(c.valley).toBeCloseTo(-4, 6);
+    expect(c.wing - c.valley).toBeCloseTo(0.25 * d.ball.diameter, 6);
+    // The saddle cylinder passes through the valley on the axis and the wing top at the collar.
+    const at = (x: number) => c.valley + c.saddle - Math.sqrt(c.saddle ** 2 - x ** 2);
+    expect(at(0)).toBeCloseTo(c.valley, 6);
+    expect(at(c.ring)).toBeCloseTo(c.wing, 6);
+    // The body's top edge clears the sensor plate inside, and the saddle never reaches it.
+    expect(c.edge - d.pod.wall).toBeGreaterThan(d.z_carrier_top);
+    expect(c.valley).toBeGreaterThan(c.edge - d.pod.wall);
+    expect(c.seam).toBeGreaterThan(d.z_floor_top);
+  });
+
+  it('exports a shell instead of a cup', () => {
+    const d = cradle();
+    expect(d.pod.cradle).toBe(true);
+    const names = generateParts(d).map((p) => p.name);
+    expect(names).toContain('shell');
+    expect(names).not.toContain('cup');
+    expect(generateParts(d).find((p) => p.name === 'shell')!.scad).toContain('rotate_extrude');
   });
 });

@@ -1,7 +1,22 @@
 [
   {
+    "key": "cradle-pod",
+    "title": "Cradle pod",
+    "blurb": "Ball-only desk pod: a 34 mm ball in a saddle that dips front and back and rises into wings at the sides, XIAO inside and a steel weight in the base.",
+    "values": {
+      "build": "cradle",
+      "mcu": "xiao",
+      "usb": "back",
+      "padding": 4,
+      "skirt": 8,
+      "rim": 4,
+      "header_height": 3
+    },
+    "tags": ["pod", "compact"]
+  },
+  {
     "key": "desk-pod",
-    "title": "Desk pod",
+    "title": "Rounded pod",
     "blurb": "Compact ball-only pod for a 34 mm ball: XIAO under the sensor, USB-C out the back, a steel weight in the base. Clicks come from your keyboard.",
     "values": {
       "build": "pod",

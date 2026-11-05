@@ -131,7 +131,7 @@
     }
   });
   let clearParts = $derived(
-    calculated.values.build === 'pod' && calculated.values.shell === 'clear' ? ['shell'] : [],
+    calculated.values.build !== 'full' && calculated.values.shell === 'clear' ? ['shell'] : [],
   );
   let fits = $derived(Boolean(calculated.design && !calculated.error && !calculated.problems.length));
   let t = $derived.by(() => {
@@ -457,7 +457,7 @@
             </div>
           </div>
           <div class="px-4 py-3 border-t border-base-300 flex flex-wrap gap-2 items-center">
-            {#each Object.keys(visible).filter((n) => n === 'hardware' || n === (calculated.values.build === 'pod' ? 'shell' : 'cup') || n === 'carrier' || n === 'tray' || parts.some((p) => p.name === n)) as name (name)}<label
+            {#each Object.keys(visible).filter((n) => n === 'hardware' || n === (calculated.values.build !== 'full' ? 'shell' : 'cup') || n === 'carrier' || n === 'tray' || parts.some((p) => p.name === n)) as name (name)}<label
                 class="part-chip"
                 style={`--swatch:${partColors[name]}`}
                 ><input type="checkbox" bind:checked={visible[name]} /><span class="swatch"></span>{partLabel(

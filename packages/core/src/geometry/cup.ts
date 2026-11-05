@@ -15,7 +15,7 @@ import {
   square,
   union,
 } from '../scad/index.js';
-import { pod_rim_chamfer, pod_shroud } from './pod.js';
+import { cradle_cuts, pod_rim_chamfer, pod_shroud } from './pod.js';
 import { usb_cutout } from './tray.js';
 import { EPS, place_on_ball, polar, rounded_rect, rounded_slab, support_frames, zcyl } from './common.js';
 export function lens_window_size(d: any): any {
@@ -109,7 +109,10 @@ export function cup(d: any): any {
   if (d.is_pod) body = add(body, pod_shroud(d));
   cavity = sphere(d.cavity_r, undefined, fn);
   big = mul(2, d.skirt_dia);
-  opening = cube([big, big, add(R, 20)]).translate([-big / 2, -big / 2, z_rim]);
+  // A cradle pod's saddle rises past the rim at the sides: its own cuts open it instead.
+  opening = d.pod.cradle
+    ? cradle_cuts(d)
+    : cube([big, big, add(R, 20)]).translate([-big / 2, -big / 2, z_rim]);
   scoops = [];
   zf = c.scoop_floor();
   for (axis of c.scoop_axes) {
@@ -156,7 +159,7 @@ export function cup(d: any): any {
     result = sub(result, union()(...scoops));
   }
   // A pod's shell is also its outer wall: the USB plug comes out through it.
-  if (d.is_pod) result = sub(result, union()(pod_rim_chamfer(d), usb_cutout(d)));
+  if (d.is_pod) result = sub(result, union()(...(d.pod.cradle ? [] : [pod_rim_chamfer(d)]), usb_cutout(d)));
   return result;
 }
 export function supports_preview(d: any): any {
