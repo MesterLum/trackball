@@ -7,6 +7,7 @@ import { tray_palm_joint } from './palmrest.js';
 import { power_switch_parts } from './power.js';
 import { clamp_posts } from './clamp.js';
 import { pod_plate } from './pod.js';
+import { POD_STANDOFF_SINK } from '../calculations/pod.js';
 export function lid_screw_points(d: any): any {
   return d.lid_screw_points();
 }
@@ -148,7 +149,9 @@ export function tray(d: any): any {
     for ([along, across] of mcu.holes) {
       [hx, hy] = mcu_point(d, along, across);
       adds.push(zcyl(t.standoff_dia, sub(zf_top, EPS), zb, fn).translate([hx, hy, 0]));
-      cuts.push(zcyl(t.standoff_screw_dia, sub(zf_top, EPS), add(zb, 1), fn).translate([hx, hy, 0]));
+      // A pod's short standoffs: the screw bites into the floor as well.
+      const sink = d.is_pod ? POD_STANDOFF_SINK : EPS;
+      cuts.push(zcyl(t.standoff_screw_dia, sub(zf_top, sink), add(zb, 1), fn).translate([hx, hy, 0]));
     }
   } else {
     pl = add(mcu.length, mul(2, t.pocket_clear));
