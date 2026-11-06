@@ -79,6 +79,8 @@ export const cylinder = (
   fn?: number,
 ) => shape('cylinder', { h, r, d, r1, r2, center, $fn: fn });
 export const polygon = (points: number[][]) => shape('polygon', { points });
+export const polyhedron = (points: number[][], faces: number[][]) =>
+  shape('polyhedron', { points, faces, convexity: 2 });
 export const offset = (r?: number, delta?: number, fn?: number) => (part: Shape) =>
   new Shape('offset', { r, delta, $fn: fn } as any, [part]);
 export const linear_extrude =
