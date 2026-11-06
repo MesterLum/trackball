@@ -23,6 +23,7 @@ import {
   cradle_shape,
   washer_mass,
 } from '../../packages/core/src/calculations/pod';
+import { POD_FLAT, wall_frame, type PowerSwitchPlacement } from '../../packages/core/src/calculations/power';
 
 const POD: Values = {
   build: 'pod',
@@ -345,7 +346,7 @@ describe('pod battery', () => {
   for (const pod_base of ['walled', 'covered'])
     it(`places a power switch through the ${pod_base} base`, () => {
       const d = createDesign(fitted({ pod_base }).values);
-      const p = d.power_switch_placement();
+      const p = d.power_switch_placement() as PowerSwitchPlacement;
       expect(p && 'u' in p).toBe(true);
       const parts = Object.fromEntries(generateParts(d).map((x) => [x.name, x.scad]));
       const plain = Object.fromEntries(
@@ -354,6 +355,16 @@ describe('pod battery', () => {
           x.scad,
         ]),
       );
+      // On the nearly flat middle of the curved side, so the panel and recess never break through.
+      const f = wall_frame(d, p.wall);
+      const a = d.half_width;
+      const half = Math.max(p.type.outside[0], p.type.body[0]) / 2;
+      for (const u of [p.u - half, p.u + half]) {
+        const along = Math.abs(u - (p.wall === 'right' || p.wall === 'left' ? d.footprint[3] : 0));
+        const b = p.wall === 'right' || p.wall === 'left' ? d.half_length : d.half_width;
+        expect(a - a * Math.pow(1 - Math.pow(along / b, 4), 0.25)).toBeLessThanOrEqual(POD_FLAT + 1e-6);
+      }
+      expect(f.span[1] - f.span[0]).toBeGreaterThan(0);
       // Without a walled base the switch opening is cut through the shell as well.
       expect(parts.shell === plain.shell).toBe(pod_base === 'walled');
     });

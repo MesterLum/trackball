@@ -30,7 +30,8 @@ export function power_switch_parts(d: any): [Shape | null, Shape | null] {
   const p = placement(d);
   if (!p) return [null, null];
   const { type } = p;
-  const wall = d.tray.wall;
+  // A pod's wall is its shell or base, without the tray's fitting gap.
+  const wall = d.is_pod ? d.pod.wall : d.tray.wall;
   const panel = Math.min(type.panel, wall);
   const [bu, bw] = type.body;
   const cuts: Shape[] = [];
@@ -66,7 +67,7 @@ export function power_switch_parts(d: any): [Shape | null, Shape | null] {
 export function power_switch_preview(d: any): Shape | null {
   const p = placement(d);
   if (!p) return null;
-  const panel = Math.min(p.type.panel, d.tray.wall);
+  const panel = Math.min(p.type.panel, d.is_pod ? d.pod.wall : d.tray.wall);
   const [bu, bw, bv] = p.type.body;
   return place(d, p, box(-bu / 2 + 0.3, bu / 2 - 0.3, panel, panel + bv, -bw / 2, bw / 2));
 }
