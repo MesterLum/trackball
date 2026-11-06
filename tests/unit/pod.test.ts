@@ -151,14 +151,19 @@ describe('pod weights', () => {
     const sizes = [25, 34, 44, 55].map((ball) => pod({ ball }).ballast!.washer.od);
     expect([...sizes].sort((a, b) => a - b)).toEqual(sizes);
   });
-  it('lists washers and the screws from below', () => {
-    const d = pod();
-    const items = d.bom().map((i: { item: string }) => i.item);
-    expect(items.some((i: string) => i.startsWith('Steel washers'))).toBe(true);
-    expect(items).toContain(`M3x${d.pod_screw_length} thread-forming screws`);
-    const grip = d.z_pcb_face - (d.z_floor_bottom + d.carrier.screw_head_depth);
-    expect(d.pod_screw_length).toBeLessThanOrEqual(grip + POD_SCREW.pilot_depth);
-    expect(d.pod_screw_length).toBeGreaterThan(grip);
+  it('uses only short screws: M3x8 through the post top and the plate into a nut', () => {
+    for (const d of [pod(), pod({ build: 'cradle' }), pod({ build: 'cradle', ball: 55 })]) {
+      const items = d.bom().map((i: { item: string }) => i.item);
+      expect(items.some((i: string) => i.startsWith('Steel washers'))).toBe(true);
+      expect(items).toContain('M3 hex nuts');
+      expect(items.some((i: string) => /thread-forming|M3x(1[0-9]|[2-9][0-9])/.test(i))).toBe(false);
+      // Post top + plate below the nut pocket + the nut: the M3x8 ends flush with the plate top.
+      const grip = POD_SCREW.top + d.carrier.thickness - POD_SCREW.nut_depth + 2.4;
+      expect(d.pod_screw_length).toBeGreaterThanOrEqual(grip);
+      expect(d.pod_screw_length).toBeLessThanOrEqual(POD_SCREW.top + d.carrier.thickness + 0.3);
+      // The head pocket leaves a wall around it in the post.
+      expect((d.tray.post_dia - POD_SCREW.head_dia) / 2).toBeGreaterThanOrEqual(1.2);
+    }
   });
 });
 

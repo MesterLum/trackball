@@ -14,7 +14,7 @@ import {
   SWITCH_TYPES,
 } from '../calculations/design.js';
 import { SUPPORTS } from '../geometry/supports.js';
-import { POD_FIT, POD_STANDOFF, POD_WALL, Pod } from '../calculations/pod.js';
+import { POD_FIT, POD_SCREW, POD_STANDOFF, POD_WALL, Pod } from '../calculations/pod.js';
 export interface Option {
   name: string;
   kind: string;
@@ -159,7 +159,7 @@ export function makeDesign(values: Partial<Values>): Design {
       usb_side: v.usb === 'left' ? -1 : 1,
       // A pod's walls are its shell: the room inside ends at the shell plus a fitting gap.
       wall: v.build !== 'full' ? POD_WALL[v.shell as keyof typeof POD_WALL] + POD_FIT : v.wall,
-      post_dia: v.build !== 'full' ? 6.5 : undefined,
+      post_dia: v.build !== 'full' ? POD_SCREW.post_dia : undefined,
       // In a pod the electronics bay is kept low: a board without mounting holes lies flat in its
       // clamped pocket, one with holes sits on short standoffs whose screw holes run into the floor.
       standoff_h: v.build !== 'full' ? (MCUS[String(v.mcu)]?.holes?.length ? POD_STANDOFF : 0) : undefined,

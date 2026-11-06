@@ -7,8 +7,23 @@ export const POD_LIP = 1.5;
 /** Short controller standoffs in a pod; their screw holes continue into the floor below. */
 export const POD_STANDOFF = 1.0;
 export const POD_STANDOFF_SINK = 2.5;
-/** Screws from under the base into the sensor plate: thread-forming M3 into a pilot hole. */
-export const POD_SCREW = { pilot_dia: 2.6, pilot_depth: 4.0 };
+/**
+ * Short screws from under the base into the sensor plate: the post is pocketed from below so an
+ * M3x8 machine screw's head sits near its top, passes the post's solid top and the plate, and
+ * bites an M3 hex nut dropped into a pocket on top of the plate.
+ */
+export const POD_SCREW = {
+  length: 8,
+  clear_dia: 3.4,
+  head_dia: 6.4,
+  /** Solid top of the post under the screw head. */
+  top: 3.0,
+  /** Across flats and depth of the nut pocket (M3 nut: 5.5 x 2.4). */
+  nut_af: 5.7,
+  nut_depth: 2.6,
+  /** Posts are thick enough to pocket the head. */
+  post_dia: 9.0,
+};
 
 export interface Washer {
   size: string;

@@ -512,12 +512,9 @@ export class Design {
   get is_pod(): boolean {
     return this.pod.enabled;
   }
-  /** Longest standard screw that passes the base post and bites the sensor plate's pilot hole. */
+  /** Screw from under a pod's base: through the post's top and the plate into the nut. */
   get pod_screw_length(): number {
-    const grip = this.z_pcb_face - (this.z_floor_bottom + this.carrier.screw_head_depth);
-    const lengths = [6, 8, 10, 12, 14, 16, 18, 20, 22, 25, 30, 35, 40];
-    const fit = lengths.filter((l) => l <= grip + POD_SCREW.pilot_depth - 0.5);
-    return fit[fit.length - 1] ?? lengths[0];
+    return POD_SCREW.length;
   }
   /** Steel weights under a pod's base, or null. */
   get ballast(): Ballast | null {
@@ -1709,13 +1706,17 @@ export class Design {
             ['note']: _('4 cup, 2 sensor PCB, 4 tray posts'),
           },
       this.is_pod
-        ? { ['item']: _('M3x8 screws'), ['qty']: 4, ['note']: _('shell to the sensor plate') }
+        ? {
+            ['item']: _('M3x8 screws'),
+            ['qty']: 8,
+            ['note']: _('shell to the sensor plate (4), up through the base posts into the nuts (4)'),
+          }
         : { ['item']: _('M3x8 screws'), ['qty']: 8, ['note']: _('cup to carrier (4), lid to tray (4)') },
       this.is_pod
         ? {
-            ['item']: format(_('M3x{l:g} thread-forming screws'), { l: this.pod_screw_length }),
+            ['item']: _('M3 hex nuts'),
             ['qty']: 4,
-            ['note']: _('from under the base into the sensor plate'),
+            ['note']: _('in the pockets on top of the sensor plate, before the shell goes on'),
           }
         : null,
       { ['item']: _('M3x6 screws'), ['qty']: 2, ['note']: _('sensor PCB to carrier') },
