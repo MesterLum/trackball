@@ -1,6 +1,7 @@
 // Battery power switch: catalogue, wall frames and collision-free placement.
 // Dimensions come from typical datasheets and are NOT yet measured against real parts.
 import { holder_boxes } from '../geometry/tiles.js';
+import { POD_SIDE_N } from './pod.js';
 
 export type PowerSwitchKind = 'none' | 'slide' | 'rocker' | 'toggle';
 export type Wall = 'right' | 'left' | 'front' | 'back';
@@ -59,11 +60,23 @@ export interface WallFrame {
   span: [number, number];
 }
 
+/** How far a pod's curved side may fall away from flat under a power switch, in mm. */
+export const POD_FLAT = 0.15;
+
 export function wall_frame(d: any, wall: Wall): WallFrame {
   const r = d.carrier.corner_r;
   const [hw, front, back] = [d.half_width, d.front_length, d.back_length];
-  const along_y: [number, number] = [-front + r, back - r];
-  const along_x: [number, number] = [-hw + r, hw - r];
+  let along_y: [number, number] = [-front + r, back - r];
+  let along_x: [number, number] = [-hw + r, hw - r];
+  if (d.is_pod) {
+    // A pod's sides are a soft square (|x/a|^n + |y/b|^n = 1), curving in away from the middle:
+    // only the stretch within POD_FLAT of the flat line counts as wall.
+    const flat = (a: number, b: number) =>
+      b * Math.pow(1 - Math.pow(1 - POD_FLAT / a, POD_SIDE_N), 1 / POD_SIDE_N);
+    const [cy, half_l] = [(back - front) / 2, (back + front) / 2];
+    along_y = [cy - flat(hw, half_l), cy + flat(hw, half_l)];
+    along_x = [-flat(half_l, hw), flat(half_l, hw)];
+  }
   switch (wall) {
     case 'right':
       return { origin: [hw, 0], u: [0, 1], v: [-1, 0], span: along_y };
@@ -203,7 +216,8 @@ export function place_power_switch(d: any): PowerSwitchPlacement | PowerSwitchPr
   if (wall === 'front' && d.deck.palm_length > 0) return { reason: 'palm' };
   const type = POWER_SWITCHES[b.power_switch as Exclude<PowerSwitchKind, 'none'>];
   const f = wall_frame(d, wall);
-  const wall_t = d.tray.wall;
+  // A pod's wall is its shell or base: thinner than the tray wall, which includes a fitting gap.
+  const wall_t = d.is_pod ? d.pod.wall : d.tray.wall;
   const [bu, bw, bv] = type.body;
   const half_outside = Math.max(type.outside[0], bu) / 2;
   const depth = Math.min(type.panel, wall_t) + bv;
@@ -235,7 +249,11 @@ export function place_power_switch(d: any): PowerSwitchPlacement | PowerSwitchPr
   };
 
   // Prefer the old slot position in front of the sensor on side walls, the middle on the others.
-  const preferred = wall === 'right' || wall === 'left' ? -(d.pcb.r + 6 + bu / 2) : 0;
+  // (clamped onto the usable stretch, which is short on a pod's curved sides).
+  const preferred = Math.min(
+    Math.max(wall === 'right' || wall === 'left' ? -(d.pcb.r + 6 + bu / 2) : 0, f.span[0] + half_outside),
+    f.span[1] - half_outside,
+  );
   const reach = f.span[1] - f.span[0];
   for (let step = 0; step <= reach * 2; step++) {
     const u = preferred + (step % 2 ? -1 : 1) * Math.ceil(step / 2) * 0.5;
