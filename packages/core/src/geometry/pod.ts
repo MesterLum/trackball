@@ -216,10 +216,17 @@ export function pod_rim_chamfer(d: any): any {
   ).translate([0, 0, z - POD_RIM_CHAMFER]);
 }
 
-/** Pilot holes in the sensor plate's underside for the screws coming up through the base. */
+/** Holes through the sensor plate for the screws coming up through the base, each with a hex
+ * pocket on top for its nut. */
 export function pod_plate_holes(d: any, points: number[][]): any[] {
-  const z0 = d.z_pcb_face;
+  const [z0, z1] = [d.z_pcb_face, d.z_carrier_top];
+  const r = POD_SCREW.nut_af / 2 / Math.cos(Math.PI / 6);
   return points.map(([x, y]) =>
-    zcyl(POD_SCREW.pilot_dia, z0 - EPS, z0 + POD_SCREW.pilot_depth, d.fn).translate([x, y, 0]),
+    add(
+      zcyl(POD_SCREW.clear_dia, z0 - 1, z1 + 1, d.fn),
+      cylinder(POD_SCREW.nut_depth + 1, r, undefined, undefined, undefined, false, 6).up(
+        z1 - POD_SCREW.nut_depth,
+      ),
+    ).translate([x, y, 0]),
   );
 }

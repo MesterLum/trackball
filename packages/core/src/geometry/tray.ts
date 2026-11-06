@@ -7,7 +7,7 @@ import { tray_palm_joint } from './palmrest.js';
 import { power_switch_parts } from './power.js';
 import { clamp_posts } from './clamp.js';
 import { cradle_base, pod_plate } from './pod.js';
-import { POD_STANDOFF_SINK } from '../calculations/pod.js';
+import { POD_SCREW, POD_STANDOFF_SINK } from '../calculations/pod.js';
 export function lid_screw_points(d: any): any {
   return d.lid_screw_points();
 }
@@ -139,10 +139,11 @@ export function tray(d: any): any {
     posts.push(to_world(zcyl(t.post_dia, sub(z0, tall), z0, fn).translate([x, y, 0]), d.deck));
     // A pod is screwed together from below (its shell covers the lid): clearance hole and head
     // counterbore from the underside instead of an insert at the top.
+    // (A short M3x8 reaches from a head pocketed almost to the top of the post.)
     const hole = d.is_pod
       ? add(
-          zcyl(d.carrier.screw_clear_dia, sub(zf_bot, 1), add(z0, 1), fn),
-          zcyl(d.carrier.screw_head_dia, sub(zf_bot, 1), add(zf_bot, d.carrier.screw_head_depth), fn),
+          zcyl(POD_SCREW.clear_dia, sub(zf_bot, 1), add(z0, 1), fn),
+          zcyl(POD_SCREW.head_dia, sub(zf_bot, 1), sub(z0, POD_SCREW.top), fn),
         )
       : zcyl(t.post_insert_dia, sub(z0, t.post_insert_depth), add(z0, 1), fn);
     post_holes.push(to_world(hole.translate([x, y, 0]), d.deck));
