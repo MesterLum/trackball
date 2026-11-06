@@ -6,6 +6,7 @@ import {
   hull,
   linear_extrude,
   polygon,
+  polyhedron,
   rotate_extrude,
   square,
   union,
@@ -28,8 +29,23 @@ import { EPS, zcyl } from './common.js';
 function slab(lv: PodLevel, h: number): any {
   return linear_extrude(h)(polygon(squircle(lv.a, lv.b, lv.n))).translate([lv.x, lv.y, lv.z]);
 }
+/**
+ * Solid lofted through outlines stacked bottom to top. Every outline has the same number of points
+ * at the same angles, so neighbouring rings join with quads: an exact mesh, no hull (which CGAL can
+ * fail on near-flat slices).
+ */
 function body(levels: PodLevel[]): any {
-  return hull()(...levels.map((lv, i) => slab(i === levels.length - 1 ? { ...lv, z: lv.z - EPS } : lv, EPS)));
+  const rings = levels.map((lv) => squircle(lv.a, lv.b, lv.n).map(([x, y]) => [x + lv.x, y + lv.y, lv.z]));
+  const n = rings[0].length;
+  const at = (i: number, j: number) => i * n + (j % n);
+  const faces: number[][] = [Array.from({ length: n }, (_, j) => at(0, j))];
+  for (let i = 0; i + 1 < rings.length; i++)
+    for (let j = 0; j < n; j++) {
+      faces.push([at(i, j), at(i + 1, j), at(i + 1, j + 1)]);
+      faces.push([at(i, j), at(i + 1, j + 1), at(i, j + 1)]);
+    }
+  faces.push(Array.from({ length: n }, (_, j) => at(rings.length - 1, n - 1 - j)));
+  return polyhedron(rings.flat(), faces);
 }
 
 /**
