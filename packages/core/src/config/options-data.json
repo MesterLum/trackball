@@ -634,19 +634,39 @@
     "label": "shell"
   },
   {
-    "name": "weights",
-    "kind": "int",
-    "default": 1,
-    "help": "steel washers stacked in a pocket under the pod's base so it stays put; the largest size that fits is used (0 = no pocket)",
+    "name": "weight_depth",
+    "kind": "float",
+    "default": 8.0,
+    "help": "depth of the chamber under the pod's base for weights (coins, washers, steel shot, stones); the pod grows by about this much (0 = none)",
     "group": "Body",
     "flag": null,
     "choices": [],
     "min": 0,
-    "max": 3,
+    "max": 20,
     "step": 1,
+    "unit": "mm",
+    "pattern": null,
+    "label": "weight chamber"
+  },
+  {
+    "name": "weight_cap",
+    "kind": "choice",
+    "default": "thread",
+    "help": "how the weight chamber closes, flush with the underside; turn the cap with a coin",
+    "group": "Body",
+    "flag": null,
+    "choices": ["thread", "bayonet", "none"],
+    "choice_labels": {
+      "thread": "Screw-on cap",
+      "bayonet": "Bayonet cap (quarter turn)",
+      "none": "No cap (glue the weights in)"
+    },
+    "min": null,
+    "max": null,
+    "step": null,
     "unit": null,
     "pattern": null,
-    "label": "weights"
+    "label": "weight cap"
   },
   {
     "name": "pod_base",

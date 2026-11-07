@@ -11,12 +11,12 @@ import type { Values } from '../../packages/core/src/index';
 import {
   POD_SCREW,
   POD_WALL,
-  WASHERS,
   pod_levels,
   pod_post_points,
   inside_squircle,
   POD_FIT,
   POD_SIDE_N,
+  WEIGHT_CAP,
   CRADLE,
   POD_STANDOFF,
   POD_STANDOFF_SINK,
@@ -53,8 +53,10 @@ describe('compact pod settings', () => {
     const full = shown({ build: 'full' }),
       compact = shown({ build: 'pod' });
     expect(full).not.toContain('shell');
-    expect(full).not.toContain('weights');
-    expect(compact).toEqual(expect.arrayContaining(['shell', 'weights', 'ball', 'mcu', 'sensor_adjust']));
+    expect(full).not.toContain('weight_depth');
+    expect(compact).toEqual(
+      expect.arrayContaining(['shell', 'weight_depth', 'weight_cap', 'ball', 'mcu', 'sensor_adjust']),
+    );
     for (const name of ['switches', 'buttons', 'palm', 'tilt', 'mcu_place', 'cup_shape'])
       expect(compact).not.toContain(name);
   });
@@ -125,30 +127,42 @@ describe('compact pod geometry', () => {
 });
 
 describe('pod weights', () => {
-  it('uses the largest washer that fits, stacked', () => {
-    const d = pod({ weights: 2 });
-    const b = d.ballast!;
-    expect(b.count).toBe(2);
-    expect(b.depth).toBeCloseTo(2 * b.washer.t + 0.2, 6);
-    expect(b.mass).toBeCloseTo(2 * washer_mass(b.washer), 6);
-    const bigger = WASHERS.find((w) => w.od > b.washer.od);
-    // The next size up would cut into the walls or the feet over the corner screws.
-    const [x, y] = d.lid_screw_points()[3];
-    const room = Math.min(
-      d.half_width - d.tray.wall - 1,
-      Math.hypot(x, y) - Math.max(d.tray.feet_dia, d.carrier.screw_head_dia) / 2 - 1,
-    );
-    if (bigger) expect(bigger.od + 0.6).toBeGreaterThan(2 * room);
-  });
-  it('lowers the floor by the pocket depth', () => {
-    const none = pod({ weights: 0 }),
-      one = pod({ weights: 1 });
+  it('opens a chamber under the base that grows the pod by its height', () => {
+    const none = pod({ weight_depth: 0 });
     expect(none.ballast).toBeNull();
-    expect(none.z_floor_bottom - one.z_floor_bottom).toBeCloseTo(one.ballast!.depth, 6);
-    expect(one.height_breakdown()).toContain('weights');
+    expect(generateParts(none).map((p) => p.name)).not.toContain('weight_cap');
+    for (const weight_cap of ['thread', 'bayonet', 'none']) {
+      const d = pod({ weight_depth: 10, weight_cap });
+      const b = d.ballast!;
+      expect(b.cap).toBe(weight_cap);
+      expect(b.depth).toBe(10);
+      expect(b.seat).toBe(weight_cap === 'none' ? 0 : WEIGHT_CAP.thickness);
+      expect(none.z_floor_bottom - d.z_floor_bottom).toBeCloseTo(b.total, 6);
+      expect(d.height_breakdown()).toContain('weights');
+      // The chamber opens through the closure, inside the outermost cut.
+      expect(b.dia / 2).toBeLessThanOrEqual(b.outer_r);
+      if (b.washer) {
+        expect(b.washer.od + 0.6).toBeLessThanOrEqual(b.dia + 1e-9);
+        expect(b.count * b.washer.t).toBeLessThanOrEqual(b.depth);
+        expect(b.mass).toBeCloseTo(b.count * washer_mass(b.washer), 6);
+      }
+      const names = generateParts(d).map((p) => p.name);
+      expect(names.includes('weight_cap')).toBe(weight_cap !== 'none');
+    }
+  });
+  it('cuts the matching closure into the base', () => {
+    const parts = (weight_cap: string) =>
+      Object.fromEntries(generateParts(pod({ weight_cap })).map((p) => [p.name, p.scad]));
+    const thread = parts('thread'),
+      bayonet = parts('bayonet');
+    // The thread is a polyhedron helix in both the cap and the base; the bayonet uses swept sectors.
+    expect(thread.weight_cap).toContain('polyhedron');
+    expect(thread.tray).toContain('polyhedron');
+    expect(bayonet.tray).toContain('rotate_extrude(angle=');
+    expect(bayonet.weight_cap).toContain('rotate_extrude(angle=');
   });
   it('bigger balls take bigger or equal washers', () => {
-    const sizes = [25, 34, 44, 55].map((ball) => pod({ ball }).ballast!.washer.od);
+    const sizes = [25, 34, 44, 55].map((ball) => pod({ ball }).ballast!.washer!.od);
     expect([...sizes].sort((a, b) => a - b)).toEqual(sizes);
   });
   it('uses only short screws: M3x8 through the post top and the plate into a nut', () => {

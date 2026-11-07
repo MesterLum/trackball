@@ -33,7 +33,9 @@ import {
 import { mcu_preview, battery_preview } from './geometry/tray.js';
 import { power_switch_preview } from './geometry/power.js';
 import { mcu_clamp } from './geometry/clamp.js';
-export type PrintablePartName = 'cup' | 'shell' | 'carrier' | 'tray' | 'palmrest' | 'palm_key' | 'mcu_clamp';
+import { weight_cap } from './geometry/weights.js';
+export type PrintablePartName =
+  'cup' | 'shell' | 'carrier' | 'tray' | 'weight_cap' | 'palmrest' | 'palm_key' | 'mcu_clamp';
 export type PartName = PrintablePartName | 'mcu' | 'sensor' | 'switches' | 'battery' | 'power_switch';
 export interface ModelPart {
   name: PartName;
@@ -48,6 +50,7 @@ const builders = {
   shell: (d: Design) => (d.is_pod ? cup(d) : null),
   carrier,
   tray,
+  weight_cap,
   palmrest,
   palm_key,
   mcu_clamp,
@@ -57,6 +60,8 @@ const styles: Record<PrintablePartName, [ModelPart['frame'], string, number]> = 
   shell: ['deck', '#7fa7c4', 2],
   carrier: ['deck', '#daa520', 1],
   tray: ['world', '#808080', 0],
+  // Drops below the base when the view is exploded.
+  weight_cap: ['world', '#9aa0a8', -1],
   palmrest: ['world', '#cd853f', 0],
   palm_key: ['world', '#008080', 0],
   mcu_clamp: ['world', '#5b6ee1', 0],

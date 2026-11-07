@@ -32,12 +32,12 @@
   {
     "key": "clear-pod",
     "title": "Clear pod, 44 mm ball",
-    "blurb": "A larger pod with a clear shell for transparent filament, RP2040-Zero under the sensor and two steel weights.",
+    "blurb": "A larger pod with a clear shell for transparent filament, RP2040-Zero under the sensor and a deep weight chamber.",
     "values": {
       "build": "pod",
       "ball": 44,
       "shell": "clear",
-      "weights": 2,
+      "weight_depth": 12,
       "mcu": "rp2040-zero",
       "usb": "back",
       "padding": 2,

@@ -94,8 +94,8 @@ export const linear_extrude =
   ) =>
   (part: Shape) =>
     new Shape('linear_extrude', { height, center, convexity, twist, slices, scale } as any, [part]);
-export const rotate_extrude = (fn?: number) => (part: Shape) =>
-  new Shape('rotate_extrude', { $fn: fn } as any, [part]);
+export const rotate_extrude = (fn?: number, angle?: number) => (part: Shape) =>
+  new Shape('rotate_extrude', { angle, $fn: fn } as any, [part]);
 export const multmatrix = (m: number[][]) => (part: Shape) => new Shape('multmatrix', { m }, [part]);
 export const color =
   (c: string, alpha = 1) =>

@@ -7,6 +7,7 @@ import { tray_palm_joint } from './palmrest.js';
 import { power_switch_parts } from './power.js';
 import { clamp_posts } from './clamp.js';
 import { cradle_base, pod_plate } from './pod.js';
+import { weight_chamber } from './weights.js';
 import { POD_SCREW, POD_STANDOFF_SINK } from '../calculations/pod.js';
 export function lid_screw_points(d: any): any {
   return d.lid_screw_points();
@@ -215,9 +216,8 @@ export function tray(d: any): any {
     if (cradle) adds.push(cradle);
     if (opening) cuts.push(opening);
   }
-  const ballast = d.ballast;
-  if (ballast)
-    cuts.push(zcyl(ballast.dia, sub(zf_bot, 1), add(zf_bot, ballast.depth), fn).translate([cx, cy, 0]));
+  const chamber = weight_chamber(d);
+  if (chamber) cuts.push(chamber);
   for ([fx, fy] of d.feet_xy()) {
     cuts.push(zcyl(t.feet_dia, sub(zf_bot, 1), add(zf_bot, t.feet_depth), fn).translate([fx, fy, 0]));
   }
