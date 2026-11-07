@@ -25,6 +25,7 @@ import {
   cradle_shape,
   washer_mass,
 } from '../../packages/core/src/calculations/pod';
+import { SENSOR_PAD_DIA } from '../../packages/core/src/geometry/carrier';
 import { POD_FLAT, wall_frame, type PowerSwitchPlacement } from '../../packages/core/src/calculations/power';
 
 const POD: Values = {
@@ -412,4 +413,24 @@ describe('pod battery', () => {
       // Without a walled base the switch opening is cut through the shell as well.
       expect(parts.shell === plain.shell).toBe(pod_base === 'walled');
     });
+});
+
+describe('sensor solder relief', () => {
+  it('pockets the plate under the board and keeps pads at its screws', () => {
+    const plate = (sensor_relief: number, extra: Values = {}) =>
+      generateParts(createDesign({ ...extra, sensor_relief })).find((p) => p.name === 'carrier')!.scad;
+    expect(createDesign({}).carrier.sensor_relief).toBe(2);
+    for (const extra of [{}, { sensor_pcb: 'pmw3389-round' }, POD]) {
+      const flat = plate(0, extra),
+        relieved = plate(2, extra);
+      expect(relieved).not.toEqual(flat);
+      // The pads sit at the screw holes, so the board still rests at the designed distance.
+      expect(relieved).toContain(`d=${SENSOR_PAD_DIA}`);
+    }
+    // The board's face stays where it was: the relief only removes plate material behind it.
+    expect(createDesign({ sensor_relief: 3 }).z_pcb_face).toBeCloseTo(
+      createDesign({ sensor_relief: 0 }).z_pcb_face,
+      9,
+    );
+  });
 });

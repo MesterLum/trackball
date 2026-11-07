@@ -173,6 +173,8 @@ export class Carrier {
     this.corner_r = values.corner_r ?? 8.0;
     this.pcb_insert_dia = values.pcb_insert_dia ?? 4.0;
     this.pcb_insert_depth = values.pcb_insert_depth ?? 4.5;
+    /** Depth of the solder relief under the sensor board (0 = the board sits on a flat plate). */
+    this.sensor_relief = values.sensor_relief ?? 0;
     this.screw_clear_dia = values.screw_clear_dia ?? 3.4;
     this.screw_head_dia = values.screw_head_dia ?? 6.0;
     this.screw_head_depth = values.screw_head_depth ?? 3.0;

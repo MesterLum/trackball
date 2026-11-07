@@ -151,7 +151,7 @@ export function makeDesign(values: Partial<Values>): Design {
       top_above_pcb: pcb.lens.top_above_pcb,
       lens_to_ball: pcb.lens.lens_to_ball + Number(v.sensor_adjust),
     }),
-    carrier: new Carrier({ padding: v.padding, edge_round: v.edge_round }),
+    carrier: new Carrier({ padding: v.padding, edge_round: v.edge_round, sensor_relief: v.sensor_relief }),
     tray: new Tray({
       mcu: copy(MCUS[String(v.mcu)]),
       mcu_place: v.mcu_place,
