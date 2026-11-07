@@ -16,6 +16,7 @@ import {
   inside_squircle,
   POD_FIT,
   POD_SIDE_N,
+  POD_CUP_CEILING,
   WEIGHT_CAP,
   CRADLE,
   POD_STANDOFF,
@@ -137,7 +138,9 @@ describe('pod weights', () => {
       expect(b.cap).toBe(weight_cap);
       expect(b.depth).toBe(10);
       expect(b.seat).toBe(weight_cap === 'none' ? 0 : WEIGHT_CAP.bottom);
-      expect(none.z_floor_bottom - d.z_floor_bottom).toBeCloseTo(b.total, 6);
+      // The cup sinks up into the floor, leaving a thin cover over it.
+      expect(none.z_floor_bottom - d.z_floor_bottom).toBeCloseTo(b.total + POD_CUP_CEILING - d.tray.floor, 6);
+      expect(d.z_floor_top - (d.z_floor_bottom + b.total)).toBeCloseTo(POD_CUP_CEILING, 6);
       expect(d.height_breakdown()).toContain('weights');
       // The chamber opens through the closure, inside the outermost cut.
       expect(b.dia / 2).toBeLessThanOrEqual(b.outer_r);
@@ -149,6 +152,11 @@ describe('pod weights', () => {
       const names = generateParts(d).map((p) => p.name);
       expect(names.includes('weight_cap')).toBe(weight_cap !== 'none');
     }
+  });
+  it('keeps the floor thick enough for standoff screws over the cup', () => {
+    const d = pod({ mcu: 'pico', weight_depth: 6 }),
+      b = d.ballast!;
+    expect(d.z_floor_top - (d.z_floor_bottom + b.total)).toBeCloseTo(POD_STANDOFF_SINK + 0.8, 6);
   });
   it('cuts the matching closure into the base', () => {
     const parts = (weight_cap: string) =>
