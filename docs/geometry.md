@@ -265,17 +265,25 @@ floor when it has no mounting holes, on 1 mm standoffs when it has.
 - **Posts and screws**: four posts stand on the base plate's diagonals, as far
   out as the shell allows (`pod_post_points`), and must clear the round sensor
   board; auto fit adds padding when they do not, which sets the minimum size
-  for small balls. M3 thread-forming screws come up through the posts into
-  2.6 mm pilot holes in the sensor plate, hidden under the rubber feet.
-- **Weights**: `weights` steel washers (DIN 125) stack in a round pocket under
-  the base plate. The largest washer whose pocket keeps a solid rim and clears
-  the feet is used; the base grows by the stack height.
+  for small balls. Only short screws are used: each post is pocketed from
+  below, so an M3x8 machine screw's head sits near its top, passes the post's
+  3 mm top and the sensor plate, and bites an M3 nut in a hex pocket on top of
+  the plate. Rubber feet cover the pockets.
+- **Weights**: a round chamber `weight_depth` mm deep under the base, as wide
+  as fits inside the walls and between the feet, for coins, washers, steel
+  shot or stones; the base grows by its depth plus the cap's 5 mm seat.
+  `weight_cap` closes it flush with the underside: a printed thread (3 mm
+  pitch, 45° flanks, 0.35 mm clearance, `geometry/thread.ts`, a helical
+  polyhedron), a bayonet (three lugs that enter through slots and turn 60°
+  into a groove) or none (an open pocket, weights glued in). The cap is its
+  own printed part, `weight_cap`, with a slot to turn it with a coin.
 
 Pod assembly: inserts in the shell and sensor plate, BTUs into the shell,
-sensor on the plate, shell onto the plate (4 screws from below), controller on
-the base plate, wires, base plate into the shell (4 screws from under the base),
-washers glued into the pocket, feet over the screw heads, ball in. Flash the
-controller before closing the pod: its BOOT button ends up inside.
+sensor on the plate, nuts into their pockets on the plate, shell onto the
+plate (4 screws from below), controller on the base, wires, plate onto the
+base (4 M3x8 screws up through the posts), weights into the chamber and the
+cap on, feet over the screw pockets, ball in. Flash the controller before
+closing the pod: its BOOT button ends up inside.
 
 ## Assembly
 

@@ -1147,7 +1147,7 @@ export class Design {
   }
   get z_floor_bottom(): any {
     // A pod's weight pocket opens under the floor, so the base grows by its depth.
-    return sub(sub(this.z_floor_top, this.tray.floor), this.ballast?.depth ?? 0);
+    return sub(sub(this.z_floor_top, this.tray.floor), this.ballast?.total ?? 0);
   }
   get usb_kind(): any {
     return truth(this.tray.usb_type === 'auto') ? this.tray.mcu.usb_type : this.tray.usb_type;
@@ -1503,7 +1503,7 @@ export class Design {
     else if (truth(t.mcu_place === 'under')) {
       parts.push(format(_('MCU under {v:g}'), { v: this.mcu_stack }));
     }
-    if (this.ballast) parts.push(format(_('weights {v:g}'), { v: this.ballast.depth }));
+    if (this.ballast) parts.push(format(_('weights {v:g}'), { v: this.ballast.total }));
     note = '';
     if (
       truth(
@@ -1691,11 +1691,20 @@ export class Design {
     const ballast = this.ballast;
     if (ballast)
       items.push({
-        ['item']: format(_('Steel washers {size} (Ø{od:g} x {t:g} mm)'), ballast.washer),
-        ['qty']: ballast.count,
-        ['note']: format(_('weights: about {g:.0f} g, glued into the pocket under the base'), {
-          g: ballast.mass,
-        }),
+        ['item']: ballast.washer
+          ? format(_('Steel washers {size} (Ø{od:g} x {t:g} mm)'), ballast.washer)
+          : _('Weights: coins, steel shot or stones'),
+        ['qty']: Math.max(ballast.count, 1),
+        ['note']: add(
+          format(_('fill the Ø{d:.0f} x {h:g} mm chamber under the base'), {
+            d: ballast.dia,
+            h: ballast.depth,
+          }),
+          ballast.washer ? format(_(' (about {g:.0f} g of washers)'), { g: ballast.mass }) : '',
+          ballast.cap === 'none'
+            ? _('; glue them in')
+            : _('; coins, steel shot or stones work too, a felt disc stops rattling'),
+        ),
       });
     items = add(items, [
       this.is_pod

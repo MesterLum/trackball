@@ -53,7 +53,9 @@ export class Pod {
     this.enabled = values.enabled ?? false;
     this.style = values.style ?? 'round';
     this.shell = values.shell ?? 'solid';
-    this.weights = values.weights ?? 1;
+    /** Depth of the weight chamber under the base (0 = none) and how it closes. */
+    this.weight_depth = values.weight_depth ?? 8;
+    this.weight_cap = values.weight_cap ?? 'thread';
     /** Cradle pod: a walled base meeting the shell at a seam, or the shell down to the desk. */
     this.base = values.base ?? 'walled';
     /** Cradle pod: design on the lower wall. */
@@ -160,12 +162,31 @@ export function cradle_shape(d: any): CradleShape {
   };
 }
 
+/**
+ * The weight chamber's cap, flush with the base's underside: a printed screw thread or a bayonet
+ * (three lugs, push in and turn), with a slot to turn it with a coin. Clearances suit FDM.
+ */
+export const WEIGHT_CAP = {
+  thickness: 5.0,
+  thread: { pitch: 3.0, depth: 0.9 },
+  clearance: 0.35,
+  lug: { count: 3, width: 6.0, radial: 1.6, height: 2.2, turn: 60 },
+  slot: { length: 18, width: 1.8, depth: 1.5 },
+};
+export type WeightCap = 'thread' | 'bayonet' | 'none';
 export interface Ballast {
-  washer: Washer;
-  count: number;
-  /** Round pocket in the underside of the base. */
+  cap: WeightCap;
+  /** Round chamber in the underside of the base, above the cap's seat. */
   dia: number;
   depth: number;
+  /** Height of the cap's seat under the chamber (0 without a cap) and the total height taken. */
+  seat: number;
+  total: number;
+  /** Outermost radius the closure cuts into the base (thread with clearance, or bayonet slots). */
+  outer_r: number;
+  /** Largest standard washer that fits, and how many stack in the chamber (null if none fits). */
+  washer: Washer | null;
+  count: number;
   mass: number;
 }
 
@@ -175,22 +196,37 @@ export interface Ballast {
  */
 export function pod_ballast(d: any): Ballast | null {
   const pod: Pod = d.pod;
-  if (!pod.enabled || pod.weights <= 0) return null;
+  if (!pod.enabled || pod.weight_depth <= 0) return null;
   const t = d.tray;
   const half = Math.min(d.half_width, d.half_length);
   const [x, y] = d.lid_screw_points()[3];
   const keep = Math.max(t.feet_dia, d.carrier.screw_head_dia) / 2 + 1.0;
   const room = Math.min(half - t.wall - 1.0, Math.hypot(x, y - d.footprint[3]) - keep);
-  const fits = WASHERS.filter((w) => w.od + 0.6 <= 2 * room);
-  const washer = fits[fits.length - 1];
-  if (!washer) return null;
-  const count = pod.weights;
+  const cap: WeightCap = pod.weight_cap;
+  const k = WEIGHT_CAP;
+  // The chamber opens through the cap's seat, so weights drop in past the thread or the lugs.
+  const r =
+    cap === 'thread'
+      ? room - k.thread.depth - k.clearance
+      : cap === 'bayonet'
+        ? room - k.lug.radial - k.clearance
+        : room;
+  if (r < 8) return null;
+  const seat = cap === 'none' ? 0 : k.thickness;
+  const depth = pod.weight_depth;
+  const fits = WASHERS.filter((w) => w.od + 0.6 <= 2 * r);
+  const washer = fits[fits.length - 1] ?? null;
+  const count = washer ? Math.floor((depth - 0.2) / washer.t) : 0;
   return {
+    cap,
+    dia: 2 * r,
+    depth,
+    seat,
+    total: depth + seat,
+    outer_r: room,
     washer,
     count,
-    dia: washer.od + 0.6,
-    depth: count * washer.t + 0.2,
-    mass: count * washer_mass(washer),
+    mass: washer ? count * washer_mass(washer) : 0,
   };
 }
 

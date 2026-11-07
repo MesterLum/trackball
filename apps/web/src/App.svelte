@@ -81,6 +81,7 @@
     shell: true,
     carrier: true,
     tray: true,
+    weight_cap: true,
     palmrest: true,
     palm_key: true,
     mcu_clamp: true,
@@ -91,6 +92,7 @@
     shell: '#7fa7c4',
     carrier: '#daa520',
     tray: '#808080',
+    weight_cap: '#9aa0a8',
     palmrest: '#cd853f',
     palm_key: '#008080',
     mcu_clamp: '#5b6ee1',
@@ -145,6 +147,7 @@
     palm_key: 'retaining key',
     palmrest: 'palm rest',
     mcu_clamp: 'controller clamp',
+    weight_cap: 'weight cap',
   };
   const partLabel = (name: string) => t(PART_LABELS[name] ?? name);
   function recordChange() {

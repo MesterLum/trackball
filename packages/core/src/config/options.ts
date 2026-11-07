@@ -39,6 +39,7 @@ export const BY_NAME = Object.fromEntries(OPTIONS.map((o) => [o.name, o]));
 export const TRANSLATED_CHOICES = new Set([
   'build',
   'shell',
+  'weight_cap',
   'pod_base',
   'pod_side',
   'mcu_hold',
@@ -70,7 +71,8 @@ export function optionApplies(name: string, v: Partial<Values>): boolean {
   // The build is chosen with its own picker, above the settings.
   if (name === 'build') return false;
   const pod = v.build === 'pod' || v.build === 'cradle';
-  if (name === 'shell' || name === 'weights') return pod;
+  if (name === 'shell' || name === 'weight_depth') return pod;
+  if (name === 'weight_cap') return pod && Number(v.weight_depth ?? 8) > 0;
   if (name === 'pod_base' || name === 'pod_side') return v.build === 'cradle';
   if (pod && (POD_HIDDEN.has(name) || ['Buttons', 'Deck'].includes(BY_NAME[name]?.group))) return false;
   const holeless = !MCUS[String(v.mcu)]?.holes?.length;
@@ -197,7 +199,8 @@ export function makeDesign(values: Partial<Values>): Design {
       enabled: v.build !== 'full',
       style: v.build === 'cradle' ? 'cradle' : 'round',
       shell: v.shell,
-      weights: v.weights,
+      weight_depth: v.weight_depth,
+      weight_cap: v.weight_cap,
       base: v.pod_base,
       side: v.pod_side,
     }),
