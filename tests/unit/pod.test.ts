@@ -136,7 +136,7 @@ describe('pod weights', () => {
       const b = d.ballast!;
       expect(b.cap).toBe(weight_cap);
       expect(b.depth).toBe(10);
-      expect(b.seat).toBe(weight_cap === 'none' ? 0 : WEIGHT_CAP.thickness);
+      expect(b.seat).toBe(weight_cap === 'none' ? 0 : WEIGHT_CAP.bottom);
       expect(none.z_floor_bottom - d.z_floor_bottom).toBeCloseTo(b.total, 6);
       expect(d.height_breakdown()).toContain('weights');
       // The chamber opens through the closure, inside the outermost cut.

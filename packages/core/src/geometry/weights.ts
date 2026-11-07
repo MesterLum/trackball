@@ -1,5 +1,5 @@
 // A pod's weight chamber under the base and the cap that closes it.
-import { add, sub } from '../math.js';
+import { add, mul, sub } from '../math.js';
 import { cube, cylinder, rotate_extrude, square, union } from '../scad/index.js';
 import { WEIGHT_CAP } from '../calculations/pod.js';
 import { EPS, zcyl } from './common.js';
@@ -17,21 +17,25 @@ function lug_half(r: number): number {
   return ((k.lug.width / 2 + k.clearance) / r) * (180 / Math.PI);
 }
 
-/** What the chamber and its closure remove from the base, in place under it. */
+/** What the cap (or the open pocket) removes from the base, in place under it. */
 export function weight_chamber(d: any): any | null {
   const b = d.ballast;
   if (!b) return null;
   const k = WEIGHT_CAP,
     fn = d.fn,
-    zb = d.z_floor_bottom;
+    zb = d.z_floor_bottom,
+    top = zb + b.total;
   const [, , cx, cy] = d.footprint;
-  const cuts = [zcyl(b.dia, zb + b.seat - EPS, zb + b.total, fn)];
-  if (b.cap === 'none') cuts.push(zcyl(b.dia, zb - 1, zb + b.total, fn));
+  const cuts = [];
+  if (b.cap === 'none') cuts.push(zcyl(b.dia, zb - 1, top, fn));
   else if (b.cap === 'thread') {
     // The cap's thread grown by the clearance, a whole pitch lower so both keep the same phase.
     const p = k.thread.pitch;
     cuts.push(
-      thread_solid(k.thread, b.outer_r - k.thread.depth, b.seat + 2 * p, fn).translate([0, 0, zb - p]),
+      mul(
+        thread_solid(k.thread, b.outer_r - k.thread.depth, b.total + 2 * p, fn).translate([0, 0, zb - p]),
+        zcyl(2 * b.outer_r + 2, zb - 1, top, fn),
+      ),
     );
     // Lead-in chamfer at the opening.
     cuts.push(
@@ -40,30 +44,26 @@ export function weight_chamber(d: any): any | null {
       ),
     );
   } else {
-    // Bayonet: the cap's body, an entry slot per lug, and a groove each lug turns into.
-    const rh = b.dia / 2 + k.clearance,
-      top = zb + b.seat;
+    // Bayonet: the cup, an entry slot per lug, and a groove each lug turns into at the top.
+    const rh = cup_radius(b) + k.clearance;
     cuts.push(zcyl(2 * rh, zb - 1, top, fn));
     for (const a of LUG_ANGLES) {
       const h = lug_half(rh);
       cuts.push(sector(rh - 0.1, b.outer_r, zb - 1, top, a - h, a + h, fn));
       cuts.push(
-        sector(
-          rh - 0.1,
-          b.outer_r,
-          top - k.lug.height - k.clearance,
-          top + EPS,
-          a - h,
-          a + k.lug.turn + h,
-          fn,
-        ),
+        sector(rh - 0.1, b.outer_r, top - k.lug.height - k.clearance, top, a - h, a + k.lug.turn + h, fn),
       );
     }
   }
   return union()(...cuts).translate([cx, cy, 0]);
 }
 
-/** The printed cap, in place under the base (a bayonet cap shown turned into its lock). */
+/** Outer radius of the cap's cup body (inside the thread ridge or the lugs). */
+function cup_radius(b: any): number {
+  return b.dia / 2 + WEIGHT_CAP.wall;
+}
+
+/** The printed cap, a cup open at the top, in place under the base (a bayonet cap shown locked). */
 export function weight_cap(d: any): any | null {
   const b = d.ballast;
   if (!b || b.cap === 'none') return null;
@@ -72,17 +72,17 @@ export function weight_cap(d: any): any | null {
     zb = d.z_floor_bottom;
   const [, , cx, cy] = d.footprint;
   let cap: any;
-  if (b.cap === 'thread') cap = thread_solid(k.thread, b.outer_r - k.thread.depth - k.clearance, b.seat, fn);
+  if (b.cap === 'thread') cap = thread_solid(k.thread, b.outer_r - k.thread.depth - k.clearance, b.total, fn);
   else {
-    const r = b.dia / 2;
+    const r = cup_radius(b);
     const lugs = LUG_ANGLES.map((a) => {
       const h = lug_half(r) - (k.clearance / r) * (180 / Math.PI);
-      return sector(r - 0.5, b.outer_r - k.clearance, b.seat - k.lug.height, b.seat, a - h, a + h, fn);
+      return sector(r - 0.5, b.outer_r - k.clearance, b.total - k.lug.height, b.total, a - h, a + h, fn);
     });
-    cap = add(zcyl(2 * r, 0, b.seat, fn), union()(...lugs)).rotate([0, 0, k.lug.turn]);
+    cap = add(zcyl(2 * r, 0, b.total, fn), union()(...lugs)).rotate([0, 0, k.lug.turn]);
   }
-  // A slot across the bottom to turn it with a coin.
+  // Hollow it into a cup for the weights, and cut a slot across the bottom to turn it with a coin.
   const s = k.slot;
-  cap = sub(cap, cube([s.length, s.width, 2 * s.depth], true));
+  cap = sub(cap, union()(zcyl(b.dia, b.seat, b.total + 1, fn), cube([s.length, s.width, 2 * s.depth], true)));
   return cap.translate([cx, cy, zb]);
 }

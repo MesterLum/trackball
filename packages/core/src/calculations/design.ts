@@ -1696,10 +1696,12 @@ export class Design {
           : _('Weights: coins, steel shot or stones'),
         ['qty']: Math.max(ballast.count, 1),
         ['note']: add(
-          format(_('fill the Ø{d:.0f} x {h:g} mm chamber under the base'), {
-            d: ballast.dia,
-            h: ballast.depth,
-          }),
+          format(
+            ballast.cap === 'none'
+              ? _('fill the Ø{d:.0f} x {h:g} mm chamber under the base')
+              : _('fill the Ø{d:.0f} x {h:g} mm cup under the base'),
+            { d: ballast.dia, h: ballast.depth },
+          ),
           ballast.washer ? format(_(' (about {g:.0f} g of washers)'), { g: ballast.mass }) : '',
           ballast.cap === 'none'
             ? _('; glue them in')

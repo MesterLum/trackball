@@ -402,15 +402,16 @@
   "Switching starts this build from its defaults": "Al cambiar, este tipo empieza con sus valores por defecto",
   "A larger pod with a clear shell for transparent filament, RP2040-Zero under the sensor and a deep weight chamber.": "Un pod más grande con carcasa para filamento transparente, RP2040-Zero bajo el sensor y una cámara de contrapeso profunda.",
   "weight chamber": "cámara de contrapeso",
-  "depth of the chamber under the pod's base for weights (coins, washers, steel shot, stones); the pod grows by about this much (0 = none)": "profundidad de la cámara bajo la base del pod para contrapesos (monedas, arandelas, perdigones, piedras); el pod crece más o menos esto (0 = ninguna)",
+  "inside depth of the cup that screws into the pod's base and holds weights (coins, washers, steel shot, stones); the pod grows by this plus the cup's bottom (0 = none)": "profundidad interior de la taza que se enrosca en la base del pod y guarda los contrapesos (monedas, arandelas, perdigones, piedras); el pod crece esto más el fondo de la taza (0 = ninguna)",
   "weight cap": "tapa del contrapeso",
   "how the weight chamber closes, flush with the underside; turn the cap with a coin": "cómo se cierra la cámara de contrapeso, a ras de la base; gira la tapa con una moneda",
   "Screw-on cap": "Tapa de rosca",
   "Bayonet cap (quarter turn)": "Tapa de bayoneta (un cuarto de vuelta)",
   "No cap (glue the weights in)": "Sin tapa (pega los contrapesos)",
   "Weights: coins, steel shot or stones": "Contrapesos: monedas, perdigones o piedras",
-  "fill the Ø{d:.0f} x {h:g} mm chamber under the base": "llena la cámara de Ø{d:.0f} x {h:g} mm bajo la base",
+  "fill the Ø{d:.0f} x {h:g} mm cup under the base": "llena la taza de Ø{d:.0f} x {h:g} mm bajo la base",
   " (about {g:.0f} g of washers)": " (unos {g:.0f} g de arandelas)",
   "; glue them in": "; pégalos",
-  "; coins, steel shot or stones work too, a felt disc stops rattling": "; también sirven monedas, perdigones o piedras, un disco de fieltro evita que suenen"
+  "; coins, steel shot or stones work too, a felt disc stops rattling": "; también sirven monedas, perdigones o piedras, un disco de fieltro evita que suenen",
+  "fill the Ø{d:.0f} x {h:g} mm chamber under the base": "llena la cámara de Ø{d:.0f} x {h:g} mm bajo la base"
 }

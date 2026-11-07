@@ -636,8 +636,8 @@
   {
     "name": "weight_depth",
     "kind": "float",
-    "default": 8.0,
-    "help": "depth of the chamber under the pod's base for weights (coins, washers, steel shot, stones); the pod grows by about this much (0 = none)",
+    "default": 6.0,
+    "help": "inside depth of the cup that screws into the pod's base and holds weights (coins, washers, steel shot, stones); the pod grows by this plus the cup's bottom (0 = none)",
     "group": "Body",
     "flag": null,
     "choices": [],
