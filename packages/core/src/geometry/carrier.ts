@@ -212,7 +212,9 @@ export function carrier(d: any): any {
       cb = zcyl(cr.screw_head_dia, sub(z1, cr.screw_head_depth), add(z1, EPS), fn);
       cuts.push(add(hole, cb).translate([x, y, 0]));
     }
-  bs = bootsel_deck_xy(d);
+  // A hole to press the controller's BOOT button through the lid; a pod's shell covers the plate,
+  // so it would only weaken it (flash the controller before closing the pod).
+  bs = d.is_pod ? null : bootsel_deck_xy(d);
   if (truth(bs !== null)) {
     cuts.push(
       zcyl(cr.bootsel_hole_dia, sub(z0, 1), add(z1, 1), fn).translate([index(bs, 0), index(bs, 1), 0]),

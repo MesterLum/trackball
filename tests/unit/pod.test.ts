@@ -434,3 +434,14 @@ describe('sensor solder relief', () => {
     );
   });
 });
+
+describe('pod sensor plate', () => {
+  it('has no BOOT button hole under the shell, while a full build keeps it', () => {
+    const plate = (v: Values) =>
+      generateParts(createDesign(autofit(v).values)).find((p) => p.name === 'carrier')!.scad;
+    // 4 mm holes: the sensor's two insert holes, plus the BOOT hole on a full build.
+    const holes = (v: Values) => plate(v).split('d=4,').length - 1;
+    expect(holes({ mcu: 'rp2040-zero' })).toBe(3);
+    expect(holes({ ...POD, mcu: 'rp2040-zero' })).toBe(2);
+  });
+});
