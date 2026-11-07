@@ -21,8 +21,10 @@ import { _ } from '../i18n.js';
 import { POWER_SWITCHES, is_placement, place_power_switch } from './power.js';
 import { CLAMP, CLAMP_SIDE_EXTRA } from './clamp.js';
 import {
+  POD_CUP_CEILING,
   POD_SCREW,
   POD_SIDE_N,
+  POD_STANDOFF_SINK,
   Pod,
   cradle_shape,
   inside_squircle,
@@ -1146,8 +1148,18 @@ export class Design {
     return t.standoff_h;
   }
   get z_floor_bottom(): any {
-    // A pod's weight pocket opens under the floor, so the base grows by its depth.
-    return sub(sub(this.z_floor_top, this.tray.floor), this.ballast?.total ?? 0);
+    return sub(sub(this.z_floor_top, this.tray.floor), this.weight_extra);
+  }
+  /**
+   * How much a pod's weight cup (or pocket) adds under the floor. It sinks up into the floor, which
+   * over it only needs a thin cover; under a controller with mounting holes the cover stays thick
+   * enough for the standoff screws.
+   */
+  get weight_extra(): number {
+    const b = this.ballast;
+    if (!b) return 0;
+    const cover = this.tray.mcu.holes?.length ? POD_STANDOFF_SINK + 0.8 : POD_CUP_CEILING;
+    return Math.max(b.total + cover - this.tray.floor, 0);
   }
   get usb_kind(): any {
     return truth(this.tray.usb_type === 'auto') ? this.tray.mcu.usb_type : this.tray.usb_type;
@@ -1503,7 +1515,7 @@ export class Design {
     else if (truth(t.mcu_place === 'under')) {
       parts.push(format(_('MCU under {v:g}'), { v: this.mcu_stack }));
     }
-    if (this.ballast) parts.push(format(_('weights {v:g}'), { v: this.ballast.total }));
+    if (this.ballast) parts.push(format(_('weights {v:g}'), { v: round(this.weight_extra, 1) }));
     note = '';
     if (
       truth(

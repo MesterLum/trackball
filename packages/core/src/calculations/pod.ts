@@ -7,6 +7,8 @@ export const POD_LIP = 1.5;
 /** Short controller standoffs in a pod; their screw holes continue into the floor below. */
 export const POD_STANDOFF = 1.0;
 export const POD_STANDOFF_SINK = 2.5;
+/** Floor left over a pod's weight cup: the cup has its own bottom, so the floor above it is thin. */
+export const POD_CUP_CEILING = 1.2;
 /**
  * Short screws from under the base into the sensor plate: the post is pocketed from below so an
  * M3x8 machine screw's head sits near its top, passes the post's solid top and the plate, and

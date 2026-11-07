@@ -271,8 +271,10 @@ floor when it has no mounting holes, on 1 mm standoffs when it has.
   the plate. Rubber feet cover the pockets.
 - **Weights**: the weights go in a small cup, `weight_cap`, that screws (or
   locks) into the underside of the base, flush with it; the base's floor
-  closes it from above, and the pod grows only by the cup: `weight_depth` mm
-  inside plus a 1.6 mm bottom. The cup is as wide as fits inside the walls and
+  closes it from above. The cup sinks up into the floor, which over it is only
+  a 1.2 mm cover (thicker under a controller with mounting holes, for its
+  standoff screws), so the pod grows by `weight_depth` + 1.6 mm bottom + 1.2 mm
+  cover - `floor`. The cup is as wide as fits inside the walls and
   between the feet. `weight_cap` sets how it holds: a printed thread (3 mm
   pitch, 45° flanks, 0.35 mm clearance, `geometry/thread.ts`, a helical
   polyhedron), a bayonet (three lugs at the rim that enter through slots and
