@@ -26,6 +26,8 @@ export const POD_SCREW = {
   /** Posts are thick enough to pocket the head. */
   post_dia: 9.0,
 };
+/** A pod's feet sit in deeper recesses, and must be wide enough to cover the screw pockets. */
+export const POD_FEET = { depth: 1.5, min_dia: POD_SCREW.head_dia + 1.6 };
 
 export interface Washer {
   size: string;

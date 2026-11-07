@@ -22,6 +22,7 @@ import { POWER_SWITCHES, is_placement, place_power_switch } from './power.js';
 import { CLAMP, CLAMP_SIDE_EXTRA } from './clamp.js';
 import {
   POD_CUP_CEILING,
+  POD_FEET,
   POD_SCREW,
   POD_SIDE_N,
   POD_STANDOFF_SINK,
@@ -954,6 +955,18 @@ export class Design {
           }),
         );
     }
+    // A pod's feet cover the screw pockets: too small a foot leaves them showing.
+    const feet = this.tray.feet_dia;
+    if (this.is_pod && feet > 0 && feet < POD_FEET.min_dia)
+      probs.push({
+        ['message']: format(
+          _(
+            '{d:g} mm rubber feet do not cover the screw pockets: use feet of at least {min:g} mm, or none (0)',
+          ),
+          { d: feet, min: POD_FEET.min_dia },
+        ),
+        ['fix']: { ['feet']: POD_FEET.min_dia },
+      });
     if (this.is_pod && this.pod_posts_hit_sensor())
       report(_('the base posts run into the sensor board'), this.padding_for_pod_posts());
     return probs;
