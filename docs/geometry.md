@@ -239,8 +239,8 @@ floor when it has no mounting holes, on 1 mm standoffs when it has.
   cleared and the ball still lifts out. The shell's top just clears the
   sensor plate and the cup stays solid, so the notch never opens into the
   inside. The base is a tray whose solid wall closes the electronics bay up to
-  a seam 1 mm under the sensor plate, where the shell starts; both edges of the
-  seam are chamfered. `pod_base covered` instead brings the shell down to
+  a seam 1 mm under the sensor plate, where the shell starts; the two meet
+  flush, so the outside reads as one wall. `pod_base covered` instead brings the shell down to
   the desk over a flat base plate. `pod_side` adds a design to the lower wall
   (the base's wall, or the shell's straight sides): a shallow recessed band
   (0.6 mm) or three V grooves, all with 45° edges. Rounded edges are built as bands of scaled extrusions

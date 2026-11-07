@@ -73,9 +73,11 @@ function plan(d: any, inset: number, z: number): PodLevel {
  * slices.
  */
 function banded(levels: PodLevel[]): any {
+  // Outlines at the same height (a zero chamfer) add no band.
+  const kept = levels.filter((lv, i) => i === 0 || lv.z - levels[i - 1].z > EPS);
   return union()(
-    ...levels.slice(1).map((top, i) => {
-      const low = levels[i];
+    ...kept.slice(1).map((top, i) => {
+      const low = kept[i];
       return linear_extrude(top.z - low.z, false, undefined, undefined, undefined, [
         top.a / low.a,
         top.b / low.b,
@@ -93,7 +95,8 @@ function cradle_body(d: any): any {
     e = CRADLE.edge,
     f = c.fillet,
     l = CRADLE.lip,
-    k = CRADLE.seam_chamfer;
+    // At the seam the shell meets the base flush; down at the desk it keeps a foot chamfer.
+    k = d.pod.walled ? CRADLE.seam_chamfer : POD_FOOT_CHAMFER;
   const levels = [plan(d, k, c.seam), plan(d, 0, c.seam + k)];
   for (let i = 0; i <= 8; i++) {
     const t = (i / 8) * (Math.PI / 2);
