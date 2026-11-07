@@ -19,6 +19,6 @@ apps/web/public/THIRD_PARTY_LICENSES.txt
 # Local output from the previous Python version.
 .venv/
 __pycache__/
-out/
-trackball/
-web/
+/out/
+/trackball/
+/web/
