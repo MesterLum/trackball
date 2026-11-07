@@ -19,6 +19,7 @@
   import type { RenderedPart } from '@trackball/renderer-browser';
   import { strToU8, zipSync } from 'fflate';
   import OptionControl from './components/OptionControl.svelte';
+  import BuildPicker from './components/BuildPicker.svelte';
   import ModelViewer from './components/ModelViewer.svelte';
 
   const defaultValues = defaults();
@@ -71,7 +72,9 @@
     showBall = $state(true),
     xray = $state(false);
   // Tabs whose settings all are hidden for this build (a pod has no buttons or deck) disappear.
-  let shownGroups = $derived(groups.filter((g) => OPTIONS.some((o) => o.group === g && optionApplies(o.name, values))));
+  let shownGroups = $derived(
+    groups.filter((g) => OPTIONS.some((o) => o.group === g && optionApplies(o.name, values))),
+  );
   let activeTab = $derived(shownGroups.includes(tab) ? tab : shownGroups[0]);
   let visible = $state<Record<string, boolean>>({
     cup: true,
@@ -158,6 +161,16 @@
     values = coerce(next);
     lastSnapshot = JSON.stringify(values);
   }
+  // Each build starts from the defaults plus its own preset, so switching never carries over
+  // settings that belong to another build.
+  const BUILD_START: Record<string, string> = { cradle: 'cradle-pod', pod: 'desk-pod' };
+  function pickBuild(build: string) {
+    const preset = PRESETS.find((p) => p.key === BUILD_START[build]);
+    apply(Object.assign(defaults(), preset?.values ?? {}, { build }));
+  }
+  let buildPresets = $derived(
+    PRESETS.filter((p) => ((p.values as Record<string, unknown>).build ?? 'full') === values.build),
+  );
   function undo() {
     if (!past.length) return;
     future = [...future, JSON.stringify(values)];
@@ -322,7 +335,6 @@
   });
 </script>
 
-
 <svelte:window
   onkeydown={(e) => {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && !(e.target instanceof HTMLInputElement)) {
@@ -365,26 +377,37 @@
           title={t('Toggle theme')}
           onclick={() => (themeChoice = dark ? 'light' : 'dark')}
         >
-          {#if dark}<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"
+          {#if dark}<svg
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
               ><circle cx="12" cy="12" r="4" /><path
                 d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"
               /></svg
-            >{:else}<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"
-              ><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" /></svg
+            >{:else}<svg
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" /></svg
             >{/if}
         </button><button class="btn btn-sm" onclick={share}>{t('Share link')}</button>
       </div>
     </header>
     <div class="config-layout">
       <aside class="panel settings-panel">
-        <div class="p-4 pb-3">
+        <div class="p-4 pb-3 grid gap-4">
           <h2 class="sr-only">{t('Configuration')}</h2>
+          <BuildPicker value={String(values.build)} onpick={pickBuild} {t} disabled={exporting} />
           <div class="segmented" role="tablist">
             {#each shownGroups as group (group)}<button
                 role="tab"
                 aria-selected={activeTab === group}
-                onclick={() => (tab = group)}
-                >{t(group)}</button
+                onclick={() => (tab = group)}>{t(group)}</button
               >{/each}
           </div>
         </div>
@@ -397,7 +420,8 @@
               />{/if}{/each}
         </fieldset>
         <div class="p-3 border-t border-base-300 flex gap-1">
-          <button class="btn btn-sm btn-ghost" disabled={!past.length || exporting} onclick={undo}>{t('Undo')}</button
+          <button class="btn btn-sm btn-ghost" disabled={!past.length || exporting} onclick={undo}
+            >{t('Undo')}</button
           ><button class="btn btn-sm btn-ghost" disabled={!future.length || exporting} onclick={redo}
             >{t('Redo')}</button
           ><button class="btn btn-sm btn-ghost ml-auto" disabled={exporting} onclick={() => apply(defaults())}
@@ -430,7 +454,13 @@
                 aria-pressed={xray}
                 title={t('X-ray view')}
                 onclick={() => (xray = !xray)}
-                ><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"
+                ><svg
+                  viewBox="0 0 24 24"
+                  width="16"
+                  height="16"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
                   ><rect x="4" y="4" width="16" height="16" rx="4" stroke-dasharray="3 2.5" /><circle
                     cx="12"
                     cy="12"
@@ -442,15 +472,26 @@
                 aria-label={t('Fit view')}
                 title={t('Fit view')}
                 onclick={() => viewer?.fit()}
-                ><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"
-                  ><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" /></svg
+                ><svg
+                  viewBox="0 0 24 24"
+                  width="16"
+                  height="16"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" /></svg
                 ></button
               ><button
                 class="btn btn-sm btn-square bg-base-100"
                 aria-label={t('Save PNG')}
                 title={t('Save PNG')}
                 onclick={() => viewer?.snapshot()}
-                ><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"
+                ><svg
+                  viewBox="0 0 24 24"
+                  width="16"
+                  height="16"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
                   ><path d="M4 8h3l2-3h6l2 3h3v11H4z" /><circle cx="12" cy="13" r="3.5" /></svg
                 ></button
               >
@@ -481,9 +522,9 @@
               <div>
                 <dt>{t('Body footprint')}</dt>
                 <dd class="wide">
-                  {calculated.design.footprint[0].toFixed(1)} × {calculated.design.footprint[1].toFixed(1)}<small
-                    >mm</small
-                  >
+                  {calculated.design.footprint[0].toFixed(1)} × {calculated.design.footprint[1].toFixed(
+                    1,
+                  )}<small>mm</small>
                 </dd>
               </div>
               <div>
@@ -494,7 +535,9 @@
               </div>
               <div>
                 <dt>{t('controller')}</dt>
-                <dd class="wide">{calculated.values.mcu}<small>{t(String(calculated.values.mcu_place))}</small></dd>
+                <dd class="wide">
+                  {calculated.values.mcu}<small>{t(String(calculated.values.mcu_place))}</small>
+                </dd>
               </div>
               <div>
                 <dt>{t('Fit')}</dt>
@@ -503,7 +546,9 @@
                 </dd>
               </div>
             </dl>{/if}
-          <div class="px-4 py-3 bg-base-200 border-t border-base-300 flex flex-wrap items-center justify-between gap-3">
+          <div
+            class="px-4 py-3 bg-base-200 border-t border-base-300 flex flex-wrap items-center justify-between gap-3"
+          >
             <div class="text-sm flex items-center gap-2">
               {#if busy || exporting}<span class="loading loading-spinner loading-xs"></span>{:else}<span
                   class="status-dot"
@@ -566,7 +611,8 @@
               <summary class="px-5 py-3.5 font-semibold cursor-pointer">{t('Parts to buy')}</summary>
               <div class="overflow-x-auto px-2 pb-3">
                 <table class="table table-sm bom">
-                  <thead><tr><th class="w-12">{t('Qty')}</th><th>{t('Part')}</th><th>{t('Notes')}</th></tr></thead
+                  <thead
+                    ><tr><th class="w-12">{t('Qty')}</th><th>{t('Part')}</th><th>{t('Notes')}</th></tr></thead
                   ><tbody
                     >{#each calculated.design.bom() as item, i (i)}<tr
                         ><td class="font-semibold">{item.qty}</td><td>{item.item}</td><td class="muted"
@@ -578,14 +624,16 @@
               </div>
             </details>
             <details>
-              <summary class="px-5 py-3.5 font-semibold cursor-pointer">{t('Dimensions and assumptions')}</summary>
+              <summary class="px-5 py-3.5 font-semibold cursor-pointer"
+                >{t('Dimensions and assumptions')}</summary
+              >
               <pre class="px-5 pb-4 text-xs whitespace-pre-wrap muted">{calculated.design.summary()}</pre>
             </details>
           </section>{/if}
         <section class="pt-2">
           <h2 class="font-semibold mb-3 px-1">{t('Start with a preset')}</h2>
           <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-3">
-            {#each PRESETS as preset (preset.key)}<button
+            {#each buildPresets as preset (preset.key)}<button
                 class="preset"
                 disabled={exporting}
                 onclick={() => apply({ ...defaults(), ...preset.values } as Values)}
@@ -609,7 +657,9 @@
     <footer class="muted text-xs mt-10 pt-4 border-t border-base-300 flex flex-wrap gap-x-5 gap-y-1">
       <span>{t('Free software under the GNU GPL, version 3 or later.')}</span>
       <a class="link" href="https://github.com/MesterLum/trackball">{t('Source code')}</a>
-      <a class="link" href={import.meta.env.BASE_URL + 'THIRD_PARTY_LICENSES.txt'}>{t('Third-party licenses')}</a>
+      <a class="link" href={import.meta.env.BASE_URL + 'THIRD_PARTY_LICENSES.txt'}
+        >{t('Third-party licenses')}</a
+      >
     </footer>
   </div>
 {/if}

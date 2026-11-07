@@ -67,6 +67,8 @@ const POD_HIDDEN = new Set([
 ]);
 /** Options that only matter for some configurations, hidden otherwise. */
 export function optionApplies(name: string, v: Partial<Values>): boolean {
+  // The build is chosen with its own picker, above the settings.
+  if (name === 'build') return false;
   const pod = v.build === 'pod' || v.build === 'cradle';
   if (name === 'shell' || name === 'weights') return pod;
   if (name === 'pod_base' || name === 'pod_side') return v.build === 'cradle';
