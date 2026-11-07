@@ -269,20 +269,21 @@ floor when it has no mounting holes, on 1 mm standoffs when it has.
   below, so an M3x8 machine screw's head sits near its top, passes the post's
   3 mm top and the sensor plate, and bites an M3 nut in a hex pocket on top of
   the plate. Rubber feet cover the pockets.
-- **Weights**: a round chamber `weight_depth` mm deep under the base, as wide
-  as fits inside the walls and between the feet, for coins, washers, steel
-  shot or stones; the base grows by its depth plus the cap's 5 mm seat.
-  `weight_cap` closes it flush with the underside: a printed thread (3 mm
+- **Weights**: the weights go in a small cup, `weight_cap`, that screws (or
+  locks) into the underside of the base, flush with it; the base's floor
+  closes it from above, and the pod grows only by the cup: `weight_depth` mm
+  inside plus a 1.6 mm bottom. The cup is as wide as fits inside the walls and
+  between the feet. `weight_cap` sets how it holds: a printed thread (3 mm
   pitch, 45° flanks, 0.35 mm clearance, `geometry/thread.ts`, a helical
-  polyhedron), a bayonet (three lugs that enter through slots and turn 60°
-  into a groove) or none (an open pocket, weights glued in). The cap is its
-  own printed part, `weight_cap`, with a slot to turn it with a coin.
+  polyhedron), a bayonet (three lugs at the rim that enter through slots and
+  turn 60° into a groove) or none (an open pocket, weights glued in). A slot
+  across the bottom turns it with a coin.
 
 Pod assembly: inserts in the shell and sensor plate, BTUs into the shell,
 sensor on the plate, nuts into their pockets on the plate, shell onto the
 plate (4 screws from below), controller on the base, wires, plate onto the
-base (4 M3x8 screws up through the posts), weights into the chamber and the
-cap on, feet over the screw pockets, ball in. Flash the controller before
+base (4 M3x8 screws up through the posts), weights into the cup and the cup
+screwed in, feet over the screw pockets, ball in. Flash the controller before
 closing the pod: its BOOT button ends up inside.
 
 ## Assembly

@@ -54,7 +54,7 @@ export class Pod {
     this.style = values.style ?? 'round';
     this.shell = values.shell ?? 'solid';
     /** Depth of the weight chamber under the base (0 = none) and how it closes. */
-    this.weight_depth = values.weight_depth ?? 8;
+    this.weight_depth = values.weight_depth ?? 6;
     this.weight_cap = values.weight_cap ?? 'thread';
     /** Cradle pod: a walled base meeting the shell at a seam, or the shell down to the desk. */
     this.base = values.base ?? 'walled';
@@ -163,23 +163,26 @@ export function cradle_shape(d: any): CradleShape {
 }
 
 /**
- * The weight chamber's cap, flush with the base's underside: a printed screw thread or a bayonet
- * (three lugs, push in and turn), with a slot to turn it with a coin. Clearances suit FDM.
+ * The weight cap: a small cup that holds the weights and screws (or locks) into the underside of
+ * the base, flush with it, the base's floor closing it from above. A printed screw thread or a
+ * bayonet (three lugs, push in and turn), with a slot to turn it with a coin. Clearances suit FDM.
  */
 export const WEIGHT_CAP = {
-  thickness: 5.0,
+  /** Bottom and side walls of the cup. */
+  bottom: 1.6,
+  wall: 1.6,
   thread: { pitch: 3.0, depth: 0.9 },
   clearance: 0.35,
   lug: { count: 3, width: 6.0, radial: 1.6, height: 2.2, turn: 60 },
-  slot: { length: 18, width: 1.8, depth: 1.5 },
+  slot: { length: 18, width: 1.8, depth: 0.8 },
 };
 export type WeightCap = 'thread' | 'bayonet' | 'none';
 export interface Ballast {
   cap: WeightCap;
-  /** Round chamber in the underside of the base, above the cap's seat. */
+  /** The space for weights: inside the cap's cup, or an open pocket without a cap. */
   dia: number;
   depth: number;
-  /** Height of the cap's seat under the chamber (0 without a cap) and the total height taken. */
+  /** The cup's bottom under that space (0 without a cap) and the total height under the floor. */
   seat: number;
   total: number;
   /** Outermost radius the closure cuts into the base (thread with clearance, or bayonet slots). */
@@ -204,15 +207,15 @@ export function pod_ballast(d: any): Ballast | null {
   const room = Math.min(half - t.wall - 1.0, Math.hypot(x, y - d.footprint[3]) - keep);
   const cap: WeightCap = pod.weight_cap;
   const k = WEIGHT_CAP;
-  // The chamber opens through the cap's seat, so weights drop in past the thread or the lugs.
+  // The space for weights is the inside of the cup: inside its thread or lugs and its wall.
   const r =
     cap === 'thread'
-      ? room - k.thread.depth - k.clearance
+      ? room - k.thread.depth - k.clearance - k.wall
       : cap === 'bayonet'
-        ? room - k.lug.radial - k.clearance
+        ? room - k.lug.radial - k.clearance - k.wall
         : room;
   if (r < 8) return null;
-  const seat = cap === 'none' ? 0 : k.thickness;
+  const seat = cap === 'none' ? 0 : k.bottom;
   const depth = pod.weight_depth;
   const fits = WASHERS.filter((w) => w.od + 0.6 <= 2 * r);
   const washer = fits[fits.length - 1] ?? null;
