@@ -88,7 +88,8 @@ export const CRADLE = {
   notch_w: 0.45,
   notch_depth: 0.6,
   bevel: 1.2,
-  seam_chamfer: 0.6,
+  /** Chamfer on both edges of the seam; 0 makes the shell and base meet flush. */
+  seam_chamfer: 0,
   /** The cup is at least this share of the body's half width. */
   cup_share: 0.72,
   /** Recessed band around the lower wall: depth and its span as shares of the wall's height. */
