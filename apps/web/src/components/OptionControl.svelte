@@ -6,8 +6,8 @@
     value = $bindable(),
     onchange,
     t = (s: string) => s,
-  // The same value binds to a checkbox, select, number or text field depending on option.kind.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // The same value binds to a checkbox, select, number or text field depending on option.kind.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }: { option: Option; value: any; onchange: () => void; t?: (s: string) => string } = $props();
   const changed = () => queueMicrotask(onchange);
   let title = $derived(t(option.label || option.name.replaceAll('_', ' ')));
@@ -26,13 +26,11 @@
   {:else}
     <label class="option-label mb-2" for={'option-' + option.name}>{title}</label>
     {#if option.kind === 'choice'}
-      <select
-        id={'option-' + option.name}
-        class="select select-sm w-full"
-        bind:value
-        onchange={changed}
+      <select id={'option-' + option.name} class="select select-sm w-full" bind:value onchange={changed}
         >{#each option.choices as choice (choice)}<option value={choice}
-            >{TRANSLATED_CHOICES.has(option.name) ? t(option.choice_labels?.[choice] ?? choice) : choice}</option
+            >{TRANSLATED_CHOICES.has(option.name)
+              ? t(option.choice_labels?.[choice] ?? choice)
+              : choice}</option
           >{/each}</select
       >
     {:else if option.kind === 'float' || option.kind === 'int'}
