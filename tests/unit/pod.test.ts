@@ -16,6 +16,7 @@ import {
   inside_squircle,
   POD_FIT,
   POD_SIDE_N,
+  POD_FEET,
   POD_CUP_CEILING,
   WEIGHT_CAP,
   CRADLE,
@@ -173,6 +174,22 @@ describe('pod weights', () => {
     const sizes = [25, 34, 44, 55].map((ball) => pod({ ball }).ballast!.washer!.od);
     expect([...sizes].sort((a, b) => a - b)).toEqual(sizes);
   });
+  it('sinks the feet deeper and asks for feet wide enough to cover the screw pockets', () => {
+    expect(pod().tray.feet_depth).toBe(POD_FEET.depth);
+    expect(createDesign({}).tray.feet_depth).toBe(1);
+    const small = createDesign({ ...POD, feet: 6 });
+    expect(small.validate().some((m: string) => m.includes('do not cover the screw pockets'))).toBe(true);
+    expect(POD_FEET.min_dia).toBeGreaterThan(POD_SCREW.head_dia);
+    const { values, changes } = autofit({ ...POD, feet: 6 });
+    expect(changes).toContainEqual({ option: 'feet', from: 6, to: POD_FEET.min_dia });
+    expect(createDesign(values).validate()).toEqual([]);
+    expect(
+      createDesign({ ...POD, feet: 0 })
+        .validate()
+        .some((m: string) => m.includes('screw pockets')),
+    ).toBe(false);
+  });
+
   it('uses only short screws: M3x8 through the post top and the plate into a nut', () => {
     for (const d of [pod(), pod({ build: 'cradle' }), pod({ build: 'cradle', ball: 55 })]) {
       const items = d.bom().map((i: { item: string }) => i.item);
