@@ -398,5 +398,10 @@
   "or use a smaller battery": "o usa una batería más pequeña",
   "shell to the sensor plate (4), up through the base posts into the nuts (4)": "carcasa a la placa del sensor (4), desde abajo por los postes de la base hasta las tuercas (4)",
   "M3 hex nuts": "Tuercas hexagonales M3",
-  "in the pockets on top of the sensor plate, before the shell goes on": "en los huecos sobre la placa del sensor, antes de colocar la carcasa"
+  "in the pockets on top of the sensor plate, before the shell goes on": "en los huecos sobre la placa del sensor, antes de colocar la carcasa",
+  "What are you building?": "¿Qué vas a construir?",
+  "Buttons, palm rest and tilt": "Botones, reposamanos e inclinación",
+  "Ball-only, notched cup": "Solo bola, copa con muesca",
+  "Ball-only pebble": "Solo bola, canto rodado",
+  "Switching starts this build from its defaults": "Al cambiar, este tipo empieza con sus valores por defecto"
 }
