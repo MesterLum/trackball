@@ -17,8 +17,22 @@ export function pcb_features(d: any): any {
     y = mul(sy, d.pcb.hole_spacing) / 2;
     cuts.push(zcyl(cr.pcb_insert_dia, sub(z0, EPS), add(z0, cr.pcb_insert_depth), fn).translate([0, y, 0]));
   }
+  // Solder relief: pin tips and joints on the board's lens side clear the plate, and the board
+  // rests on full-height pads around its two screws, so it sits flat at the designed distance.
+  if (cr.sensor_relief > 0) {
+    const pads = [-1, 1].map((s) =>
+      zcyl(SENSOR_PAD_DIA, z0 - 1, z0 + cr.sensor_relief + 1, fn).translate([
+        0,
+        (s * d.pcb.hole_spacing) / 2,
+        0,
+      ]),
+    );
+    cuts.push(sub(zcyl(d.pcb.diameter + 1.6, z0 - EPS, z0 + cr.sensor_relief, fn), union()(...pads)));
+  }
   return union()(...cuts);
 }
+/** Pads the sensor board rests on around its screws, inside the solder relief. */
+export const SENSOR_PAD_DIA = 8.0;
 export function _box(x0: any, x1: any, y0: any, y1: any, z0: any, z1: any): any {
   return cube([sub(x1, x0), sub(y1, y0), sub(z1, z0)]).translate([x0, y0, z0]);
 }

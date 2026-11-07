@@ -309,6 +309,14 @@ closing the pod: its BOOT button ends up inside.
 7. Drop the carrier onto the tray and fix the 4 corner screws.
 8. Drop the ball in.
 
+### Sensor solder relief
+
+Wires or a header soldered from the back of the sensor board leave pin tips and
+joints on its lens side, which faces the plate. `sensor_relief` (default 2 mm,
+0 to 3) pockets the plate's underside over the board, leaving two 8 mm pads
+around its screws: the board rests on the pads, at the same height as on a flat
+plate, so its distance to the ball does not change.
+
 ## Numbers to verify before trusting a print
 
 - **Lens stack**: `Lens.top_above_pcb = 3.6` and `Lens.lens_to_ball = 2.4`

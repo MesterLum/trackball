@@ -414,5 +414,7 @@
   "; glue them in": "; pégalos",
   "; coins, steel shot or stones work too, a felt disc stops rattling": "; también sirven monedas, perdigones o piedras, un disco de fieltro evita que suenen",
   "fill the Ø{d:.0f} x {h:g} mm chamber under the base": "llena la cámara de Ø{d:.0f} x {h:g} mm bajo la base",
-  "{d:g} mm rubber feet do not cover the screw pockets: use feet of at least {min:g} mm, or none (0)": "los pies de goma de {d:g} mm no cubren los huecos de los tornillos: usa pies de al menos {min:g} mm, o ninguno (0)"
+  "{d:g} mm rubber feet do not cover the screw pockets: use feet of at least {min:g} mm, or none (0)": "los pies de goma de {d:g} mm no cubren los huecos de los tornillos: usa pies de al menos {min:g} mm, o ninguno (0)",
+  "solder relief": "alivio para soldaduras",
+  "pocket under the sensor board so pin tips and solder joints on its lens side clear the plate; the board rests on pads at its two screws and keeps its distance to the ball (0 = flat plate)": "hueco bajo la placa del sensor para que las puntas de los pines y las soldaduras de su cara de la lente no toquen la placa; la placa se apoya en almohadillas junto a sus dos tornillos y conserva su distancia a la bola (0 = placa plana)"
 }

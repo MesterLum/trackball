@@ -260,6 +260,21 @@
     "label": "sensor distance adjustment"
   },
   {
+    "name": "sensor_relief",
+    "kind": "float",
+    "default": 2.0,
+    "help": "pocket under the sensor board so pin tips and solder joints on its lens side clear the plate; the board rests on pads at its two screws and keeps its distance to the ball (0 = flat plate)",
+    "group": "Ball & cup",
+    "flag": null,
+    "choices": [],
+    "min": 0,
+    "max": 3,
+    "step": 0.5,
+    "unit": "mm",
+    "pattern": null,
+    "label": "solder relief"
+  },
+  {
     "name": "switches",
     "kind": "int",
     "default": 3,
