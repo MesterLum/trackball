@@ -118,3 +118,18 @@ it('renders a clamp that does not collide with the tray', async () => {
     ).toBeLessThan(0.01);
   }
 }, 240000);
+
+describe('parts on the back of a pocketed board', () => {
+  it('seats the RP2040-Zero on a ledge over a recess for its chip', () => {
+    const full = createDesign({ mcu: 'rp2040-zero' }),
+      pod = createDesign({ build: 'cradle', mcu: 'rp2040-zero' });
+    expect(full.mcu_under_relief).toBeCloseTo(1.85);
+    // A full build's 3 mm seat already clears it; a pod's flat bay rises just enough.
+    expect(full.mcu_standoff_h).toBe(3);
+    expect(pod.mcu_standoff_h).toBeCloseTo(1.85);
+  });
+  it('leaves boards with a flat back or mounting holes as they were', () => {
+    expect(createDesign({ build: 'cradle', mcu: 'xiao' }).mcu_standoff_h).toBe(0);
+    expect(createDesign({ mcu: 'pico' }).mcu_under_relief).toBe(0);
+  });
+});

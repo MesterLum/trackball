@@ -42,7 +42,10 @@ for (const row of reference)
     const dir = await mkdtemp(join(tmpdir(), 'trackball-parity-'));
     try {
       const values = { ...CHECKPOINT, ...row.values } as Values;
-      const part = generateParts(createDesign(values)).find((p) => p.name === row.part)!;
+      const design = createDesign(values);
+      // The checkpoint predates the recess under a pocketed board's back parts.
+      design.tray.mcu.under_height = 0;
+      const part = generateParts(design).find((p) => p.name === row.part)!;
       const metrics = [];
       for (const [name, scad] of [
         ['reference', row.scad],

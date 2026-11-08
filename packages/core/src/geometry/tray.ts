@@ -9,6 +9,7 @@ import { clamp_posts } from './clamp.js';
 import { cradle_base, pod_plate } from './pod.js';
 import { weight_chamber } from './weights.js';
 import { POD_SCREW, POD_STANDOFF_SINK } from '../calculations/pod.js';
+import { MCU_LEDGE } from '../calculations/design.js';
 export function lid_screw_points(d: any): any {
   return d.lid_screw_points();
 }
@@ -183,6 +184,12 @@ export function tray(d: any): any {
       add(add(zf_top, frame_h), 1),
     );
     local = sub(sub(frame, pocket), usb_end);
+    // Parts on the board's back: the board rests on a ledge around its edge over a recess.
+    const relief = d.mcu_under_relief;
+    if (relief > 0) {
+      const [a, c] = [mcu.length / 2 - MCU_LEDGE, mcu.width / 2 - MCU_LEDGE];
+      local = sub(local, _box(-a, a, -c, c, add(zf_top, sh - relief), add(zf_top, sh + EPS)));
+    }
     const clamp = clamp_posts(d);
     if (clamp) local = sub(add(local, clamp[0]), clamp[1]);
     rot = truth(t.usb_exit === 'back') ? 90.0 : truth(t.usb_side > 0) ? 0.0 : 180.0;
@@ -299,6 +306,11 @@ export function mcu_preview(d: any): any {
     .rotate([90, 0, 90])
     .translate([sub(mcu.length / 2, 6), 0, add(add(mcu.thickness, d.usb_z_offset), d.usb_height / 2)])
     .color('silver');
+  if (mcu.under_height > 0) {
+    // The part on its back (shown centred, a 7 mm chip; the recess clears the whole board).
+    const chip = _box(-3.5, 3.5, -3.5, 3.5, -mcu.under_height, 0).color('#222');
+    board = add(board, chip);
+  }
   rot = truth(t.usb_exit === 'back') ? 90.0 : truth(t.usb_side > 0) ? 0.0 : 180.0;
   return add(board, usb).rotate([0, 0, rot]).translate([mx, my, zb]);
 }
