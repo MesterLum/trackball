@@ -34,6 +34,7 @@ import {
   type Ballast,
 } from './pod.js';
 import { PressFitBTU } from '../geometry/supports.js';
+import { Fit } from './fit.js';
 import { polar } from '../geometry/common.js';
 import { TILE_COUNTS, TILE_DEPTH_MIN, holder_boxes, positions, tile_depth } from '../geometry/tiles.js';
 export class SensorPCB {
@@ -512,6 +513,7 @@ export class Design {
     this.deck = values.deck ?? new Deck();
     this.battery = values.battery ?? new Battery();
     this.pod = values.pod ?? new Pod();
+    this.fit = values.fit ?? new Fit();
     this.fn = values.fn ?? 96;
   }
   get is_pod(): boolean {

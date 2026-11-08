@@ -317,6 +317,31 @@ joints on its lens side, which faces the plate. `sensor_relief` (default 2 mm,
 around its screws: the board rests on the pads, at the same height as on a flat
 plate, so its distance to the ball does not change.
 
+## Print fit
+
+FDM prints come out a little off their drawn size: extruded lines squish wider,
+so walls grow and holes shrink, and small holes print as polygons that cut the
+circle. The clearances above suit a well-tuned printer; two settings in the
+Print fit tab shift them for another printer or filament. The web app
+remembers them on the device and keeps them when switching builds or resetting.
+
+- `fit_hole` is added to the diameter of every hole a bought part goes into:
+  BTU bores (and ceramic sockets, bearing screw holes), heat-set insert holes,
+  screw clearance holes, the pod's nut pockets and a toggle switch's hole.
+- `fit_gap` is added on each side where printed parts slide or screw
+  together: the pod shell over its plates (`POD_FIT`), the weight cap's thread
+  or bayonet, the palm rest joint and a snap-in switch opening.
+
+The **fit test** (Print fit tab, `generateFitTest`) prints this design's
+fitted features in rows of four columns, marked with one to four dots: one
+step tighter than the current settings, the settings, and one and two steps
+looser. A step is 0.1 mm on a hole's diameter and 0.05 mm on each side of a
+sliding fit. The rows are the BTU bore (BTU supports only), the insert hole,
+the screw hole, the nut pocket (pods), square sockets for a loose plug, and
+threaded holes for a short bolt (pods with a threaded cap). The tightest
+column that still fits by hand gives the setting: one step per dot away from
+the two-dot column.
+
 ## Numbers to verify before trusting a print
 
 - **Lens stack**: `Lens.top_above_pcb = 3.6` and `Lens.lens_to_ball = 2.4`

@@ -143,10 +143,10 @@ export function tray(d: any): any {
     // (A short M3x8 reaches from a head pocketed almost to the top of the post.)
     const hole = d.is_pod
       ? add(
-          zcyl(POD_SCREW.clear_dia, sub(zf_bot, 1), add(z0, 1), fn),
+          zcyl(POD_SCREW.clear_dia + d.fit.hole, sub(zf_bot, 1), add(z0, 1), fn),
           zcyl(POD_SCREW.head_dia, sub(zf_bot, 1), sub(z0, POD_SCREW.top), fn),
         )
-      : zcyl(t.post_insert_dia, sub(z0, t.post_insert_depth), add(z0, 1), fn);
+      : zcyl(t.post_insert_dia + d.fit.hole, sub(z0, t.post_insert_depth), add(z0, 1), fn);
     post_holes.push(to_world(hole.translate([x, y, 0]), d.deck));
   }
   posts_w = mul(union()(...posts), half_space_above(sub(zf_top, EPS), box, [cx, cy], tall));

@@ -160,7 +160,9 @@ export function cup(d: any): any {
   }
   inserts = [];
   for ([x, y] of d.shell_screw_points()) {
-    inserts.push(zcyl(c.insert_dia, sub(z_bot, EPS), add(z_bot, c.insert_depth), fn).translate([x, y, 0]));
+    inserts.push(
+      zcyl(c.insert_dia + d.fit.hole, sub(z_bot, EPS), add(z_bot, c.insert_depth), fn).translate([x, y, 0]),
+    );
   }
   result = sub(sub(sub(sub(sub(body, cavity), opening), window), union()(...cutters)), union()(...inserts));
   if (truth(scoops)) {

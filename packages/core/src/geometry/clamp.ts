@@ -52,7 +52,7 @@ export function mcu_clamp(d: any): Shape | null {
     l.board_top + CLAMP.relief + EPS,
   );
   const holes = [-l.post_c, l.post_c].map((c) =>
-    zcyl(CLAMP.clear_dia, l.board_top, l.bar_top + 1, d.fn).translate([a, c, 0]),
+    zcyl(CLAMP.clear_dia + d.fit.hole, l.board_top, l.bar_top + 1, d.fn).translate([a, c, 0]),
   );
   return board_to_world(d, difference()(union()(plate, pad), ...holes));
 }

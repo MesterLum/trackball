@@ -841,5 +841,35 @@
     "unit": "mm",
     "pattern": null,
     "label": "pad recess"
+  },
+  {
+    "name": "fit_hole",
+    "kind": "float",
+    "default": 0.0,
+    "help": "added to the diameter of every hole a bought part goes into: BTUs, heat-set inserts, screws and nuts. Raise it when they come out tight; print the fit test to find the value for your printer and filament",
+    "group": "Print fit",
+    "flag": null,
+    "choices": [],
+    "min": -0.3,
+    "max": 0.6,
+    "step": 0.05,
+    "unit": "mm",
+    "pattern": null,
+    "label": "hole fit"
+  },
+  {
+    "name": "fit_gap",
+    "kind": "float",
+    "default": 0.0,
+    "help": "added on each side where printed parts slide or screw together: the shell over its base, the weight cap, the palm rest joint and the power switch opening. Raise it when they jam",
+    "group": "Print fit",
+    "flag": null,
+    "choices": [],
+    "min": -0.2,
+    "max": 0.4,
+    "step": 0.05,
+    "unit": "mm",
+    "pattern": null,
+    "label": "slide fit"
   }
 ]

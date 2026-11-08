@@ -13,7 +13,6 @@ import {
 } from '../scad/index.js';
 import {
   CRADLE,
-  POD_FIT,
   POD_FOOT_CHAMFER,
   POD_RIM_CHAMFER,
   POD_SCREW,
@@ -216,7 +215,7 @@ export function cradle_cuts(d: any): any {
 /** A plate that fits inside the shell (base or sensor plate), from z0 to z1. */
 export function pod_plate(d: any, z0: number, z1: number): any {
   const [w, l, cx, cy] = d.footprint;
-  const inset = d.pod.wall + POD_FIT;
+  const inset = d.pod.wall + d.pod.fit;
   return slab({ z: z0, a: w / 2 - inset, b: l / 2 - inset, n: POD_SIDE_N, x: cx, y: cy }, z1 - z0);
 }
 
@@ -239,10 +238,10 @@ export function pod_rim_chamfer(d: any): any {
  * pocket on top for its nut. */
 export function pod_plate_holes(d: any, points: number[][]): any[] {
   const [z0, z1] = [d.z_pcb_face, d.z_carrier_top];
-  const r = POD_SCREW.nut_af / 2 / Math.cos(Math.PI / 6);
+  const r = (POD_SCREW.nut_af + d.fit.hole) / 2 / Math.cos(Math.PI / 6);
   return points.map(([x, y]) =>
     add(
-      zcyl(POD_SCREW.clear_dia, z0 - 1, z1 + 1, d.fn),
+      zcyl(POD_SCREW.clear_dia + d.fit.hole, z0 - 1, z1 + 1, d.fn),
       cylinder(POD_SCREW.nut_depth + 1, r, undefined, undefined, undefined, false, 6).up(
         z1 - POD_SCREW.nut_depth,
       ),

@@ -7,6 +7,7 @@
     coerce,
     createDesign,
     autofit,
+    generateFitTest,
     generateParts,
     generatePreviewParts,
     generateViews,
@@ -41,9 +42,24 @@
       }
     },
   };
+  // The print fit belongs to the printer, not the design: it is remembered on this device and kept
+  // when switching builds or resetting.
+  const FIT_KEYS = ['fit_hole', 'fit_gap'];
+  function printerFit(from: Values): Values {
+    return Object.fromEntries(FIT_KEYS.map((key) => [key, from[key]]));
+  }
+  function storedFit(): Values {
+    try {
+      return printerFit(
+        coerce({ ...printerFit(defaults()), ...JSON.parse(stored.get('printer-fit') ?? '{}') }),
+      );
+    } catch {
+      return printerFit(defaults());
+    }
+  }
   /** Shared links keep every valid setting; an invalid one falls back to its default alone. */
   function fromURL(): Values {
-    let result = defaults();
+    let result = { ...defaults(), ...storedFit() };
     for (const [key, value] of new URLSearchParams(location.search)) {
       if (!(key in result)) continue;
       try {
@@ -169,7 +185,7 @@
   const BUILD_START: Record<string, string> = { cradle: 'cradle-pod', pod: 'desk-pod' };
   function pickBuild(build: string) {
     const preset = PRESETS.find((p) => p.key === BUILD_START[build]);
-    apply(Object.assign(defaults(), preset?.values ?? {}, { build }));
+    apply(Object.assign(defaults(), preset?.values ?? {}, { build }, printerFit(values)));
   }
   let buildPresets = $derived(
     PRESETS.filter((p) => ((p.values as Record<string, unknown>).build ?? 'full') === values.build),
@@ -220,7 +236,7 @@
       'summary.txt': strToU8(d.summary()),
       'bom.json': strToU8(JSON.stringify(d.bom(), null, 2)),
       'README.txt': strToU8(
-        'Print cup and carrier in their exported orientation. Tray and palm-rest bases print floor down. For anchored mode, slide the rest toward the tray and press the retaining key into the underside. Test the anchor fit before a full print.',
+        'Print cup and carrier in their exported orientation. Tray and palm-rest bases print floor down. For anchored mode, slide the rest toward the tray and press the retaining key into the underside. Test the anchor fit before a full print. To tune holes and sliding fits to your printer, print the fit test from the Print fit tab first.',
       ),
     };
   }
@@ -263,6 +279,30 @@
     const seq = ++renderSequence;
     await runPreview({ ...calculated.values }, seq);
   }
+  async function downloadFitTest() {
+    if (!calculated.design) return;
+    exporting = true;
+    renderer.cancel();
+    busy = false;
+    error = '';
+    try {
+      const [part] = await renderer.render(
+        [generateFitTest(createDesign({ ...calculated.values }))],
+        runtimeUrl,
+        () => (status = t('Preparing download') + ': ' + t('fit test')),
+      );
+      download('fit-test.stl', part.bytes.slice().buffer as ArrayBuffer);
+      toast = t('Download ready');
+      status = t('Download ready');
+    } catch (e) {
+      if ((e as Error).name !== 'AbortError') {
+        error = String(e);
+        status = t('Download failed');
+      }
+    } finally {
+      exporting = false;
+    }
+  }
   async function downloadStls() {
     if (!fits) return;
     exporting = true;
@@ -303,6 +343,9 @@
   $effect(() => {
     if (thumbnail) return;
     history.replaceState(null, '', urlFor(values));
+  });
+  $effect(() => {
+    if (!thumbnail) stored.set('printer-fit', JSON.stringify(printerFit(values)));
   });
   $effect(() => {
     const config = { ...calculated.values },
@@ -421,14 +464,31 @@
                 onchange={recordChange}
                 {t}
               />{/if}{/each}
+          {#if activeTab === 'Print fit'}<div class="grid gap-2 py-3 text-sm muted justify-items-start">
+              <p>
+                {t(
+                  'Print the fit test before the parts. Each row has four columns, marked with one to four dots: one step tighter than these settings, these settings, and one and two steps looser (a step is 0.1 mm on a hole, 0.05 mm on each side of a sliding fit).',
+                )}
+              </p>
+              <p>
+                {t(
+                  'Press the inserts, BTUs and nuts in, and try the plug and bolt in their sockets. Pick the tightest column that still fits by hand, and move the setting one step per dot away from two dots.',
+                )}
+              </p>
+              <button class="btn btn-sm" disabled={!calculated.design || exporting} onclick={downloadFitTest}
+                >{t('Download fit test')}</button
+              >
+            </div>{/if}
         </fieldset>
         <div class="p-3 border-t border-base-300 flex gap-1">
           <button class="btn btn-sm btn-ghost" disabled={!past.length || exporting} onclick={undo}
             >{t('Undo')}</button
           ><button class="btn btn-sm btn-ghost" disabled={!future.length || exporting} onclick={redo}
             >{t('Redo')}</button
-          ><button class="btn btn-sm btn-ghost ml-auto" disabled={exporting} onclick={() => apply(defaults())}
-            >{t('Reset')}</button
+          ><button
+            class="btn btn-sm btn-ghost ml-auto"
+            disabled={exporting}
+            onclick={() => apply({ ...defaults(), ...printerFit(values) })}>{t('Reset')}</button
           >
         </div>
       </aside>

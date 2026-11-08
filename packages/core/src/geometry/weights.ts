@@ -1,7 +1,7 @@
 // A pod's weight chamber under the base and the cap that closes it.
 import { add, mul, sub } from '../math.js';
 import { cube, cylinder, rotate_extrude, square, union } from '../scad/index.js';
-import { WEIGHT_CAP } from '../calculations/pod.js';
+import { WEIGHT_CAP, cap_clearance } from '../calculations/pod.js';
 import { EPS, zcyl } from './common.js';
 import { thread_solid } from './thread.js';
 
@@ -12,9 +12,8 @@ function sector(r0: number, r1: number, z0: number, z1: number, a0: number, a1: 
   return rotate_extrude(fn, a1 - a0)(square([r1 - r0, z1 - z0]).translate([r0, z0])).rotate([0, 0, a0]);
 }
 /** Half the angle a bayonet lug spans at radius r, plus its clearance (degrees). */
-function lug_half(r: number): number {
-  const k = WEIGHT_CAP;
-  return ((k.lug.width / 2 + k.clearance) / r) * (180 / Math.PI);
+function lug_half(r: number, clear: number): number {
+  return ((WEIGHT_CAP.lug.width / 2 + clear) / r) * (180 / Math.PI);
 }
 
 /** What the cap (or the open pocket) removes from the base, in place under it. */
@@ -22,6 +21,7 @@ export function weight_chamber(d: any): any | null {
   const b = d.ballast;
   if (!b) return null;
   const k = WEIGHT_CAP,
+    clear = cap_clearance(d),
     fn = d.fn,
     zb = d.z_floor_bottom,
     top = zb + b.total;
@@ -45,14 +45,12 @@ export function weight_chamber(d: any): any | null {
     );
   } else {
     // Bayonet: the cup, an entry slot per lug, and a groove each lug turns into at the top.
-    const rh = cup_radius(b) + k.clearance;
+    const rh = cup_radius(b) + clear;
     cuts.push(zcyl(2 * rh, zb - 1, top, fn));
     for (const a of LUG_ANGLES) {
-      const h = lug_half(rh);
+      const h = lug_half(rh, clear);
       cuts.push(sector(rh - 0.1, b.outer_r, zb - 1, top, a - h, a + h, fn));
-      cuts.push(
-        sector(rh - 0.1, b.outer_r, top - k.lug.height - k.clearance, top, a - h, a + k.lug.turn + h, fn),
-      );
+      cuts.push(sector(rh - 0.1, b.outer_r, top - k.lug.height - clear, top, a - h, a + k.lug.turn + h, fn));
     }
   }
   return union()(...cuts).translate([cx, cy, 0]);
@@ -68,16 +66,17 @@ export function weight_cap(d: any): any | null {
   const b = d.ballast;
   if (!b || b.cap === 'none') return null;
   const k = WEIGHT_CAP,
+    clear = cap_clearance(d),
     fn = d.fn,
     zb = d.z_floor_bottom;
   const [, , cx, cy] = d.footprint;
   let cap: any;
-  if (b.cap === 'thread') cap = thread_solid(k.thread, b.outer_r - k.thread.depth - k.clearance, b.total, fn);
+  if (b.cap === 'thread') cap = thread_solid(k.thread, b.outer_r - k.thread.depth - clear, b.total, fn);
   else {
     const r = cup_radius(b);
     const lugs = LUG_ANGLES.map((a) => {
-      const h = lug_half(r) - (k.clearance / r) * (180 / Math.PI);
-      return sector(r - 0.5, b.outer_r - k.clearance, b.total - k.lug.height, b.total, a - h, a + h, fn);
+      const h = lug_half(r, clear) - (clear / r) * (180 / Math.PI);
+      return sector(r - 0.5, b.outer_r - clear, b.total - k.lug.height, b.total, a - h, a + h, fn);
     });
     cap = add(zcyl(2 * r, 0, b.total, fn), union()(...lugs)).rotate([0, 0, k.lug.turn]);
   }
