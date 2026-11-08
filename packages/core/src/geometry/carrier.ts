@@ -15,7 +15,13 @@ export function pcb_features(d: any): any {
   cuts = [];
   for (sy of [-1, 1]) {
     y = mul(sy, d.pcb.hole_spacing) / 2;
-    cuts.push(zcyl(cr.pcb_insert_dia, sub(z0, EPS), add(z0, cr.pcb_insert_depth), fn).translate([0, y, 0]));
+    cuts.push(
+      zcyl(cr.pcb_insert_dia + d.fit.hole, sub(z0, EPS), add(z0, cr.pcb_insert_depth), fn).translate([
+        0,
+        y,
+        0,
+      ]),
+    );
   }
   // Solder relief: pin tips and joints on the board's lens side clear the plate, and the board
   // rests on full-height pads around its two screws, so it sits flat at the designed distance.
@@ -201,14 +207,14 @@ export function carrier(d: any): any {
     rounded_rect(ww, wl, add(d.lens.corner_r, d.lens.clearance), add(sub(z1, z0), 2), fn).up(sub(z0, 1)),
   );
   for ([x, y] of d.shell_screw_points()) {
-    hole = zcyl(cr.screw_clear_dia, sub(z0, 1), add(z1, 1), fn);
+    hole = zcyl(cr.screw_clear_dia + d.fit.hole, sub(z0, 1), add(z1, 1), fn);
     cb = zcyl(cr.screw_head_dia, sub(z0, EPS), add(z0, cr.screw_head_depth), fn);
     cuts.push(add(hole, cb).translate([x, y, 0]));
   }
   if (d.is_pod) cuts.push(...pod_plate_holes(d, lid_screw_points(d)));
   else
     for ([x, y] of lid_screw_points(d)) {
-      hole = zcyl(cr.screw_clear_dia, sub(z0, 1), add(z1, 1), fn);
+      hole = zcyl(cr.screw_clear_dia + d.fit.hole, sub(z0, 1), add(z1, 1), fn);
       cb = zcyl(cr.screw_head_dia, sub(z1, cr.screw_head_depth), add(z1, EPS), fn);
       cuts.push(add(hole, cb).translate([x, y, 0]));
     }

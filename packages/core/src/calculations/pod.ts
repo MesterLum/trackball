@@ -64,6 +64,8 @@ export class Pod {
     this.base = values.base ?? 'walled';
     /** Cradle pod: design on the lower wall. */
     this.side = values.side ?? 'band';
+    /** Gap between the shell's inside and the plates it covers. */
+    this.fit = values.fit ?? POD_FIT;
   }
   get walled(): boolean {
     return this.cradle && this.base === 'walled';
@@ -128,7 +130,7 @@ export interface CradleShape {
 export function cradle_shape(d: any): CradleShape {
   // The top just covers the sensor plate (wall plus a fitting gap) ...
   const R = d.ball.r,
-    edge = d.z_carrier_top + d.pod.wall + POD_FIT,
+    edge = d.z_carrier_top + d.pod.wall + d.pod.fit,
     // ... and the cup keeps a minimum height, so a small ball's rim rises above its middle (the
     // wall is straight there, so the ball still lifts out).
     rim = Math.max(-d.cup.rim_below_center, edge + CRADLE.min_cup);
@@ -181,6 +183,10 @@ export const WEIGHT_CAP = {
   lug: { count: 3, width: 6.0, radial: 1.6, height: 2.2, turn: 60 },
   slot: { length: 18, width: 1.8, depth: 0.8 },
 };
+/** The cap's clearance in the base, plus the printer's fit. */
+export function cap_clearance(d: any): number {
+  return WEIGHT_CAP.clearance + d.fit.gap;
+}
 export type WeightCap = 'thread' | 'bayonet' | 'none';
 export interface Ballast {
   cap: WeightCap;
@@ -211,13 +217,14 @@ export function pod_ballast(d: any): Ballast | null {
   const keep = Math.max(t.feet_dia, d.carrier.screw_head_dia) / 2 + 1.0;
   const room = Math.min(half - t.wall - 1.0, Math.hypot(x, y - d.footprint[3]) - keep);
   const cap: WeightCap = pod.weight_cap;
-  const k = WEIGHT_CAP;
+  const k = WEIGHT_CAP,
+    clear = cap_clearance(d);
   // The space for weights is the inside of the cup: inside its thread or lugs and its wall.
   const r =
     cap === 'thread'
-      ? room - k.thread.depth - k.clearance - k.wall
+      ? room - k.thread.depth - clear - k.wall
       : cap === 'bayonet'
-        ? room - k.lug.radial - k.clearance - k.wall
+        ? room - k.lug.radial - clear - k.wall
         : room;
   if (r < 8) return null;
   const seat = cap === 'none' ? 0 : k.bottom;
@@ -238,7 +245,7 @@ export function pod_ballast(d: any): Ballast | null {
   };
 }
 
-/** Gap between the shell's inside and the plates it covers. */
+/** Gap between the shell's inside and the plates it covers, before the printer's fit. */
 export const POD_FIT = 0.3;
 /** Small chamfer at the shell's bottom edge (also keeps the first layer from flaring). */
 export const POD_FOOT_CHAMFER = 0.6;
@@ -315,8 +322,8 @@ export function pod_levels(d: any, inset = 0, drop = 0, steps = 12): PodLevel[] 
  */
 export function pod_post_points(d: any): number[][] {
   const [w, l, cx, cy] = d.footprint;
-  const a = w / 2 - d.pod.wall - POD_FIT,
-    b = l / 2 - d.pod.wall - POD_FIT;
+  const a = w / 2 - d.pod.wall - d.pod.fit,
+    b = l / 2 - d.pod.wall - d.pod.fit;
   const r = Math.max(d.tray.post_dia, d.tray.feet_dia, d.carrier.screw_head_dia) / 2 + 0.8;
   const ring = squircle(r, r, 2, 24);
   let t = 1;

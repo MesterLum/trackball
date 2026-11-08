@@ -36,11 +36,12 @@ export function power_switch_parts(d: any): [Shape | null, Shape | null] {
   const [bu, bw] = type.body;
   const cuts: Shape[] = [];
   if (type.hole.shape === 'rect') {
-    const { u: hu, w: hw } = type.hole;
+    // Snap-in bezels: the opening grows by the printer's fit on each side.
+    const [hu, hw] = [type.hole.u + 2 * d.fit.gap, type.hole.w + 2 * d.fit.gap];
     cuts.push(box(-hu / 2, hu / 2, -1, wall + 1, -hw / 2, hw / 2));
   } else {
     cuts.push(
-      cylinder(wall + 2, type.hole.d / 2, undefined, undefined, undefined, false, d.fn)
+      cylinder(wall + 2, (type.hole.d + d.fit.hole) / 2, undefined, undefined, undefined, false, d.fn)
         .rotate([-90, 0, 0])
         .translate([0, -1, 0]),
     );

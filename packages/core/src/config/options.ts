@@ -14,6 +14,7 @@ import {
   SWITCH_TYPES,
 } from '../calculations/design.js';
 import { SUPPORTS } from '../geometry/supports.js';
+import { Fit } from '../calculations/fit.js';
 import { POD_FEET, POD_FIT, POD_SCREW, POD_STANDOFF, POD_WALL, Pod } from '../calculations/pod.js';
 export interface Option {
   name: string;
@@ -124,13 +125,22 @@ export function parseBattery(spec: string): Battery {
     thickness: Number(match[3]),
   });
 }
+/** A support with its bore or socket grown by the printer's hole fit. */
+function fittedSupport(support: object, hole: number): object {
+  const s = support as Record<string, number>,
+    grown: Record<string, number> = {};
+  for (const key of ['press_fit_oversize', 'socket_oversize', 'screw_clear_dia'])
+    if (key in s) grown[key] = s[key] + hole;
+  return copy(support, grown);
+}
 export function makeDesign(values: Partial<Values>): Design {
   const v = coerce(values);
   const pcb = SENSOR_PCBS[String(v.sensor_pcb) as keyof typeof SENSOR_PCBS];
+  const podFit = POD_FIT + Number(v.fit_gap);
   return new Design({
     ball: new Ball({ diameter: v.ball }),
     cup: new Cup({
-      support: copy(SUPPORTS[String(v.support) as keyof typeof SUPPORTS]),
+      support: fittedSupport(SUPPORTS[String(v.support) as keyof typeof SUPPORTS], Number(v.fit_hole)),
       support_count: v.supports,
       support_polar_deg: v.polar,
       gap: v.ball_gap,
@@ -162,7 +172,7 @@ export function makeDesign(values: Partial<Values>): Design {
       usb_exit: v.usb === 'back' ? 'back' : 'side',
       usb_side: v.usb === 'left' ? -1 : 1,
       // A pod's walls are its shell: the room inside ends at the shell plus a fitting gap.
-      wall: v.build !== 'full' ? POD_WALL[v.shell as keyof typeof POD_WALL] + POD_FIT : v.wall,
+      wall: v.build !== 'full' ? POD_WALL[v.shell as keyof typeof POD_WALL] + podFit : v.wall,
       post_dia: v.build !== 'full' ? POD_SCREW.post_dia : undefined,
       feet_depth: v.build !== 'full' ? POD_FEET.depth : undefined,
       // In a pod the electronics bay is kept low: a board without mounting holes lies flat in its
@@ -204,7 +214,9 @@ export function makeDesign(values: Partial<Values>): Design {
       weight_cap: v.weight_cap,
       base: v.pod_base,
       side: v.pod_side,
+      fit: podFit,
     }),
+    fit: new Fit({ hole: v.fit_hole as number, gap: v.fit_gap as number }),
     fn: v.fn,
   });
 }

@@ -191,7 +191,7 @@ export function tray_palm_joint(d: any): any {
     return [null, null];
   }
   if (truth(d.deck.palm_attachment === 'anchored')) {
-    return [null, add(_tongues(d, JOINT_CLEAR), palm_key_socket(d))];
+    return [null, add(_tongues(d, JOINT_CLEAR + d.fit.gap), palm_key_socket(d))];
   }
   return [_palm_body(d), null];
 }
@@ -221,7 +221,7 @@ export function palm_joint_sample(d: any): any {
   );
   tray_block = _floor_shape(d, square([width, 14], true).translate([0, add(seam, 7)]), d.tray.floor);
   palm_block = _floor_shape(d, square([width, 14], true).translate([0, sub(seam, 7.5)]), d.tray.floor);
-  sockets = add(_tongues(d, JOINT_CLEAR), palm_key_socket(d));
+  sockets = add(_tongues(d, JOINT_CLEAR + d.fit.gap), palm_key_socket(d));
   tray_block = sub(tray_block, sockets);
   palm_block = sub(add(palm_block, _tongues(d)), palm_key_socket(d));
   return add(add(tray_block, palm_block.translate([0, -15, 0])), palm_key(d).translate([width, 0, 0]));

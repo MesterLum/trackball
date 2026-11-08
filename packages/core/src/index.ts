@@ -34,9 +34,11 @@ import { mcu_preview, battery_preview } from './geometry/tray.js';
 import { power_switch_preview } from './geometry/power.js';
 import { mcu_clamp } from './geometry/clamp.js';
 import { weight_cap } from './geometry/weights.js';
+import { fit_test } from './geometry/fit_test.js';
 export type PrintablePartName =
   'cup' | 'shell' | 'carrier' | 'tray' | 'weight_cap' | 'palmrest' | 'palm_key' | 'mcu_clamp';
-export type PartName = PrintablePartName | 'mcu' | 'sensor' | 'switches' | 'battery' | 'power_switch';
+export type PartName =
+  PrintablePartName | 'fit_test' | 'mcu' | 'sensor' | 'switches' | 'battery' | 'power_switch';
 export interface ModelPart {
   name: PartName;
   scad: string;
@@ -75,6 +77,16 @@ export function generateParts(design: Design): ModelPart[] {
       return [{ name, scad: `// Trackball configurator — ${name}\n${shape}\n`, frame, color, lift }];
     },
   );
+}
+/** The fit test for this design's holes and joints, printed before the parts. */
+export function generateFitTest(design: Design): ModelPart {
+  return {
+    name: 'fit_test',
+    scad: `// Trackball configurator — fit test\n${fit_test(design)}\n`,
+    frame: 'world',
+    color: '#9aa0a8',
+    lift: 0,
+  };
 }
 /** Assembly references are preview-only; printable exports use generateParts. */
 export function generatePreviewParts(design: Design): ModelPart[] {
