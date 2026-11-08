@@ -317,6 +317,16 @@ joints on its lens side, which faces the plate. `sensor_relief` (default 2 mm,
 around its screws: the board rests on the pads, at the same height as on a flat
 plate, so its distance to the ball does not change.
 
+### Parts on a controller's back
+
+A controller without mounting holes lies in a pocket. When it carries parts on
+its back (`MCU.under_height`), it rests on a 1.5 mm ledge around its edge over
+a recess `under_height + 0.4` deep. The RP2040-Zero carries its RP2040 (0.9 mm),
+crystal and RT9013 regulator (SOT-23-5, up to 1.45 mm) on the back, per
+Waveshare's photos and schematic, and its USB-C, buttons, LED and flash on the
+front. A full build's 3 mm seat already has the room;
+a pod's flat bay rises by the recess depth.
+
 ## Print fit
 
 FDM prints come out a little off their drawn size: extruded lines squish wider,

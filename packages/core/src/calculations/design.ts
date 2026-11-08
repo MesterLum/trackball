@@ -210,6 +210,8 @@ export class MCU {
     this.usb_height = values.usb_height ?? 3.3;
     this.usb_overhang = values.usb_overhang ?? 1.3;
     this.component_height = values.component_height ?? 3.5;
+    /** Tallest part on the board's underside (0 = a flat back), cleared by a recess in its seat. */
+    this.under_height = values.under_height ?? 0;
     this.bootsel = values.bootsel ?? null;
     this.wireless = values.wireless ?? false;
     this.usb_type = values.usb_type ?? 'usb-c';
@@ -253,6 +255,9 @@ export const PICO_2 = new MCU({
   bootsel: [13.0, -3.5],
   usb_type: 'micro-usb',
 });
+/** Air under the parts on a pocketed board's back, and the ledge it rests on around its edge. */
+export const MCU_UNDER_AIR = 0.4;
+export const MCU_LEDGE = 1.5;
 export const RP2040_ZERO = new MCU({
   name: 'rp2040-zero',
   length: 23.5,
@@ -261,6 +266,9 @@ export const RP2040_ZERO = new MCU({
   usb_height: 3.3,
   usb_overhang: 1.0,
   bootsel: [-5.0, 0.0],
+  // Front: USB-C, BOOT/RESET, LED and flash. Back (Waveshare photos and schematic): the RP2040
+  // (QFN-56, 0.9 mm), its crystal and the RT9013 regulator (SOT-23-5, up to 1.45 mm), the tallest.
+  under_height: 1.45,
 });
 export const XIAO = new MCU({
   name: 'xiao',
@@ -1159,10 +1167,17 @@ export class Design {
   get mcu_standoff_h(): any {
     let t: any;
     t = this.tray;
+    // A pocketed board with parts on its back sits on a ledge high enough to clear them.
+    const seat = Math.max(t.standoff_h, this.mcu_under_relief);
     if (truth(truth(t.mcu_place === 'under') && truth(this.battery.enabled))) {
-      return add(t.standoff_h, this.battery.extra_height);
+      return add(seat, this.battery.extra_height);
     }
-    return t.standoff_h;
+    return seat;
+  }
+  /** Depth of the recess under a pocketed board for the parts on its back (0 for none). */
+  get mcu_under_relief(): number {
+    const m = this.tray.mcu;
+    return !m.holes?.length && m.under_height > 0 ? m.under_height + MCU_UNDER_AIR : 0;
   }
   get z_floor_bottom(): any {
     return sub(sub(this.z_floor_top, this.tray.floor), this.weight_extra);
