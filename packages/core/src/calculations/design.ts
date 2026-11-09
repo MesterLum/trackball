@@ -35,6 +35,7 @@ import {
 } from './pod.js';
 import { PressFitBTU } from '../geometry/supports.js';
 import { Fit } from './fit.js';
+import { SENSORS, lens_stack } from './sensor.js';
 import { polar } from '../geometry/common.js';
 import { TILE_COUNTS, TILE_DEPTH_MIN, holder_boxes, positions, tile_depth } from '../geometry/tiles.js';
 export class SensorPCB {
@@ -51,16 +52,21 @@ export class SensorPCB {
     this.fpc_center = values.fpc_center ?? [-16.75, 0.0];
     this.fpc_size = values.fpc_size ?? [6.0, 12.0];
     this.fpc_height = values.fpc_height ?? 3.0;
-    // Lens stack from the sensor's datasheet: LM19-LSI lens on a PMW3360 / PMW3389.
-    this.lens = values.lens ?? { top_above_pcb: 3.6, lens_to_ball: 2.4 };
+    /** The optical sensor on the board (`SENSORS`), which sets the lens stack. */
+    this.sensor = values.sensor ?? 'pmw3360';
   }
   get r(): any {
     return this.diameter / 2;
+  }
+  /** Lens stack from the sensor's datasheet, on this board's thickness. */
+  get lens(): { top_above_pcb: number; lens_to_ball: number } {
+    return lens_stack(SENSORS[this.sensor], this.thickness);
   }
 }
 export const BASTARDKB_PMW3360 = new SensorPCB({});
 export const PMW3389_ROUND = new SensorPCB({
   name: 'pmw3389-round',
+  sensor: 'pmw3389',
   diameter: 32.0,
   thickness: 1.6,
   hole_spacing: 26.0,
@@ -79,7 +85,7 @@ export class Lens {
     this.length = values.length ?? 21.35;
     this.width = values.width ?? 19.0;
     this.corner_r = values.corner_r ?? 3.0;
-    this.top_above_pcb = values.top_above_pcb ?? 3.6;
+    this.top_above_pcb = values.top_above_pcb ?? 3.4;
     this.lens_to_ball = values.lens_to_ball ?? 2.4;
     this.clearance = values.clearance ?? 0.5;
   }
@@ -559,6 +565,14 @@ export class Design {
   get z_pcb_face(): any {
     return -add(this.ball.r, this.lens.ball_above_pcb);
   }
+  /**
+   * Lens reference plane to the ball, from where the parts put them: the ball rests on its
+   * supports around the origin, the board's lens side lies on the plate's underside, and the lens
+   * stands on the board by the sensor's datasheet stack.
+   */
+  get sensor_distance(): number {
+    return -this.ball.r - (this.z_pcb_face + this.pcb.lens.top_above_pcb);
+  }
   get z_carrier_top(): any {
     return add(this.z_pcb_face, this.carrier.thickness);
   }
@@ -993,6 +1007,26 @@ export class Design {
           { d: feet, min: POD_FEET.min_dia },
         ),
         ['fix']: { ['feet']: POD_FEET.min_dia },
+      });
+    // The ball must sit within the sensor's datasheet distance from its lens; an adjustment past
+    // it only makes sense to make up for a measured gap in the printed stack, so it has no fix.
+    const sensor = SENSORS[this.pcb.sensor],
+      z = this.sensor_distance;
+    if (z < sensor.z.min - 1e-6 || z > sensor.z.max + 1e-6)
+      probs.push({
+        ['message']: format(
+          _(
+            'the ball sits {z:.2f} mm from the {sensor} lens, outside its datasheet range of {min:g} to {max:g} mm: keep the sensor distance adjustment within ±{tol:g} mm unless you measured a gap in the printed parts',
+          ),
+          {
+            z,
+            sensor: sensor.name,
+            min: sensor.z.min,
+            max: sensor.z.max,
+            tol: round(sensor.z.max - sensor.z.typ, 2),
+          },
+        ),
+        ['fix']: {},
       });
     if (this.is_pod && this.pod_posts_hit_sensor())
       report(_('the base posts run into the sensor board'), this.padding_for_pod_posts());

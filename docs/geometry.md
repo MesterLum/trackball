@@ -364,14 +364,22 @@ the two-dot column.
 
 ## Numbers to verify before trusting a print
 
-- **Lens stack**: `Lens.top_above_pcb = 3.6` and `Lens.lens_to_ball = 2.4`
-  put the ball surface 6.0 mm above the PCB front face. These come from the
-  PMW3360 datasheet assembly drawing (via community OpenSCAD models), not
-  from measuring a Bastardkb board. Check Figure 4/5 of the PMW3360
-  datasheet or measure your lens. If tracking is poor, tune the
-  **sensor distance adjustment** setting (`sensor_adjust`, ±0.6 mm) in
-  0.1 mm steps. Each sensor board carries its own datasheet lens stack
-  (`SensorPCB.lens`); the adjustment is added to it.
+- **Lens stack** (`calculations/sensor.ts`): from PixArt's datasheets, which
+  agree for the PMW3360 (v1.30, Figure 4 and Table 3), PMW3389 (v1.0,
+  Figure 5) and PMW3610 (R2.4, Figure 4, LM18-LSI lens): the top of a 1.60 mm
+  PCB is 7.40 mm from the navigation surface and the lens reference plane (the
+  bottom of the lens flange) 2.40 mm, tracking from 2.2 to 2.6 mm. The lens
+  clips to the sensor on the board's other side, so the ball sits
+  `7.40 - board thickness` = 5.80 mm from the board's lens side. Each sensor
+  board names its sensor (`SensorPCB.sensor`). `sensor_adjust` moves the ball
+  on top of that; past ±0.2 mm the design warns, since the ball would sit
+  outside the datasheet range unless a gap in the printed parts makes up for
+  it. `tests/unit/sensor-distance.test.ts` renders the cup or shell and the
+  plate and measures the distance on the meshes: the support seats, the
+  plate's thickness and where it meets the cup. Before this, the model used
+  3.6 mm from the board to the lens (6.0 mm to the ball), a guess from
+  community models, which put the ball 2.6 mm from the lens, at the far edge
+  of the range.
 - **Bearing rollers**: `RollerBearing` assumes an M3 screw as the axle
   (3.3 mm clearance hole, 2.6 mm thread-forming hole). Check the screw
   length: it is the skirt-to-bearing distance printed by the cup plus 6 mm.
