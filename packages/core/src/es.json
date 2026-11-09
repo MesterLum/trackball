@@ -336,7 +336,6 @@
   "switch that cuts the battery: a small slide lever, a snap-in rocker, or a nut-mounted toggle lever (MTS-103 adds a second ON position)": "interruptor que corta la batería: palanca deslizante pequeña, basculante a presión o palanca con tuerca (el MTS-103 añade una segunda posición ON)",
   "the palm rest covers the front wall: put the power switch on another wall": "el reposamanos tapa la pared frontal: pon el interruptor en otra pared",
   "the {switch} needs {needed:.1f} mm of wall height but only {free:.1f} mm are free": "el {switch} necesita {needed:.1f} mm de altura de pared pero solo hay {free:.1f} mm libres",
-  "wall for the power switch; it moves along the wall to clear the USB opening, controller, battery and posts": "pared del interruptor; se desplaza a lo largo de la pared para evitar la abertura USB, el controlador, la batería y los postes",
   "{wall} wall, between the battery and the controller": "pared {wall}, entre la batería y el controlador",
   "self-adhesive; 2 under the back of the tray, 2 under the front of the palm rest": "adhesivas; 2 bajo la parte trasera de la base, 2 bajo el frente del reposamanos",
   "try another wall": "prueba otra pared",
@@ -394,7 +393,7 @@
   "MCU and battery under {v:g}": "MCU y batería debajo {v:g}",
   "; battery {l:g}x{w:g}x{t:g} beside the controller": "; batería {l:g}x{w:g}x{t:g} junto al controlador",
   "the {l:g}x{w:g} mm battery does not fit beside the controller": "la batería de {l:g}x{w:g} mm no cabe junto al controlador",
-  "or use a smaller battery": "o usa una batería más pequeña",
+  "use a smaller battery": "usa una batería más pequeña",
   "shell to the sensor plate (4), up through the base posts into the nuts (4)": "carcasa a la placa del sensor (4), desde abajo por los postes de la base hasta las tuercas (4)",
   "M3 hex nuts": "Tuercas hexagonales M3",
   "in the pockets on top of the sensor plate, before the shell goes on": "en los huecos sobre la placa del sensor, antes de colocar la carcasa",
@@ -444,5 +443,9 @@
   "no room for the reset button on the {wall} wall (by the USB plug) or the walls beside it": "no hay espacio para el botón de reinicio en la pared {wall} (junto al USB) ni en las paredes contiguas",
   "{wall} wall, beside the USB plug: trim its legs to 1.5 mm and wire them to the controller reset and GND (or across its RESET button)": "pared {wall}, junto al conector USB: corta sus patas a 1.5 mm y cablea al reinicio y GND del controlador (o a las patas de su botón RESET)",
   "{wall} wall, near the USB corner: trim its legs to 1.5 mm and wire them to the controller reset and GND (or across its RESET button)": "pared {wall}, cerca de la esquina del USB: corta sus patas a 1.5 mm y cablea al reinicio y GND del controlador (o a las patas de su botón RESET)",
-  "pod: a tactile switch behind the USB wall (or a wall beside it, near the USB corner, when the pod is too tight), wired to the controller's reset, pressed with a pin through a small hole; double press it with the cable plugged in to flash new firmware": "pod: un pulsador detrás de la pared del USB (o una pared contigua, cerca de la esquina del USB, si el pod es muy justo), cableado al reinicio del controlador, que se presiona con una aguja por un agujero pequeño; púlsalo dos veces con el cable conectado para cargar firmware nuevo"
+  "pod: a tactile switch behind the USB wall (or a wall beside it, near the USB corner, when the pod is too tight), wired to the controller's reset, pressed with a pin through a small hole; double press it with the cable plugged in to flash new firmware": "pod: un pulsador detrás de la pared del USB (o una pared contigua, cerca de la esquina del USB, si el pod es muy justo), cableado al reinicio del controlador, que se presiona con una aguja por un agujero pequeño; púlsalo dos veces con el cable conectado para cargar firmware nuevo",
+  "wall for the power switch; it moves along the wall to clear the USB opening, controller, battery and posts. Auto takes the first wall with room, the USB wall last": "pared del interruptor; se desplaza a lo largo de la pared para evitar la abertura USB, el controlador, la batería y los postes. Automática toma la primera pared con espacio, la del USB al final",
+  "auto": "automática",
+  "no room for the {switch} on any wall": "no hay espacio para el {switch} en ninguna pared",
+  "no room for the {switch} on the {wall} wall beside the USB plug": "no hay espacio para el {switch} en la pared {wall} junto al conector USB"
 }

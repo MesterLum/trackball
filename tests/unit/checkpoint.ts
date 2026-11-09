@@ -12,4 +12,5 @@ export const CHECKPOINT: Partial<Values> = {
   // height over the board is 0.2 mm more lens-to-ball distance.
   sensor_adjust: 0.2,
   sensor_mount: 'plate',
+  power_wall: 'right',
 };

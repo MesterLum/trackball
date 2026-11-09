@@ -6,6 +6,8 @@ import { CLAMP, CLAMP_SIDE_EXTRA } from './clamp.js';
 
 export type PowerSwitchKind = 'none' | 'slide' | 'rocker' | 'toggle';
 export type Wall = 'right' | 'left' | 'front' | 'back';
+/** The power switch's wall setting: a wall, or the first one with room. */
+export type PowerWall = Wall | 'auto';
 
 export interface PowerSwitchType {
   /** Shown in the parts list. */
@@ -117,7 +119,7 @@ export interface PowerSwitchPlacement {
 }
 
 export type PowerSwitchProblem =
-  { reason: 'palm' } | { reason: 'height'; needed: number; free: number } | { reason: 'room' };
+  { reason: 'palm' } | { reason: 'height'; needed: number; free: number } | { reason: 'room'; wall: Wall };
 
 type Box = [number, number, number, number, number, number]; // x0 x1 y0 y1 z0 z1 (deck frame)
 
@@ -262,10 +264,27 @@ function usb_along(d: any, wall: Wall): number | null {
 /** Half the width of a USB cable's moulded plug, plus a finger's margin. */
 const USB_PLUG_HALF = 6.0 + 1.5;
 
+/** Walls an automatic power switch tries in turn: the USB wall last, so the two stay apart. */
+export function auto_power_walls(d: any): Wall[] {
+  const usb = usb_wall(d);
+  return [...(['right', 'left', 'back', 'front'] as Wall[]).filter((w) => w !== usb), usb];
+}
+
 export function place_power_switch(d: any): PowerSwitchPlacement | PowerSwitchProblem | null {
   const b = d.battery;
   if (!b.enabled || b.power_switch === 'none') return null;
-  const wall: Wall = b.power_wall;
+  if (b.power_wall !== 'auto') return place_power_on(d, b.power_wall);
+  let first: PowerSwitchProblem | null = null;
+  for (const wall of auto_power_walls(d)) {
+    const p = place_power_on(d, wall);
+    if (is_placement(p)) return p;
+    first ??= p as PowerSwitchProblem;
+  }
+  return first;
+}
+
+function place_power_on(d: any, wall: Wall): PowerSwitchPlacement | PowerSwitchProblem {
+  const b = d.battery;
   if (wall === 'front' && d.deck.palm_length > 0) return { reason: 'palm' };
   const type = POWER_SWITCHES[b.power_switch as Exclude<PowerSwitchKind, 'none'>];
   const f = wall_frame(d, wall);
@@ -282,10 +301,14 @@ export function place_power_switch(d: any): PowerSwitchPlacement | PowerSwitchPr
 
   const boxes = obstacles(d);
   const usb = usb_along(d, wall);
-  let free = 0;
+  // Free height, from the spots that clear the wall's ends and the USB plug: when none do, the
+  // wall lacks room along it, not height.
+  let free = 0,
+    checked = false;
   const fits = (u: number): PowerSwitchPlacement | null => {
     if (u - half_outside < f.span[0] || u + half_outside > f.span[1]) return null;
     if (usb !== null && Math.abs(u - usb) < half_outside + USB_PLUG_HALF) return null;
+    checked = true;
     // Lowest centre height that keeps the whole body above the (world-horizontal) floor.
     const trial = { type, wall, frame: f, u, w_center: 0, roll };
     const lowest = Math.min(...switch_corners(trial, 0, depth).map(world_z));
@@ -313,7 +336,9 @@ export function place_power_switch(d: any): PowerSwitchPlacement | PowerSwitchPr
     const placed = fits(u);
     if (placed) return placed;
   }
-  return free < bw ? { reason: 'height', needed: bw, free: Math.max(free, 0) } : { reason: 'room' };
+  return checked && free < bw
+    ? { reason: 'height', needed: bw, free: Math.max(free, 0) }
+    : { reason: 'room', wall };
 }
 
 export const is_placement = (p: ReturnType<typeof place_power_switch>): p is PowerSwitchPlacement =>
