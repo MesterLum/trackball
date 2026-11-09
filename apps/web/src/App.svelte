@@ -236,7 +236,7 @@
       'summary.txt': strToU8(d.summary()),
       'bom.json': strToU8(JSON.stringify(d.bom(), null, 2)),
       'README.txt': strToU8(
-        'Print cup and carrier in their exported orientation. Tray and palm-rest bases print floor down. For anchored mode, slide the rest toward the tray and press the retaining key into the underside. Test the anchor fit before a full print. To tune holes and sliding fits to your printer, print the fit test from the Print fit tab first.',
+        'Print cup and carrier in their exported orientation. Tray and palm-rest bases print floor down. A pod shell that holds the sensor prints on its flat underside, with no supports. For anchored mode, slide the rest toward the tray and press the retaining key into the underside. Test the anchor fit before a full print. To tune holes and sliding fits to your printer, print the fit test from the Print fit tab first.',
       ),
     };
   }
@@ -561,7 +561,7 @@
             </div>
           </div>
           <div class="px-4 py-3 border-t border-base-300 flex flex-wrap gap-2 items-center">
-            {#each Object.keys(visible).filter((n) => n === 'hardware' || n === (calculated.values.build !== 'full' ? 'shell' : 'cup') || n === 'carrier' || n === 'tray' || parts.some((p) => p.name === n)) as name (name)}<label
+            {#each Object.keys(visible).filter((n) => n === 'hardware' || n === (calculated.values.build !== 'full' ? 'shell' : 'cup') || (n === 'carrier' && !calculated.design?.pod.shell_mount) || n === 'tray' || parts.some((p) => p.name === n)) as name (name)}<label
                 class="part-chip"
                 style={`--swatch:${partColors[name]}`}
                 ><input type="checkbox" bind:checked={visible[name]} /><span class="swatch"></span>{partLabel(

@@ -707,6 +707,25 @@
     "label": "base"
   },
   {
+    "name": "sensor_mount",
+    "kind": "choice",
+    "default": "shell",
+    "help": "walled cradle pod: the sensor board screws to the shell's underside, which prints on the bed, so the shell alone sets its distance to the ball and nothing prints on supports; or to a separate sensor plate under the shell",
+    "group": "Body",
+    "flag": null,
+    "choices": ["shell", "plate"],
+    "choice_labels": {
+      "shell": "In the shell",
+      "plate": "On a sensor plate"
+    },
+    "min": null,
+    "max": null,
+    "step": null,
+    "unit": null,
+    "pattern": null,
+    "label": "sensor mount"
+  },
+  {
     "name": "pod_side",
     "kind": "choice",
     "default": "band",

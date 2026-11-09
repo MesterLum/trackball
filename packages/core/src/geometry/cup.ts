@@ -19,6 +19,7 @@ import { cradle_cuts, pod_rim_chamfer, pod_shroud } from './pod.js';
 import { cradle_shape } from '../calculations/pod.js';
 import { usb_cutout } from './tray.js';
 import { power_switch_parts } from './power.js';
+import { pcb_features } from './carrier.js';
 import { EPS, place_on_ball, rounded_rect, rounded_slab, support_frames, zcyl } from './common.js';
 export function lens_window_size(d: any): any {
   let c: any;
@@ -145,13 +146,15 @@ export function cup(d: any): any {
     scoops.push(truth(axis === 'y') ? trough : trough.rotate([0, 0, 90]));
   }
   [ww, wl] = lens_window_size(d);
+  // A shell holding the sensor board opens the window down to the board.
+  const z_window = d.pod.shell_mount ? d.z_pcb_face : z_bot;
   window = rounded_rect(
     ww,
     wl,
     add(d.lens.corner_r, d.lens.clearance),
-    sub(-c.base_top_below_center, sub(z_bot, 1)),
+    sub(-c.base_top_below_center, sub(z_window, 1)),
     fn,
-  ).up(sub(z_bot, 1));
+  ).up(sub(z_window, 1));
   sup = c.support;
   sup.prepare(R, c.support_polar_deg, d.skirt_dia / 2);
   cutters = [];
@@ -159,11 +162,13 @@ export function cup(d: any): any {
     cutters.push(place_on_ball(sup.cutter(fn), R, sup.contact_height, az, pol));
   }
   inserts = [];
-  for ([x, y] of d.shell_screw_points()) {
-    inserts.push(
-      zcyl(c.insert_dia + d.fit.hole, sub(z_bot, EPS), add(z_bot, c.insert_depth), fn).translate([x, y, 0]),
-    );
-  }
+  if (d.pod.shell_mount) inserts.push(...shell_mount_cuts(d));
+  else
+    for ([x, y] of d.shell_screw_points()) {
+      inserts.push(
+        zcyl(c.insert_dia + d.fit.hole, sub(z_bot, EPS), add(z_bot, c.insert_depth), fn).translate([x, y, 0]),
+      );
+    }
   result = sub(sub(sub(sub(sub(body, cavity), opening), window), union()(...cutters)), union()(...inserts));
   if (truth(scoops)) {
     result = sub(result, union()(...scoops));
@@ -178,6 +183,29 @@ export function cup(d: any): any {
     );
   }
   return result;
+}
+/** Insert depth over a base post: an M3x8 passes the post's solid top and bites 5 mm of insert. */
+export const SHELL_POST_INSERT_DEPTH = 6.0;
+/**
+ * A shell holding the sensor board, cut from its underside (the bed face): the board's inserts and
+ * solder relief, as a sensor plate has them, and an insert over each base post for the screw coming
+ * up through it.
+ */
+export function shell_mount_cuts(d: any): any[] {
+  const z0 = d.z_pcb_face,
+    t = d.tray;
+  return [
+    pcb_features(d),
+    ...d
+      .lid_screw_points()
+      .map(([x, y]: number[]) =>
+        zcyl(t.post_insert_dia + d.fit.hole, sub(z0, EPS), add(z0, SHELL_POST_INSERT_DEPTH), d.fn).translate([
+          x,
+          y,
+          0,
+        ]),
+      ),
+  ];
 }
 export function supports_preview(d: any): any {
   let az: any, c: any, p: any, parts: any, pol: any;

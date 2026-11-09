@@ -26,6 +26,7 @@ import {
   washer_mass,
 } from '../../packages/core/src/calculations/pod';
 import { SENSOR_PAD_DIA } from '../../packages/core/src/geometry/carrier';
+import { SHELL_POST_INSERT_DEPTH } from '../../packages/core/src/geometry/cup';
 import { POD_FLAT, wall_frame, type PowerSwitchPlacement } from '../../packages/core/src/calculations/power';
 
 const POD: Values = {
@@ -191,16 +192,29 @@ describe('pod weights', () => {
     ).toBe(false);
   });
 
-  it('uses only short screws: M3x8 through the post top and the plate into a nut', () => {
-    for (const d of [pod(), pod({ build: 'cradle' }), pod({ build: 'cradle', ball: 55 })]) {
+  it('uses only short screws: M3x8 through the post top into a nut on the plate or the shell', () => {
+    for (const d of [
+      pod(),
+      pod({ build: 'cradle', sensor_mount: 'plate' }),
+      pod({ build: 'cradle' }),
+      pod({ build: 'cradle', ball: 55 }),
+    ]) {
       const items = d.bom().map((i: { item: string }) => i.item);
       expect(items.some((i: string) => i.startsWith('Steel washers'))).toBe(true);
-      expect(items).toContain('M3 hex nuts');
       expect(items.some((i: string) => /thread-forming|M3x(1[0-9]|[2-9][0-9])/.test(i))).toBe(false);
-      // Post top + plate below the nut pocket + the nut: the M3x8 ends flush with the plate top.
-      const grip = POD_SCREW.top + d.carrier.thickness - POD_SCREW.nut_depth + 2.4;
-      expect(d.pod_screw_length).toBeGreaterThanOrEqual(grip);
-      expect(d.pod_screw_length).toBeLessThanOrEqual(POD_SCREW.top + d.carrier.thickness + 0.3);
+      if (d.pod.shell_mount) {
+        // Post top, then an insert in the shell: 5 mm of thread, inside its hole.
+        expect(items).not.toContain('M3 hex nuts');
+        expect(d.pod_screw_length - POD_SCREW.top).toBeCloseTo(5, 6);
+        expect(d.pod_screw_length - POD_SCREW.top).toBeLessThan(SHELL_POST_INSERT_DEPTH);
+        expect(SHELL_POST_INSERT_DEPTH).toBeLessThan(cradle_shape(d).edge - d.z_pcb_face - 1);
+      } else {
+        expect(items).toContain('M3 hex nuts');
+        // Post top + plate below the nut pocket + the nut: the M3x8 ends flush with the plate top.
+        const grip = POD_SCREW.top + d.carrier.thickness - POD_SCREW.nut_depth + 2.4;
+        expect(d.pod_screw_length).toBeGreaterThanOrEqual(grip);
+        expect(d.pod_screw_length).toBeLessThanOrEqual(POD_SCREW.top + d.carrier.thickness + 0.3);
+      }
       // The head pocket leaves a wall around it in the post.
       expect((d.tray.post_dia - POD_SCREW.head_dia) / 2).toBeGreaterThanOrEqual(1.2);
     }
@@ -306,7 +320,7 @@ describe('cradle pod', () => {
   });
 
   it('a walled base closes the electronics bay up to the seam under the sensor plate', () => {
-    const d = cradle(),
+    const d = cradle({ sensor_mount: 'plate' }),
       c = cradle_shape(d);
     expect(c.seam).toBeCloseTo(d.z_pcb_face - 1, 6);
     // The controller stack and the sensor below its plate stay inside the walled base.
@@ -339,6 +353,46 @@ describe('cradle pod', () => {
     expect(names).toContain('shell');
     expect(names).not.toContain('cup');
     expect(generateParts(d).find((p) => p.name === 'shell')!.scad).toContain('rotate_extrude');
+  });
+});
+
+describe('sensor in the shell', () => {
+  const CRADLE_POD: Values = { ...POD, build: 'cradle', padding: 6, rim: 1 };
+  const cradle = (extra: Values = {}) => createDesign(autofit({ ...CRADLE_POD, ...extra }).values);
+
+  it('is the default for a walled cradle, and only offered there', () => {
+    expect(cradle().pod.shell_mount).toBe(true);
+    expect(cradle({ sensor_mount: 'plate' }).pod.shell_mount).toBe(false);
+    expect(cradle({ pod_base: 'covered' }).pod.shell_mount).toBe(false);
+    expect(pod().pod.shell_mount).toBe(false);
+    expect(optionApplies('sensor_mount', coerce({ build: 'cradle' }))).toBe(true);
+    for (const v of [{ build: 'cradle', pod_base: 'covered' }, { build: 'pod' }, {}] as Values[])
+      expect(optionApplies('sensor_mount', coerce(v))).toBe(false);
+  });
+
+  it('ends the shell at the board, so the board seats on its bed face, with no plate', () => {
+    const d = cradle();
+    expect(cradle_shape(d).seam).toBeCloseTo(d.z_pcb_face, 9);
+    expect(d.validate()).toEqual([]);
+    const parts = generateParts(d);
+    expect(parts.map((p) => p.name)).not.toContain('carrier');
+    // The shell takes the board's inserts and solder pads, and an insert over each base post.
+    const shell = parts.find((p) => p.name === 'shell')!.scad;
+    expect(shell).toContain(`d=${SENSOR_PAD_DIA}`);
+    // The same lens distance as on a plate: only the parts that set it change.
+    expect(d.sensor_distance).toBeCloseTo(cradle({ sensor_mount: 'plate' }).sensor_distance, 9);
+  });
+
+  it('lists inserts and screws for the shell and no nuts', () => {
+    const items = (d: ReturnType<typeof cradle>) =>
+      d.bom().map((i: { item: string; qty: number }) => [i.item, i.qty]);
+    const held = Object.fromEntries(items(cradle())),
+      plate = Object.fromEntries(items(cradle({ sensor_mount: 'plate' })));
+    expect(held['M3 heat-set inserts (Ø4 x 5 mm)']).toBe(6);
+    expect(held['M3x8 screws']).toBe(4);
+    expect(held['M3 hex nuts']).toBeUndefined();
+    expect(plate['M3x8 screws']).toBe(8);
+    expect(plate['M3 hex nuts']).toBe(4);
   });
 });
 
