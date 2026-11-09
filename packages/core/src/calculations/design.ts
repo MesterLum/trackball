@@ -212,6 +212,8 @@ export class MCU {
     this.component_height = values.component_height ?? 3.5;
     /** Tallest part on the board's underside (0 = a flat back), cleared by a recess in its seat. */
     this.under_height = values.under_height ?? 0;
+    /** Pins along each long side, 2.54 mm apart and centred (0 = unknown). */
+    this.side_pins = values.side_pins ?? 0;
     this.bootsel = values.bootsel ?? null;
     this.wireless = values.wireless ?? false;
     this.usb_type = values.usb_type ?? 'usb-c';
@@ -258,6 +260,12 @@ export const PICO_2 = new MCU({
 /** Air under the parts on a pocketed board's back, and the ledge it rests on around its edge. */
 export const MCU_UNDER_AIR = 0.4;
 export const MCU_LEDGE = 1.5;
+/**
+ * A pocket's side walls stay only at the corners, so wires soldered to the edge pins pass: at least
+ * this long, and up to this far from the first pin's centre.
+ */
+export const MCU_CORNER = 0.6;
+export const MCU_PIN_CLEAR = 1.0;
 export const RP2040_ZERO = new MCU({
   name: 'rp2040-zero',
   length: 23.5,
@@ -269,6 +277,7 @@ export const RP2040_ZERO = new MCU({
   // Front: USB-C, BOOT/RESET, LED and flash. Back (Waveshare photos and schematic): the RP2040
   // (QFN-56, 0.9 mm), its crystal and the RT9013 regulator (SOT-23-5, up to 1.45 mm), the tallest.
   under_height: 1.45,
+  side_pins: 9,
 });
 export const XIAO = new MCU({
   name: 'xiao',
@@ -278,6 +287,7 @@ export const XIAO = new MCU({
   usb_height: 3.3,
   usb_overhang: 1.2,
   wireless: true,
+  side_pins: 7,
 });
 export const NICE_NANO = new MCU({
   name: 'nice-nano',
@@ -289,6 +299,7 @@ export const NICE_NANO = new MCU({
   component_height: 2.0,
   wireless: true,
   usb_z_offset: -1.1,
+  side_pins: 12,
 });
 export const SUPERMINI = new MCU({
   name: 'supermini',
@@ -299,6 +310,7 @@ export const SUPERMINI = new MCU({
   usb_overhang: 1.5,
   component_height: 2.0,
   wireless: true,
+  side_pins: 12,
 });
 export const PRO_MICRO = new MCU({
   name: 'pro-micro',
@@ -309,6 +321,7 @@ export const PRO_MICRO = new MCU({
   usb_overhang: 1.5,
   component_height: 3.0,
   usb_type: 'micro-usb',
+  side_pins: 12,
 });
 export const MCUS = (() => {
   const result: any = {};
@@ -501,6 +514,8 @@ export class Tray {
     this.post_insert_dia = values.post_insert_dia ?? 4.0;
     this.post_insert_depth = values.post_insert_depth ?? 6.0;
     this.pocket_clear = values.pocket_clear ?? 0.4;
+    /** Open the pocket's sides between the corners for wires on the edge pins. */
+    this.wire_gaps = values.wire_gaps ?? true;
     this.bay_gap = values.bay_gap ?? 3.0;
     this.clearance = values.clearance ?? 1.0;
     this.mcu_hold = values.mcu_hold ?? 'clamp';
@@ -1173,6 +1188,13 @@ export class Design {
       return add(seat, this.battery.extra_height);
     }
     return seat;
+  }
+  /** How far each corner of a pocketed board's side walls reaches in from the board's end. */
+  get mcu_corner(): number {
+    const m = this.tray.mcu;
+    if (!m.side_pins) return MCU_CORNER;
+    const first = (m.length - (m.side_pins - 1) * 2.54) / 2;
+    return Math.max(MCU_CORNER, first - MCU_PIN_CLEAR);
   }
   /** Depth of the recess under a pocketed board for the parts on its back (0 for none). */
   get mcu_under_relief(): number {

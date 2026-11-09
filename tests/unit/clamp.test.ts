@@ -6,6 +6,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { autofit, createDesign, generateParts, MCUS } from '../../packages/core/src/index';
 import type { Values } from '../../packages/core/src/index';
+import { tray } from '../../packages/core/src/geometry/tray';
 import { CLAMP, clamp_layout } from '../../packages/core/src/calculations/clamp';
 
 const holeless = Object.keys(MCUS).filter((name) => !MCUS[name].holes.length);
@@ -131,5 +132,19 @@ describe('parts on the back of a pocketed board', () => {
   it('leaves boards with a flat back or mounting holes as they were', () => {
     expect(createDesign({ build: 'cradle', mcu: 'xiao' }).mcu_standoff_h).toBe(0);
     expect(createDesign({ mcu: 'pico' }).mcu_under_relief).toBe(0);
+  });
+  it('keeps the pocket corners clear of the first pin', () => {
+    const corner = (mcu: string) => createDesign({ mcu }).mcu_corner;
+    expect(corner('rp2040-zero')).toBeCloseTo(0.6);
+    expect(corner('xiao')).toBeCloseTo(1.88);
+    expect(corner('nice-nano')).toBeCloseTo(1.53);
+  });
+  it('opens the pocket sides for wires on the edge pins', () => {
+    for (const mcu of ['rp2040-zero', 'xiao']) {
+      const d = createDesign({ build: 'cradle', mcu }),
+        open = String(tray(d));
+      d.tray.wire_gaps = false;
+      expect(open).not.toBe(String(tray(d)));
+    }
   });
 });

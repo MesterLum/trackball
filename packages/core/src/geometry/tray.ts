@@ -190,6 +190,14 @@ export function tray(d: any): any {
       const [a, c] = [mcu.length / 2 - MCU_LEDGE, mcu.width / 2 - MCU_LEDGE];
       local = sub(local, _box(-a, a, -c, c, add(zf_top, sh - relief), add(zf_top, sh + EPS)));
     }
+    // Wires soldered to the edge pins leave sideways: the side walls stay only at the corners,
+    // and with a recess the side ledges go too, so solder under the edge doesn't lift the board.
+    if (t.wire_gaps) {
+      const a = mcu.length / 2 - d.mcu_corner,
+        c = relief > 0 ? mcu.width / 2 - MCU_LEDGE : pw / 2 - EPS,
+        [z0, z1] = [add(zf_top, sh - relief), add(add(zf_top, frame_h), 1)];
+      local = sub(local, union()(_box(-a, a, c, pw / 2 + 3, z0, z1), _box(-a, a, -pw / 2 - 3, -c, z0, z1)));
+    }
     const clamp = clamp_posts(d);
     if (clamp) local = sub(add(local, clamp[0]), clamp[1]);
     rot = truth(t.usb_exit === 'back') ? 90.0 : truth(t.usb_side > 0) ? 0.0 : 180.0;

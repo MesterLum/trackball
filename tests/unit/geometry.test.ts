@@ -43,8 +43,9 @@ for (const row of reference)
     try {
       const values = { ...CHECKPOINT, ...row.values } as Values;
       const design = createDesign(values);
-      // The checkpoint predates the recess under a pocketed board's back parts.
+      // The checkpoint predates the recess under a pocketed board's back parts and its wire gaps.
       design.tray.mcu.under_height = 0;
+      design.tray.wire_gaps = false;
       const part = generateParts(design).find((p) => p.name === row.part)!;
       const metrics = [];
       for (const [name, scad] of [

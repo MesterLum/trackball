@@ -327,6 +327,16 @@ Waveshare's photos and schematic, and its USB-C, buttons, LED and flash on the
 front. A full build's 3 mm seat already has the room;
 a pod's flat bay rises by the recess depth.
 
+Wires soldered to a pocketed board's edge pins stick out sideways, so the
+pocket's side walls stay only at the corners (`Design.mcu_corner`): up to 1 mm
+short of the first pin's centre, from the board's pins per side (`side_pins`,
+2.54 mm apart and centred), and at least 0.6 mm. That is 0.6 mm on the
+RP2040-Zero, about 1.5 mm on the 33 mm boards and 1.9 mm on the XIAO. The end walls and corners still locate
+the board. With a recess, the side ledges go too, so solder under the edge
+can't lift the board; it rests on its two end ledges. The clamp posts still
+stand about 0.9 mm out from the board edge at the far end, so route the wires
+on the pins beside them upward.
+
 ## Print fit
 
 FDM prints come out a little off their drawn size: extruded lines squish wider,
