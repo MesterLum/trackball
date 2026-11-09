@@ -354,7 +354,7 @@ export class Battery {
     this.frame_wall = values.frame_wall ?? 1.5;
     this.frame_extra_h = values.frame_extra_h ?? 1.0;
     this.power_switch = values.power_switch ?? 'slide';
-    this.power_wall = values.power_wall ?? 'right';
+    this.power_wall = values.power_wall ?? 'auto';
     /** In a pod the battery lies beside the controller under the sensor, not under it. */
     this.beside = values.beside ?? false;
   }
@@ -933,7 +933,7 @@ export class Design {
           w: this.battery.width,
         }),
         this.padding_for_pod_battery(),
-        _('or use a smaller battery'),
+        _('use a smaller battery'),
       );
     if (truth(this.battery.enabled) && !this.battery_beside) {
       [bl, bw] = this.battery.outer;
@@ -961,7 +961,6 @@ export class Design {
     const power = this.power_switch_placement();
     if (power !== null && !is_placement(power)) {
       const name = POWER_SWITCHES[this.battery.power_switch as keyof typeof POWER_SWITCHES]?.name;
-      const wall = _(this.battery.power_wall);
       if (power.reason === 'palm')
         report(_('the palm rest covers the front wall: put the power switch on another wall'));
       else if (power.reason === 'height')
@@ -972,9 +971,19 @@ export class Design {
             free: power.free,
           }),
         );
+      else if (this.battery.power_wall === 'auto')
+        report(
+          format(_('no room for the {switch} on any wall'), { switch: name }),
+          this.padding_for_power_switch(),
+        );
       else
         report(
-          format(_('no room for the {switch} on the {wall} wall'), { switch: name, wall }),
+          format(
+            power.wall === usb_wall(this)
+              ? _('no room for the {switch} on the {wall} wall beside the USB plug')
+              : _('no room for the {switch} on the {wall} wall'),
+            { switch: name, wall: _(power.wall) },
+          ),
           this.padding_for_power_switch(),
           _('try another wall'),
         );

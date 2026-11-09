@@ -184,11 +184,16 @@ a friction pocket), USB size, tallest component, BOOTSEL position.
   sensor (L along X, W along Y). Useful with the wireless boards
   (nice!nano, Supermini, XIAO nRF52840, Pico W with a LiPo shim).
 - Power switch (`power_switch slide|rocker|toggle|none`, `power_wall
-right|left|front|back`): the switch moves along the chosen wall to the first
-  spot clear of the USB plug (a 12 mm moulded plug plus margin), controller,
-  battery frame, lid posts, sensor PCB and the button bodies under the lid, and
-  sits 1-1.5 mm above the floor. The front wall is refused while a palm rest is
-  attached there. If nothing fits, validation says so instead of moving it.
+auto|right|left|front|back`): the switch moves along the chosen wall to the
+  first spot clear of the USB plug (a 12 mm moulded plug plus margin),
+  controller, battery frame, lid posts, sensor PCB and the button bodies under
+  the lid, and sits 1-1.5 mm above the floor. `auto` (the default) takes the
+  first wall with room in the order right, left, back, front, with the USB wall
+  last (`auto_power_walls`): a pod's walls only count where they are nearly
+  flat, which leaves no room beside the plug on the USB wall. The front wall is
+  refused while a palm rest is attached there. If nothing fits, validation says
+  so instead of moving it: no room along the wall (beside the USB plug, when it
+  is the USB wall) or not enough height.
   - `slide`: SS12D00 (8.6 x 3.6 x 3.5 mm). A body-height recess thins the wall
     to 1.2 mm around a 4.6 x 2.4 mm lever slot; printed cheeks and a shelf hold
     the body. Drop it in behind the wall, slide it outward, add a dab of glue.

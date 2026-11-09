@@ -5,7 +5,13 @@ import { mkdtemp, writeFile, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { autofit, createDesign, generateParts, POWER_SWITCHES } from '../../packages/core/src/index';
-import { is_placement, switch_corners, switch_point } from '../../packages/core/src/calculations/power';
+import {
+  is_placement,
+  switch_corners,
+  switch_point,
+  type PowerSwitchPlacement,
+} from '../../packages/core/src/calculations/power';
+import type { Values } from '../../packages/core/src/index';
 
 const battery = { battery: '50x34x5', mcu: 'nice-nano' };
 
@@ -140,3 +146,22 @@ it('square fused corners fill the notch next to the palm rest', async () => {
     )!.scad;
   expect(await volume(lid('square'))).toBeGreaterThan((await volume(lid('rounded'))) + 10);
 }, 240000);
+
+describe('power switch wall', () => {
+  const POD_BATTERY: Values = { build: 'cradle', battery: '30x20x5' };
+  it('auto keeps it off the USB wall of a pod, where the plug leaves no room', () => {
+    for (const usb of ['right', 'back', 'left']) {
+      const d = createDesign(autofit({ ...POD_BATTERY, usb }).values);
+      const p = d.power_switch_placement() as PowerSwitchPlacement;
+      expect(is_placement(p), usb).toBe(true);
+      expect(p.wall).not.toBe(usb);
+      expect(d.validate()).toEqual([]);
+    }
+  });
+  it('says the USB wall has no room beside the plug, not that it lacks height', () => {
+    const d = createDesign(autofit({ ...POD_BATTERY, usb: 'right', power_wall: 'right' }).values);
+    const message = d.validate().join();
+    expect(message).toContain('beside the USB plug');
+    expect(message).not.toContain('wall height');
+  });
+});
