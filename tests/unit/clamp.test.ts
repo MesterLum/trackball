@@ -7,7 +7,7 @@ import { join, resolve } from 'node:path';
 import { autofit, createDesign, generateParts, MCUS } from '../../packages/core/src/index';
 import type { Values } from '../../packages/core/src/index';
 import { tray } from '../../packages/core/src/geometry/tray';
-import { CLAMP, clamp_layout } from '../../packages/core/src/calculations/clamp';
+import { CLAMP, clamp_layout, clamp_post_points } from '../../packages/core/src/calculations/clamp';
 
 const holeless = Object.keys(MCUS).filter((name) => !MCUS[name].holes.length);
 const names = (values: Partial<Values>) => generateParts(createDesign(values)).map((p) => p.name);
@@ -49,14 +49,50 @@ describe('controller clamp', () => {
     ).toContain('BOOT button');
   });
 
-  it('lists two M2 screws for the clamp', () => {
-    const bom = createDesign({ mcu: 'nice-nano' }).bom();
-    expect(bom.find((b: any) => b.item === 'M2x6 self-tapping screws')?.qty).toBe(2);
-    expect(
-      createDesign({ mcu: 'pico' })
+  it('lists two M3 inserts and button-head screws for the clamp', () => {
+    const inserts = (mcu: string) =>
+      createDesign({ mcu })
         .bom()
-        .some((b: any) => b.item === 'M2x6 self-tapping screws'),
-    ).toBe(false);
+        .find((b: any) => b.item === 'M3 heat-set inserts (Ø4 x 5 mm)').qty;
+    expect(inserts('nice-nano')).toBe(inserts('pico') + 2);
+    const screws = (mcu: string) =>
+      createDesign({ mcu })
+        .bom()
+        .find((b: any) => b.item === 'M3x8 button-head screws');
+    expect(screws('nice-nano')?.qty).toBe(2);
+    expect(screws('pico')).toBeUndefined();
+  });
+
+  it('gives each insert a solid wall and a floor under it, clear of the weight chamber', () => {
+    for (const v of [
+      { mcu: 'xiao' },
+      { mcu: 'rp2040-zero' },
+      { build: 'cradle', mcu: 'xiao', usb: 'back', padding: 6, skirt: 8, rim: 1, header_height: 3 },
+      { build: 'cradle', mcu: 'rp2040-zero', usb: 'back', padding: 6, skirt: 8, rim: 1, header_height: 3 },
+      { build: 'pod', mcu: 'xiao' },
+      { build: 'cradle', mcu: 'supermini', weight_cap: 'bayonet' },
+    ] as Values[]) {
+      const d = createDesign(autofit(v).values);
+      expect(d.validate(), JSON.stringify(v)).toEqual([]);
+      const l = clamp_layout(d)!;
+      // At least 1.5 mm of wall around the insert, and the post clear of the pocket.
+      expect((CLAMP.post_dia - CLAMP.insert_dia - d.fit.hole) / 2).toBeGreaterThanOrEqual(1.5 - 1e-9);
+      expect(l.post_c - CLAMP.post_dia / 2).toBeGreaterThan(l.post_c - CLAMP.post_offset);
+      // The insert hole keeps a floor over the weight chamber.
+      const b = d.ballast;
+      if (b) {
+        const [, , cx, cy] = d.footprint;
+        const bottom = l.post_top - CLAMP.insert_depth,
+          chamber_top = d.z_floor_bottom + b.total;
+        for (const [x, y] of clamp_post_points(d))
+          if (Math.hypot(x - cx, y - cy) < b.outer_r + CLAMP.insert_dia / 2)
+            expect(bottom - chamber_top, JSON.stringify(v)).toBeGreaterThanOrEqual(CLAMP.insert_floor - 1e-9);
+      }
+      // Under the sensor board (a pod's controller), a button head on the bar stays below it.
+      const sensor_bottom = d.z_pcb_face - d.pcb.thickness - d.pcb.header_height;
+      if (clamp_post_points(d).some(([x, y]) => Math.hypot(x, y) < d.pcb.r + CLAMP.post_dia / 2))
+        expect(l.bar_top + CLAMP.head_h, JSON.stringify(v)).toBeLessThan(sensor_bottom);
+    }
   });
 });
 

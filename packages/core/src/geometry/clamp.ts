@@ -1,6 +1,6 @@
 // Controller clamp: screw posts on the tray pocket and the separate clamp bar.
 import { CLAMP, clamp_layout, type ClampLayout } from '../calculations/clamp.js';
-import { cube, difference, union, type Shape } from '../scad/index.js';
+import { cube, cylinder, difference, union, type Shape } from '../scad/index.js';
 import { EPS, zcyl } from './common.js';
 import { mcu_pose } from './tray.js';
 
@@ -18,20 +18,33 @@ export function board_to_world(d: any, shape: Shape): Shape {
   return shape.rotate([0, 0, rot]).translate([mx, my, 0]);
 }
 
-/** [posts, pilot holes] in board-local coordinates, to merge into the pocket frame. */
+/** [posts, insert holes] in board-local coordinates, to merge into the pocket frame. */
 export function clamp_posts(d: any): [Shape, Shape] | null {
   const l = clamp_layout(d);
   if (!l) return null;
   const a = post_a(l);
+  const r = CLAMP.post_dia / 2,
+    z0 = d.z_floor_top - EPS,
+    foot = Math.min(CLAMP.post_foot, l.post_top - z0);
   const posts: Shape[] = [];
-  const pilots: Shape[] = [];
+  const holes: Shape[] = [];
   for (const c of [-l.post_c, l.post_c]) {
-    posts.push(zcyl(CLAMP.post_dia, d.z_floor_top - EPS, l.post_top, d.fn).translate([a, c, 0]));
-    pilots.push(
-      zcyl(CLAMP.pilot_dia, l.post_top - CLAMP.pilot_depth, l.post_top + 1, d.fn).translate([a, c, 0]),
+    posts.push(
+      union()(
+        zcyl(CLAMP.post_dia, z0, l.post_top, d.fn),
+        // A 45° foot spreads the insert's push into the floor.
+        cylinder(foot, undefined, undefined, r + foot, r, false, d.fn).up(z0),
+      ).translate([a, c, 0]),
+    );
+    holes.push(
+      zcyl(CLAMP.insert_dia + d.fit.hole, l.post_top - CLAMP.insert_depth, l.post_top + 1, d.fn).translate([
+        a,
+        c,
+        0,
+      ]),
     );
   }
-  return [union()(...posts), union()(...pilots)];
+  return [union()(...posts), union()(...holes)];
 }
 
 /**
@@ -51,8 +64,13 @@ export function mcu_clamp(d: any): Shape | null {
     l.board_top,
     l.board_top + CLAMP.relief + EPS,
   );
+  // Round bosses at the ends, beside the board, keep material around the M3 holes while the
+  // bar over the board stays short (clear of a BOOT button).
+  const bosses = [-l.post_c, l.post_c].map((c) =>
+    zcyl(CLAMP.post_dia, l.board_top + CLAMP.relief, l.bar_top, d.fn).translate([a, c, 0]),
+  );
   const holes = [-l.post_c, l.post_c].map((c) =>
     zcyl(CLAMP.clear_dia + d.fit.hole, l.board_top, l.bar_top + 1, d.fn).translate([a, c, 0]),
   );
-  return board_to_world(d, difference()(union()(plate, pad), ...holes));
+  return board_to_world(d, difference()(union()(plate, pad, ...bosses), ...holes));
 }

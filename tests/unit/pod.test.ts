@@ -144,11 +144,13 @@ describe('compact pod geometry', () => {
 
 describe('pod weights', () => {
   it('opens a chamber under the base that grows the pod by its height', () => {
-    const none = pod({ weight_depth: 0 });
+    // A controller glued in its pocket: the clamp's inserts, which thicken the floor, are tested
+    // with the clamp.
+    const none = pod({ weight_depth: 0, mcu_hold: 'glue' });
     expect(none.ballast).toBeNull();
     expect(generateParts(none).map((p) => p.name)).not.toContain('weight_cap');
     for (const weight_cap of ['thread', 'bayonet', 'none']) {
-      const d = pod({ weight_depth: 10, weight_cap });
+      const d = pod({ weight_depth: 10, weight_cap, mcu_hold: 'glue' });
       const b = d.ballast!;
       expect(b.cap).toBe(weight_cap);
       expect(b.depth).toBe(10);
@@ -243,7 +245,7 @@ describe('cradle pod', () => {
     });
 
   it('a round cup with a flat rim rises from the base, notched in front', () => {
-    const d = cradle(),
+    const d = cradle({ mcu_hold: 'glue' }),
       c = cradle_shape(d);
     expect(c.rim).toBeCloseTo(-1, 6);
     expect(c.cup_r).toBeCloseTo(d.cavity_r + d.cup.wall + 3, 6);
@@ -400,7 +402,8 @@ describe('sensor in the shell', () => {
       d.bom().map((i: { item: string; qty: number }) => [i.item, i.qty]);
     const held = Object.fromEntries(items(cradle())),
       plate = Object.fromEntries(items(cradle({ sensor_mount: 'plate' })));
-    expect(held['M3 heat-set inserts (Ø4 x 5 mm)']).toBe(6);
+    // 4 over the base posts and 2 for the sensor, plus 2 in the controller clamp's posts.
+    expect(held['M3 heat-set inserts (Ø4 x 5 mm)']).toBe(8);
     expect(held['M3x8 screws']).toBe(4);
     expect(held['M3 hex nuts']).toBeUndefined();
     expect(plate['M3x8 screws']).toBe(8);
