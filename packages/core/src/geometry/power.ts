@@ -1,9 +1,9 @@
 // Power switch opening, panel recess and cradle in the tray wall.
 import {
   RESET_HOLDER,
-  RESET_HOLE_CLEAR,
   is_placement,
   is_reset,
+  reset_hole_dia,
   type PowerSwitchPlacement,
   type ResetPlacement,
 } from '../calculations/power.js';
@@ -91,28 +91,30 @@ function reset_placement(d: any): ResetPlacement | null {
 /**
  * Reset button holder and pin hole, [material to add, material to remove] in world coordinates.
  * The switch drops in from above between two cheeks, on a shelf, its plunger in the hole; a rib
- * behind it, between its two leg pairs, takes the press. Open on top, so it prints without support.
+ * behind it, between its legs, takes the press. Open on top, so it prints without support. Legs at
+ * the body's ends leave behind it past the cheeks, so there the cheeks stop at the body's back.
  */
 export function reset_switch_parts(d: any): [Shape | null, Shape | null] {
   const p = reset_placement(d);
   if (!p) return [null, null];
   const h = RESET_HOLDER,
     t = p.type,
-    s = p.side,
-    half = s / 2 + h.cheek,
-    low = -s / 2 - 40,
-    back = p.v_body + t.depth + h.clear;
+    [su, sw] = [p.side_u, p.side_w],
+    half = su / 2 + h.cheek,
+    low = -sw / 2 - 40,
+    back = p.v_body + t.depth + h.clear,
+    cheek_end = t.legs === 'rows' ? p.v_rib : back;
   const holder = union()(
-    box(-half, half, p.v_block, back, low, -s / 2),
-    box(-half, -s / 2, p.v_block, p.v_rib, low, s / 2),
-    box(s / 2, half, p.v_block, p.v_rib, low, s / 2),
-    box(-h.rib_w / 2, h.rib_w / 2, back - EPS, p.v_rib, low, s / 2),
-    ...(p.v_body > p.v_block ? [box(-half, half, p.v_block, p.v_body + EPS, low, s / 2 + 1)] : []),
+    box(-half, half, p.v_block, back, low, -sw / 2),
+    box(-half, -su / 2, p.v_block, cheek_end, low, sw / 2),
+    box(su / 2, half, p.v_block, cheek_end, low, sw / 2),
+    box(-t.rib_w / 2, t.rib_w / 2, back - EPS, p.v_rib, low, sw / 2),
+    ...(p.v_body > p.v_block ? [box(-half, half, p.v_block, p.v_body + EPS, low, sw / 2 + 1)] : []),
   );
   const keep = half_space_above(d.z_floor_top - EPS, [600, 600], [0, 0], 600);
   const hole = cylinder(
     p.v_body + 1 + EPS,
-    (t.plunger + RESET_HOLE_CLEAR + d.fit.hole) / 2,
+    (reset_hole_dia(t) + d.fit.hole) / 2,
     undefined,
     undefined,
     undefined,
@@ -121,7 +123,7 @@ export function reset_switch_parts(d: any): [Shape | null, Shape | null] {
   )
     .rotate([-90, 0, 0])
     .translate([0, -1, 0]);
-  const pocket = box(-s / 2, s / 2, p.v_body, back, -s / 2, s / 2 + 20);
+  const pocket = box(-su / 2, su / 2, p.v_body, back, -sw / 2, sw / 2 + 20);
   return [mul(place(d, p, holder), keep), place(d, p, union()(hole, pocket))];
 }
 /** Preview of the reset switch for the hardware view. */
@@ -129,9 +131,12 @@ export function reset_switch_preview(d: any): Shape | null {
   const p = reset_placement(d);
   if (!p) return null;
   const t = p.type,
-    a = t.side / 2;
-  const plunger = cylinder(t.proud, t.plunger / 2, undefined, undefined, undefined, false, 24)
-    .rotate([-90, 0, 0])
-    .translate([0, p.v_body - t.proud, 0]);
-  return place(d, p, union()(box(-a, a, p.v_body, p.v_body + t.depth, -a, a), plunger));
+    [bu, bw] = [t.body[0] / 2, t.body[1] / 2],
+    [pu, pw] = [t.plunger[0] / 2, t.plunger[1] / 2];
+  const plunger = t.round
+    ? cylinder(t.proud, pu, undefined, undefined, undefined, false, 24)
+        .rotate([-90, 0, 0])
+        .translate([0, p.v_body - t.proud, 0])
+    : box(-pu, pu, p.v_body - t.proud, p.v_body, -pw, pw);
+  return place(d, p, union()(box(-bu, bu, p.v_body, p.v_body + t.depth, -bw, bw), plunger));
 }

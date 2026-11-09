@@ -31,6 +31,7 @@ import {
   POD_FLAT,
   RESET_SWITCHES,
   is_reset,
+  reset_hole_dia,
   wall_frame,
   type PowerSwitchPlacement,
   type ResetPlacement,
@@ -549,22 +550,23 @@ describe('pod reset button', () => {
     'compact rounded pod': { build: 'pod', padding: 2, rim: 3, skirt: 8, header_height: 3 },
   } as Record<string, Values>))
     it(`fits a ${name} by the USB wall without growing it`, () => {
-      for (const mcu of MCUS_)
-        for (const usb of ['right', 'back', 'left']) {
-          const v = { ...base, mcu, usb } as Values;
-          const d = createDesign(autofit(v).values),
-            bare = createDesign(autofit({ ...v, reset_switch: 'none' }).values);
-          const p = d.reset_switch_placement() as ResetPlacement;
-          expect(is_reset(p), `${mcu} ${usb}`).toBe(true);
-          // On the USB wall when it has room, else on a wall beside it.
-          expect(NEIGHBOURS[usb]).toContain(p.wall);
-          if (!name.startsWith('compact')) expect(p.wall).toBe(usb);
-          expect(d.footprint[0], `${mcu} ${usb}`).toBeLessThanOrEqual(bare.footprint[0] + 1);
-          expect(d.validate()).toEqual([]);
-          // The pin reaches the plunger: it sits under the wall's outer face, not past it.
-          expect(p.v_body - p.type.proud).toBeGreaterThan(0);
-          expect(p.v_body - p.type.proud).toBeLessThan(4);
-        }
+      for (const reset_switch of Object.keys(RESET_SWITCHES))
+        for (const mcu of MCUS_)
+          for (const usb of ['right', 'back', 'left']) {
+            const v = { ...base, mcu, usb, reset_switch } as Values;
+            const d = createDesign(autofit(v).values),
+              bare = createDesign(autofit({ ...v, reset_switch: 'none' }).values);
+            const p = d.reset_switch_placement() as ResetPlacement;
+            expect(is_reset(p), `${reset_switch} ${mcu} ${usb}`).toBe(true);
+            // On the USB wall when it has room, else on a wall beside it.
+            expect(NEIGHBOURS[usb]).toContain(p.wall);
+            if (!name.startsWith('compact')) expect(p.wall).toBe(usb);
+            expect(d.footprint[0], `${mcu} ${usb}`).toBeLessThanOrEqual(bare.footprint[0] + 1);
+            expect(d.validate()).toEqual([]);
+            // The pin reaches the plunger: it sits under the wall's outer face, not past it.
+            expect(p.v_body - p.type.proud).toBeGreaterThan(0);
+            expect(p.v_body - p.type.proud).toBeLessThan(4);
+          }
     });
 
   it('cuts the pin hole and adds the holder, in the base or through the shell', () => {
@@ -588,5 +590,23 @@ describe('pod reset button', () => {
       .bom()
       .map((i: { item: string }) => i.item);
     expect(items).toContain(RESET_SWITCHES['tact-6x6'].name);
+    const two_pin = createDesign(autofit({ build: 'cradle', reset_switch: 'tact-3.5x6' }).values)
+      .bom()
+      .map((i: { item: string }) => i.item);
+    expect(two_pin).toContain(RESET_SWITCHES['tact-3.5x6'].name);
+  });
+
+  it('takes the 2-pin keyboard reset switch: a smaller hole over its flat plunger', () => {
+    const t = RESET_SWITCHES['tact-3.5x6'];
+    // The round hole clears the 3 x 1.5 mm plunger's corners.
+    expect(reset_hole_dia(t)).toBeGreaterThan(Math.hypot(...t.plunger));
+    expect(reset_hole_dia(t)).toBeLessThan(reset_hole_dia(RESET_SWITCHES['tact-6x6']));
+    // Its legs leave at the ends, so the rib between them can be wider than the 6x6 one.
+    expect(t.rib_w).toBeLessThan(6.4 - 1.0);
+    const scad = (reset_switch: string) =>
+      generateParts(createDesign(autofit({ build: 'cradle', reset_switch } as Values).values)).find(
+        (p) => p.name === 'tray',
+      )!.scad;
+    expect(scad('tact-3.5x6')).not.toEqual(scad('tact-6x6'));
   });
 });

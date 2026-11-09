@@ -529,9 +529,10 @@
     "help": "pod: a tactile switch behind the USB wall (or a wall beside it, near the USB corner, when the pod is too tight), wired to the controller's reset, pressed with a pin through a small hole; double press it with the cable plugged in to flash new firmware",
     "group": "Electronics",
     "flag": null,
-    "choices": ["tact-6x6", "none"],
+    "choices": ["tact-6x6", "tact-3.5x6", "none"],
     "choice_labels": {
       "tact-6x6": "6x6 mm tactile switch",
+      "tact-3.5x6": "3.5x6 mm 2-pin switch (Corne, Lily58, Sofle)",
       "none": "None"
     },
     "min": null,
