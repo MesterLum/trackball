@@ -447,5 +447,7 @@
   "wall for the power switch; it moves along the wall to clear the USB opening, controller, battery and posts. Auto takes the first wall with room, the USB wall last": "pared del interruptor; se desplaza a lo largo de la pared para evitar la abertura USB, el controlador, la batería y los postes. Automática toma la primera pared con espacio, la del USB al final",
   "auto": "automática",
   "no room for the {switch} on any wall": "no hay espacio para el {switch} en ninguna pared",
-  "no room for the {switch} on the {wall} wall beside the USB plug": "no hay espacio para el {switch} en la pared {wall} junto al conector USB"
+  "no room for the {switch} on the {wall} wall beside the USB plug": "no hay espacio para el {switch} en la pared {wall} junto al conector USB",
+  "3.5x6 mm 2-pin switch (Corne, Lily58, Sofle)": "pulsador de 3.5x6 mm, 2 patas (Corne, Lily58, Sofle)",
+  "Tactile switch 3.5x6 mm, 4.3 mm tall, 2-pin (through-hole)": "Pulsador táctil 3.5x6 mm, 4.3 mm de alto, 2 patas (de inserción)"
 }

@@ -302,25 +302,33 @@ floor when it has no mounting holes, on 1 mm standoffs when it has.
   turn 60° into a groove) or none (an open pocket, weights glued in). A slot
   across the bottom turns it with a coin.
 - **Reset button** (`reset_switch`): a closed pod hides the controller's own
-  buttons, so a 6x6 mm through-hole tactile switch (body 6 x 6 x 3.5 mm, 3.5 mm
-  plunger 0.8 mm proud, 4.3 mm overall) sits behind a wall and is pressed with a
-  pin through a 3.9 mm hole. To flash, plug the cable in and double press it:
-  nRF52840 boards open their bootloader drive; RP2040 boards need QMK's
-  `RP2040_BOOTLOADER_DOUBLE_TAP_RESET`. Trim its legs to 1.5 mm and solder the
-  wires to them, led upward, to the controller's reset and GND, or across its
-  own RESET button's legs. It goes on the USB wall, as close to the plug as the
-  controller's pocket and clamp allow (`USB_PLUG_HALF` keeps the hole clear of
-  the cable's moulded plug). A compact pod has no room there between the
-  controller and a corner post, so it moves to a wall beside it, at the end
-  nearest the USB wall (`RESET_WALLS`). Every controller fits a compact pod this
-  way, growing it by at most one padding step. The holder (`place_reset_switch`,
-  `reset_switch_parts`) stands on the base floor, open on top: two cheeks and a
-  shelf locate the body 1 mm up, and a rib between the two leg pairs takes the
-  press. It may merge with a corner post, but the switch and its legs keep clear
-  of it. A pod's side curves away from the middle, so the body sits behind the
-  wall's deepest point under the holder, which fills in up to the wall; the
-  plunger ends 1.5 to 3 mm under the outer face. Through a shell down to the
-  desk, the hole goes through the shell and the holder stops at its fitting gap.
+  buttons, so a through-hole tactile switch sits behind a wall and is pressed
+  with a pin through a round hole over its plunger (`RESET_SWITCHES`):
+  `tact-6x6`, the common 6x6 mm part (body 6 x 6 x 3.5 mm, 3.5 mm plunger 0.8 mm
+  proud, 4.3 mm overall, legs in rows above and below; 3.9 mm hole), or
+  `tact-3.5x6`, the 2-pin reset switch of the Corne, Lily58 and Sofle
+  (CamdenBoss CST35643T: body 6 x 3.5 x 3.4 mm, a 3 x 1.5 mm plunger 0.9 mm
+  proud, 4.3 mm overall, a kinked leg at each 6 mm end; 3.75 mm hole). It lies
+  with its 6 mm side along the wall, and its holder's cheeks stop at the body's
+  back so the end legs pass behind them. To flash, plug the cable in and double
+  press it: nRF52840 boards open their bootloader drive; RP2040 boards need
+  QMK's `RP2040_BOOTLOADER_DOUBLE_TAP_RESET`. Trim its legs to 1.5 mm (on the
+  2-pin switch that cuts off the kink, which starts 1.9 mm below the body) and
+  solder the wires to them, led upward, to the controller's reset and GND, or
+  across its own RESET button's legs. It goes on the USB wall, as close to the
+  plug as the controller's pocket and clamp allow (`USB_PLUG_HALF` keeps the
+  hole clear of the cable's moulded plug). A compact pod has no room there
+  between the controller and a corner post, so it moves to a wall beside it, at
+  the end nearest the USB wall (`RESET_WALLS`). Every controller fits a compact
+  pod this way, growing it by at most one padding step. The holder
+  (`place_reset_switch`, `reset_switch_parts`) stands on the base floor, open on
+  top: two cheeks and a shelf locate the body 1 mm up, and a rib between the two
+  leg pairs takes the press. It may merge with a corner post, but the switch and
+  its legs keep clear of it. A pod's side curves away from the middle, so the
+  body sits behind the wall's deepest point under the holder, which fills in up
+  to the wall; the plunger ends 1.5 to 3 mm under the outer face. Through a
+  shell down to the desk, the hole goes through the shell and the holder stops
+  at its fitting gap.
 
 Pod assembly with the sensor in the shell: inserts in the shell's underside
 (2 for the sensor, 4 over the posts), BTUs into the shell, sensor screwed to
@@ -412,7 +420,8 @@ the two-dot column.
 ## Numbers to verify before trusting a print
 
 - **Reset switch**: the 6x6 mm tactile switch sizes come from a seller's
-  drawing (`RESET_SWITCHES`); check the body and plunger of yours.
+  drawing, the 3.5x6 mm 2-pin one from the CamdenBoss CST35643T datasheet
+  (`RESET_SWITCHES`); check the body and plunger of yours.
 - **Lens stack** (`calculations/sensor.ts`): from PixArt's datasheets, which
   agree for the PMW3360 (v1.30, Figure 4 and Table 3), PMW3389 (v1.0,
   Figure 5) and PMW3610 (R2.4, Figure 4, LM18-LSI lens): the top of a 1.60 mm
