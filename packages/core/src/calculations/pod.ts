@@ -64,11 +64,21 @@ export class Pod {
     this.base = values.base ?? 'walled';
     /** Cradle pod: design on the lower wall. */
     this.side = values.side ?? 'band';
+    /** Walled cradle pod: the sensor board screws to the shell itself, or to a sensor plate. */
+    this.mount = values.mount ?? 'shell';
     /** Gap between the shell's inside and the plates it covers. */
     this.fit = values.fit ?? POD_FIT;
   }
   get walled(): boolean {
     return this.cradle && this.base === 'walled';
+  }
+  /**
+   * The sensor board screws to the shell's underside: the shell ends at the board's lens side and
+   * prints from there on the bed, so the board seats on a bed face and only the shell, which also
+   * holds the supports, sets the lens-to-ball distance. Needs a walled base for the seam.
+   */
+  get shell_mount(): boolean {
+    return this.walled && this.mount === 'shell';
   }
   get wall(): number {
     return POD_WALL[this.shell as keyof typeof POD_WALL] ?? POD_WALL.solid;
@@ -163,9 +173,10 @@ export function cradle_shape(d: any): CradleShape {
       edge + 1.5,
       d.z_cup_bottom + d.cup.insert_depth + 1.5,
     ),
-    // Just under the sensor plate's underside, so the base's wall closes the electronics bay; with
-    // the shell down to the desk there is no seam above the floor.
-    seam: d.pod.walled ? d.z_pcb_face - 1 : d.z_floor_bottom,
+    // At the sensor board's lens side when the shell holds it, else just under the sensor plate's
+    // underside, so the base's wall closes the electronics bay; with the shell down to the desk
+    // there is no seam above the floor.
+    seam: d.pod.shell_mount ? d.z_pcb_face : d.pod.walled ? d.z_pcb_face - 1 : d.z_floor_bottom,
   };
 }
 

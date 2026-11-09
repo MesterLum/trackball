@@ -144,7 +144,9 @@ export function reference_models(d: any): any {
 export function assembly(d: any, explode: any = 0.0): any {
   let e: any, key: any, parts: any, pr: any, top: any;
   e = explode;
-  top = union()(cup(d).color('steelblue').up(mul(2, e)), carrier(d).color('goldenrod').up(e));
+  top = d.pod.shell_mount
+    ? cup(d).color('steelblue').up(mul(2, e))
+    : union()(cup(d).color('steelblue').up(mul(2, e)), carrier(d).color('goldenrod').up(e));
   parts = [to_world(top, d.deck), tray(d).color('gray'), reference_models(d).up(mul(2, e))];
   pr = palmrest(d);
   if (truth(pr !== null)) {
@@ -235,7 +237,8 @@ export function cup_placement(d: any): any {
 }
 export function carrier_placement(d: any): any {
   let parts: any, sp: any;
-  parts = [carrier(d).color('goldenrod'), pcb_preview(d)];
+  // Without a plate, the sensor board shown in the shell that holds it.
+  parts = [d.pod.shell_mount ? cup(d).color('steelblue') : carrier(d).color('goldenrod'), pcb_preview(d)];
   sp = switches_preview(d);
   if (truth(sp !== null)) {
     parts.push(sp);

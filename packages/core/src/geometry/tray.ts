@@ -37,6 +37,20 @@ export function bootsel_deck_xy(d: any): any {
   [xd, yd, _] = d.world_to_deck([bx, by, add(zb, mcu.thickness)]);
   return [xd, yd];
 }
+/** Height of each bridging step over a screw-head pocket printed from below: two 0.2 mm layers. */
+export const BRIDGE_STEP = 0.4;
+/**
+ * Steps that let the roof of a head pocket (printed from below) bridge without support: a slot as
+ * wide as the screw hole across the pocket, then a square, so every layer spans between solid
+ * edges. The screw hole goes on above them.
+ */
+export function pocket_bridges(head_dia: number, hole_dia: number, z: number): any[] {
+  const [a, b] = [head_dia / 2, hole_dia / 2];
+  return [
+    _box(-a, a, -b, b, z - EPS, z + BRIDGE_STEP),
+    _box(-b, b, -b, b, z + BRIDGE_STEP - EPS, z + 2 * BRIDGE_STEP),
+  ];
+}
 export function _box(x0: any, x1: any, y0: any, y1: any, z0: any, z1: any): any {
   return cube([sub(x1, x0), sub(y1, y0), sub(z1, z0)]).translate([x0, y0, z0]);
 }
@@ -143,9 +157,10 @@ export function tray(d: any): any {
     // counterbore from the underside instead of an insert at the top.
     // (A short M3x8 reaches from a head pocketed almost to the top of the post.)
     const hole = d.is_pod
-      ? add(
+      ? union()(
           zcyl(POD_SCREW.clear_dia + d.fit.hole, sub(zf_bot, 1), add(z0, 1), fn),
           zcyl(POD_SCREW.head_dia, sub(zf_bot, 1), sub(z0, POD_SCREW.top), fn),
+          ...pocket_bridges(POD_SCREW.head_dia, POD_SCREW.clear_dia + d.fit.hole, sub(z0, POD_SCREW.top)),
         )
       : zcyl(t.post_insert_dia + d.fit.hole, sub(z0, t.post_insert_depth), add(z0, 1), fn);
     post_holes.push(to_world(hole.translate([x, y, 0]), d.deck));

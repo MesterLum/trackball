@@ -246,6 +246,19 @@ floor when it has no mounting holes, on 1 mm standoffs when it has.
   (0.6 mm) or three V grooves, all with 45° edges. Rounded edges are built as bands of scaled extrusions
   (a smaller soft square is an exact scaled copy), never as hulls, which CGAL
   can fail on.
+- **Sensor in the shell** (`sensor_mount shell`, the default with a walled
+  base): the shell ends at the sensor board's lens side, so the seam moves up
+  to `z_pcb_face` and the shell prints from there on the bed. Its underside is
+  solid and flat, with the plate's features cut from below: the board's two
+  inserts, the solder relief and its pads, the lens window, and an insert over
+  each base post (6 mm deep, `SHELL_POST_INSERT_DEPTH`). The board seats on a
+  bed face and the supports are in the same part, so print accuracy holds the
+  lens-to-ball distance with no sensor plate, nuts or shell screws. Solid from
+  the bed up, the shell has nothing to print on supports: the only roofs are
+  bridges over the solder relief and the insert holes. The base screws, M3x8
+  up through the posts, bite 5 mm of the shell's inserts. `sensor_mount plate`
+  keeps the separate sensor plate; the rounded pod and `pod_base covered` always
+  use it, since their shell's bed face is at the desk.
 - **Rounded** (`build pod`): the pebble described below; the internals are the
   same for both.
 
@@ -268,7 +281,10 @@ floor when it has no mounting holes, on 1 mm standoffs when it has.
   for small balls. Only short screws are used: each post is pocketed from
   below, so an M3x8 machine screw's head sits near its top, passes the post's
   3 mm top and the sensor plate, and bites an M3 nut in a hex pocket on top of
-  the plate. Rubber feet cover the pockets.
+  the plate (or an insert in the shell, when it holds the sensor). The pocket's
+  roof steps through a slot and a square, 0.4 mm each, as wide as the screw
+  hole (`pocket_bridges`), so each layer bridges between solid edges. Rubber
+  feet cover the pockets.
 - **Weights**: the weights go in a small cup, `weight_cap`, that screws (or
   locks) into the underside of the base, flush with it; the base's floor
   closes it from above. The cup sinks up into the floor, which over it is only
@@ -281,7 +297,12 @@ floor when it has no mounting holes, on 1 mm standoffs when it has.
   turn 60° into a groove) or none (an open pocket, weights glued in). A slot
   across the bottom turns it with a coin.
 
-Pod assembly: inserts in the shell and sensor plate, BTUs into the shell,
+Pod assembly with the sensor in the shell: inserts in the shell's underside
+(2 for the sensor, 4 over the posts), BTUs into the shell, sensor screwed to
+the shell (M3x6, lens up into its window), controller on the base, wires,
+shell onto the base (4 M3x8 screws up through the posts), weights, feet, ball.
+
+With a sensor plate: inserts in the shell and sensor plate, BTUs into the shell,
 sensor on the plate, nuts into their pockets on the plate, shell onto the
 plate (4 screws from below), controller on the base, wires, plate onto the
 base (4 M3x8 screws up through the posts), weights into the cup and the cup

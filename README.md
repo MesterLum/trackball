@@ -81,6 +81,9 @@ build needs:
    holder and outward into the wall, snap the rocker in, or fix the toggle with its nut).
 7. Put the lid on the base and fix the 4 corner screws. Drop the ball in.
 
+A walled cradle pod has no lid: the sensor board screws straight to the shell's underside,
+and the shell screws onto the base (see [Compact pod](docs/geometry.md#compact-pod)).
+
 The [geometry, hardware and assembly notes](docs/geometry.md) explain every dimension and
 option in detail.
 

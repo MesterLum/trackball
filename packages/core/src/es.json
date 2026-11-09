@@ -428,5 +428,12 @@
   "Print the fit test before the parts. Each row has four columns, marked with one to four dots: one step tighter than these settings, these settings, and one and two steps looser (a step is 0.1 mm on a hole, 0.05 mm on each side of a sliding fit).": "Imprime la prueba de ajuste antes que las piezas. Cada fila tiene cuatro columnas, marcadas con uno a cuatro puntos: un paso más apretada que estos ajustes, estos ajustes, y uno y dos pasos más holgadas (un paso es 0.1 mm en un agujero y 0.05 mm por lado en un ajuste deslizante).",
   "Press the inserts, BTUs and nuts in, and try the plug and bolt in their sockets. Pick the tightest column that still fits by hand, and move the setting one step per dot away from two dots.": "Coloca los insertos, los BTU y las tuercas, y prueba el tapón y el tornillo en sus huecos. Elige la columna más apretada que todavía entra a mano y mueve el ajuste un paso por cada punto de diferencia con la de dos puntos.",
   "Download fit test": "Descargar prueba de ajuste",
-  "fit test": "prueba de ajuste"
+  "fit test": "prueba de ajuste",
+  "sensor mount": "montaje del sensor",
+  "walled cradle pod: the sensor board screws to the shell's underside, which prints on the bed, so the shell alone sets its distance to the ball and nothing prints on supports; or to a separate sensor plate under the shell": "pod cuna con base amurallada: la placa del sensor se atornilla a la cara inferior de la carcasa, que se imprime sobre la cama, así solo la carcasa fija su distancia a la bola y nada se imprime sobre soportes; o a una placa de sensor aparte bajo la carcasa",
+  "In the shell": "En la carcasa",
+  "On a sensor plate": "En una placa de sensor",
+  "in the shell underside: 4 over the base posts, 2 sensor PCB": "en la cara inferior de la carcasa: 4 sobre los postes de la base, 2 PCB del sensor",
+  "up through the base posts into the shell": "subiendo por los postes de la base hasta la carcasa",
+  "sensor PCB to the shell": "PCB del sensor a la carcasa"
 }

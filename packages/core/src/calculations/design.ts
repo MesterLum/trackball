@@ -1808,29 +1808,46 @@ export class Design {
             : _('; coins, steel shot or stones work too, a felt disc stops rattling'),
         ),
       });
+    const held = this.pod.shell_mount;
     items = add(items, [
-      this.is_pod
-        ? { ['item']: _('M3 heat-set inserts (Ø4 x 5 mm)'), ['qty']: 6, ['note']: _('4 shell, 2 sensor PCB') }
-        : {
-            ['item']: _('M3 heat-set inserts (Ø4 x 5 mm)'),
-            ['qty']: 10,
-            ['note']: _('4 cup, 2 sensor PCB, 4 tray posts'),
-          },
-      this.is_pod
+      held
         ? {
-            ['item']: _('M3x8 screws'),
-            ['qty']: 8,
-            ['note']: _('shell to the sensor plate (4), up through the base posts into the nuts (4)'),
+            ['item']: _('M3 heat-set inserts (Ø4 x 5 mm)'),
+            ['qty']: 6,
+            ['note']: _('in the shell underside: 4 over the base posts, 2 sensor PCB'),
           }
-        : { ['item']: _('M3x8 screws'), ['qty']: 8, ['note']: _('cup to carrier (4), lid to tray (4)') },
-      this.is_pod
+        : this.is_pod
+          ? {
+              ['item']: _('M3 heat-set inserts (Ø4 x 5 mm)'),
+              ['qty']: 6,
+              ['note']: _('4 shell, 2 sensor PCB'),
+            }
+          : {
+              ['item']: _('M3 heat-set inserts (Ø4 x 5 mm)'),
+              ['qty']: 10,
+              ['note']: _('4 cup, 2 sensor PCB, 4 tray posts'),
+            },
+      held
+        ? { ['item']: _('M3x8 screws'), ['qty']: 4, ['note']: _('up through the base posts into the shell') }
+        : this.is_pod
+          ? {
+              ['item']: _('M3x8 screws'),
+              ['qty']: 8,
+              ['note']: _('shell to the sensor plate (4), up through the base posts into the nuts (4)'),
+            }
+          : { ['item']: _('M3x8 screws'), ['qty']: 8, ['note']: _('cup to carrier (4), lid to tray (4)') },
+      this.is_pod && !held
         ? {
             ['item']: _('M3 hex nuts'),
             ['qty']: 4,
             ['note']: _('in the pockets on top of the sensor plate, before the shell goes on'),
           }
         : null,
-      { ['item']: _('M3x6 screws'), ['qty']: 2, ['note']: _('sensor PCB to carrier') },
+      {
+        ['item']: _('M3x6 screws'),
+        ['qty']: 2,
+        ['note']: held ? _('sensor PCB to the shell') : _('sensor PCB to carrier'),
+      },
       {
         ['item']: format(_('Rubber feet Ø{d:g} mm'), { d: t.feet_dia }),
         ['qty']: add(length(this.feet_xy()), length(this.palm_feet_xy())),

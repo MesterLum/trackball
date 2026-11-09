@@ -50,7 +50,8 @@ export interface ModelPart {
 const builders = {
   cup: (d: Design) => (d.is_pod ? null : cup(d)),
   shell: (d: Design) => (d.is_pod ? cup(d) : null),
-  carrier,
+  // A shell that holds the sensor board leaves no sensor plate.
+  carrier: (d: Design) => (d.pod.shell_mount ? null : carrier(d)),
   tray,
   weight_cap,
   palmrest,

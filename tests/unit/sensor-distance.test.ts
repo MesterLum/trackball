@@ -58,13 +58,15 @@ const dot = (a: number[], b: number[]) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2
 /**
  * Lens-to-ball distance measured on the rendered parts, not taken from the design's formula: the
  * support seats in the cup (or shell) set where the ball rests, the plate's top meets the cup's
- * underside over the sensor, and the board lies on the plate's underside.
+ * underside over the sensor, and the board lies on the plate's underside, or on the shell's
+ * underside when the shell holds it.
  */
 async function measured(values: Partial<Values>) {
   const d = createDesign(values);
   const parts = generateParts(d);
   const cup = await mesh(parts.find((p) => p.name === (d.is_pod ? 'shell' : 'cup'))!.scad);
-  const plate = await mesh(parts.find((p) => p.name === 'carrier')!.scad);
+  const carrier = parts.find((p) => p.name === 'carrier');
+  const plate = carrier ? await mesh(carrier.scad) : null;
   const c = d.cup,
     s = c.support,
     r = d.ball.r;
@@ -81,10 +83,11 @@ async function measured(values: Partial<Values>) {
   const a = seats[0].at - s.contact_height,
     th = (c.support_polar_deg * Math.PI) / 180;
   const centre = -a * Math.cos(th) + Math.sqrt(r * r - (a * Math.sin(th)) ** 2);
-  // The cup's underside over the sensor board, and the plate's thickness.
+  // The cup's underside over the sensor board, less the plate's thickness; a shell that holds
+  // the board seats it on that underside.
   const over = (t: Tri) => Math.hypot(t.c[0], t.c[1]) < d.pcb.r;
   const contact = Math.min(...cup.filter((t) => t.n[2] < -0.999 && over(t)).map((t) => t.c[2]));
-  const zs = plate.filter(over).map((t) => t.c[2]);
+  const zs = plate ? plate.filter(over).map((t) => t.c[2]) : [0];
   const pcb_face = contact - (Math.max(...zs) - Math.min(...zs));
   return { d, seats, distance: centre - r - (pcb_face + d.pcb.lens.top_above_pcb) };
 }
@@ -93,6 +96,7 @@ describe('lens-to-ball distance measured on the parts', () => {
   for (const values of [
     {},
     { build: 'cradle' },
+    { build: 'cradle', sensor_mount: 'plate' },
     { build: 'pod' },
     { build: 'cradle', sensor_pcb: 'pmw3389-round' },
   ] as Partial<Values>[])

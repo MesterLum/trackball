@@ -54,6 +54,8 @@ function body(levels: PodLevel[]): any {
  */
 export function pod_shroud(d: any): any {
   const wall = d.pod.wall;
+  // Holding the sensor, the shell is solid from the seam up, so it has no ceiling to support.
+  if (d.pod.shell_mount) return cradle_body(d);
   if (d.pod.cradle) return sub(cradle_body(d), cradle_inside(d));
   const inner = pod_levels(d, wall, wall);
   // Straight inside down past the bottom chamfer, so the base plate fits all the way in.
