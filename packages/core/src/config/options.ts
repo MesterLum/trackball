@@ -39,6 +39,7 @@ export const BY_NAME = Object.fromEntries(OPTIONS.map((o) => [o.name, o]));
 /** Choice options whose values are shown as words (translated) rather than part numbers. */
 export const TRANSLATED_CHOICES = new Set([
   'build',
+  'sensor_pcb',
   'shell',
   'weight_cap',
   'pod_base',
