@@ -31,14 +31,21 @@ import {
   switches_preview,
 } from './geometry/assembly.js';
 import { mcu_preview, battery_preview } from './geometry/tray.js';
-import { power_switch_preview } from './geometry/power.js';
+import { power_switch_preview, reset_switch_preview } from './geometry/power.js';
 import { mcu_clamp } from './geometry/clamp.js';
 import { weight_cap } from './geometry/weights.js';
 import { fit_test } from './geometry/fit_test.js';
 export type PrintablePartName =
   'cup' | 'shell' | 'carrier' | 'tray' | 'weight_cap' | 'palmrest' | 'palm_key' | 'mcu_clamp';
 export type PartName =
-  PrintablePartName | 'fit_test' | 'mcu' | 'sensor' | 'switches' | 'battery' | 'power_switch';
+  | PrintablePartName
+  | 'fit_test'
+  | 'mcu'
+  | 'sensor'
+  | 'switches'
+  | 'battery'
+  | 'power_switch'
+  | 'reset_switch';
 export interface ModelPart {
   name: PartName;
   scad: string;
@@ -97,6 +104,7 @@ export function generatePreviewParts(design: Design): ModelPart[] {
     ['switches', switches_preview(design), 'deck', '#b8bec9'],
     ['battery', battery_preview(design), 'world', '#b6becb'],
     ['power_switch', power_switch_preview(design), 'world', '#3b3f45'],
+    ['reset_switch', reset_switch_preview(design), 'world', '#3b3f45'],
   ];
   return [
     ...generateParts(design),

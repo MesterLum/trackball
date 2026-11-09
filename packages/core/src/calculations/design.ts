@@ -18,7 +18,14 @@ import {
   math,
 } from '../math.js';
 import { _ } from '../i18n.js';
-import { POWER_SWITCHES, is_placement, place_power_switch } from './power.js';
+import {
+  POWER_SWITCHES,
+  is_placement,
+  is_reset,
+  place_power_switch,
+  place_reset_switch,
+  usb_wall,
+} from './power.js';
 import { CLAMP, CLAMP_SIDE_EXTRA } from './clamp.js';
 import {
   POD_CUP_CEILING,
@@ -525,6 +532,8 @@ export class Tray {
     this.bay_gap = values.bay_gap ?? 3.0;
     this.clearance = values.clearance ?? 1.0;
     this.mcu_hold = values.mcu_hold ?? 'clamp';
+    /** Pod: a reset button behind the USB wall (`RESET_SWITCHES`), or 'none'. */
+    this.reset_switch = values.reset_switch ?? 'none';
     this.clamp_length = values.clamp_length ?? 3.0;
     this.clamp_width = values.clamp_width ?? 8.0;
   }
@@ -968,6 +977,25 @@ export class Design {
           format(_('no room for the {switch} on the {wall} wall'), { switch: name, wall }),
           this.padding_for_power_switch(),
           _('try another wall'),
+        );
+    }
+    const reset = this.reset_switch_placement();
+    if (reset !== null && !is_reset(reset)) {
+      const wall = _(usb_wall(this));
+      if (reset.reason === 'height')
+        report(
+          format(_('the reset button needs {needed:.1f} mm of wall height but only {free:.1f} mm are free'), {
+            needed: reset.needed,
+            free: reset.free,
+          }),
+        );
+      else
+        report(
+          format(
+            _('no room for the reset button on the {wall} wall (by the USB plug) or the walls beside it'),
+            { wall },
+          ),
+          this.padding_for_reset_switch(),
         );
     }
     if (this.mcu_clamped) {
@@ -1693,6 +1721,21 @@ export class Design {
       this.carrier.padding = original;
     }
   }
+  reset_switch_placement() {
+    return place_reset_switch(this);
+  }
+  padding_for_reset_switch(): number | null {
+    const original = this.carrier.padding;
+    try {
+      for (let p = original + 0.5; p <= original + 30; p += 0.5) {
+        this.carrier.padding = p;
+        if (is_reset(place_reset_switch(this))) return p;
+      }
+      return null;
+    } finally {
+      this.carrier.padding = original;
+    }
+  }
   padding_for_power_switch(): number | null {
     const original = this.carrier.padding;
     try {
@@ -1788,6 +1831,22 @@ export class Design {
           ['note']: format(_('{wall} wall, between the battery and the controller'), { wall: _(power.wall) }),
         });
     }
+    const reset = this.reset_switch_placement();
+    if (reset !== null && is_reset(reset))
+      items.push({
+        ['item']: _(reset.type.name),
+        ['qty']: 1,
+        ['note']: format(
+          reset.wall === usb_wall(this)
+            ? _(
+                '{wall} wall, beside the USB plug: trim its legs to 1.5 mm and wire them to the controller reset and GND (or across its RESET button)',
+              )
+            : _(
+                '{wall} wall, near the USB corner: trim its legs to 1.5 mm and wire them to the controller reset and GND (or across its RESET button)',
+              ),
+          { wall: _(reset.wall) },
+        ),
+      });
     const ballast = this.ballast;
     if (ballast)
       items.push({

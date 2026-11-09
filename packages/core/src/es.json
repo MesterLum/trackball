@@ -435,5 +435,14 @@
   "On a sensor plate": "En una placa de sensor",
   "in the shell underside: 4 over the base posts, 2 sensor PCB": "en la cara inferior de la carcasa: 4 sobre los postes de la base, 2 PCB del sensor",
   "up through the base posts into the shell": "subiendo por los postes de la base hasta la carcasa",
-  "sensor PCB to the shell": "PCB del sensor a la carcasa"
+  "sensor PCB to the shell": "PCB del sensor a la carcasa",
+  "reset button": "botón de reinicio",
+  "6x6 mm tactile switch": "pulsador táctil de 6x6 mm",
+  "Tactile switch 6x6 mm, 4.3 mm tall (through-hole)": "Pulsador táctil 6x6 mm, 4.3 mm de alto (de inserción)",
+  "the reset button needs {needed:.1f} mm of wall height but only {free:.1f} mm are free": "el botón de reinicio necesita {needed:.1f} mm de altura de pared pero solo hay {free:.1f} mm libres",
+  "None": "Ninguno",
+  "no room for the reset button on the {wall} wall (by the USB plug) or the walls beside it": "no hay espacio para el botón de reinicio en la pared {wall} (junto al USB) ni en las paredes contiguas",
+  "{wall} wall, beside the USB plug: trim its legs to 1.5 mm and wire them to the controller reset and GND (or across its RESET button)": "pared {wall}, junto al conector USB: corta sus patas a 1.5 mm y cablea al reinicio y GND del controlador (o a las patas de su botón RESET)",
+  "{wall} wall, near the USB corner: trim its legs to 1.5 mm and wire them to the controller reset and GND (or across its RESET button)": "pared {wall}, cerca de la esquina del USB: corta sus patas a 1.5 mm y cablea al reinicio y GND del controlador (o a las patas de su botón RESET)",
+  "pod: a tactile switch behind the USB wall (or a wall beside it, near the USB corner, when the pod is too tight), wired to the controller's reset, pressed with a pin through a small hole; double press it with the cable plugged in to flash new firmware": "pod: un pulsador detrás de la pared del USB (o una pared contigua, cerca de la esquina del USB, si el pod es muy justo), cableado al reinicio del controlador, que se presiona con una aguja por un agujero pequeño; púlsalo dos veces con el cable conectado para cargar firmware nuevo"
 }
