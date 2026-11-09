@@ -27,7 +27,14 @@ import {
 } from '../../packages/core/src/calculations/pod';
 import { SENSOR_PAD_DIA } from '../../packages/core/src/geometry/carrier';
 import { SHELL_POST_INSERT_DEPTH } from '../../packages/core/src/geometry/cup';
-import { POD_FLAT, wall_frame, type PowerSwitchPlacement } from '../../packages/core/src/calculations/power';
+import {
+  POD_FLAT,
+  RESET_SWITCHES,
+  is_reset,
+  wall_frame,
+  type PowerSwitchPlacement,
+  type ResetPlacement,
+} from '../../packages/core/src/calculations/power';
 
 const POD: Values = {
   build: 'pod',
@@ -73,12 +80,16 @@ describe('compact pod settings', () => {
 describe('compact pod geometry', () => {
   for (const ball of [20, 25, 34, 44, 55, 60])
     it(`fits a ${ball} mm ball`, () => {
-      const d = pod({ ball });
+      const d = pod({ ball, reset_switch: 'none' });
       expect(d.validate()).toEqual([]);
       // The body hugs the cup, or for small balls the sensor board with the posts beside it.
       const [w, l] = d.footprint;
       expect(w).toBeCloseTo(l, 6);
       expect(w).toBeLessThanOrEqual(Math.max(d.skirt_dia + 12, d.pcb.diameter + 2 * (d.tray.post_dia + 6)));
+      // The reset button finds room by the USB wall without growing the pod more than a padding step.
+      const reset = pod({ ball });
+      expect(reset.validate()).toEqual([]);
+      expect(reset.footprint[0]).toBeLessThanOrEqual(w + 1);
     });
 
   it('exports a shell instead of a cup', () => {
@@ -497,5 +508,85 @@ describe('pod sensor plate', () => {
     const holes = (v: Values) => plate(v).split('d=4,').length - 1;
     expect(holes({ mcu: 'rp2040-zero' })).toBe(3);
     expect(holes({ ...POD, mcu: 'rp2040-zero' })).toBe(2);
+  });
+});
+
+describe('pod reset button', () => {
+  const MCUS_ = ['pico', 'xiao', 'rp2040-zero', 'nice-nano', 'supermini', 'pro-micro'];
+
+  it('is offered on pods only, a 6x6 mm tactile switch by default', () => {
+    expect(optionApplies('reset_switch', coerce({ build: 'cradle' }))).toBe(true);
+    expect(optionApplies('reset_switch', coerce({ build: 'pod' }))).toBe(true);
+    expect(optionApplies('reset_switch', coerce({}))).toBe(false);
+    expect(createDesign({}).reset_switch_placement()).toBeNull();
+    expect(createDesign({ build: 'cradle', reset_switch: 'none' }).reset_switch_placement()).toBeNull();
+  });
+
+  const NEIGHBOURS: Record<string, string[]> = {
+    back: ['back', 'right', 'left'],
+    right: ['right', 'back', 'front'],
+    left: ['left', 'back', 'front'],
+  };
+  for (const [name, base] of Object.entries({
+    'default cradle': { build: 'cradle' },
+    'compact cradle': { build: 'cradle', padding: 6, rim: 1, skirt: 8, header_height: 3 },
+    'compact cradle on a plate': {
+      build: 'cradle',
+      sensor_mount: 'plate',
+      padding: 6,
+      rim: 1,
+      skirt: 8,
+      header_height: 3,
+    },
+    'compact covered cradle': {
+      build: 'cradle',
+      pod_base: 'covered',
+      padding: 6,
+      rim: 1,
+      skirt: 8,
+      header_height: 3,
+    },
+    'compact rounded pod': { build: 'pod', padding: 2, rim: 3, skirt: 8, header_height: 3 },
+  } as Record<string, Values>))
+    it(`fits a ${name} by the USB wall without growing it`, () => {
+      for (const mcu of MCUS_)
+        for (const usb of ['right', 'back', 'left']) {
+          const v = { ...base, mcu, usb } as Values;
+          const d = createDesign(autofit(v).values),
+            bare = createDesign(autofit({ ...v, reset_switch: 'none' }).values);
+          const p = d.reset_switch_placement() as ResetPlacement;
+          expect(is_reset(p), `${mcu} ${usb}`).toBe(true);
+          // On the USB wall when it has room, else on a wall beside it.
+          expect(NEIGHBOURS[usb]).toContain(p.wall);
+          if (!name.startsWith('compact')) expect(p.wall).toBe(usb);
+          expect(d.footprint[0], `${mcu} ${usb}`).toBeLessThanOrEqual(bare.footprint[0] + 1);
+          expect(d.validate()).toEqual([]);
+          // The pin reaches the plunger: it sits under the wall's outer face, not past it.
+          expect(p.v_body - p.type.proud).toBeGreaterThan(0);
+          expect(p.v_body - p.type.proud).toBeLessThan(4);
+        }
+    });
+
+  it('cuts the pin hole and adds the holder, in the base or through the shell', () => {
+    const scad = (v: Values, part: string) =>
+      generateParts(createDesign(autofit(v).values)).find((p) => p.name === part)!.scad;
+    for (const v of [
+      { build: 'cradle' },
+      { build: 'cradle', pod_base: 'covered' },
+      { build: 'pod' },
+    ] as Values[]) {
+      expect(scad(v, 'tray')).not.toEqual(scad({ ...v, reset_switch: 'none' }, 'tray'));
+      // Through a shell that comes down to the desk; a walled base carries the hole itself.
+      expect(scad(v, 'shell') === scad({ ...v, reset_switch: 'none' }, 'shell')).toBe(
+        v.build === 'cradle' && !v.pod_base,
+      );
+    }
+  });
+
+  it('lists the switch and how to wire it', () => {
+    const items = createDesign(autofit({ build: 'cradle' }).values)
+      .bom()
+      .map((i: { item: string }) => i.item);
+    expect(items).toContain(RESET_SWITCHES['tact-6x6'].name);
   });
 });

@@ -54,7 +54,8 @@ build needs:
   [Bastard Keyboards](https://github.com/Bastardkb) Charybdis sensor PCB) with its lens;
 - a controller board, plus switches and keycaps if you add buttons;
 - M3 heat-set inserts (Ø4 × 5 mm), M3 screws, and rubber feet;
-- optionally a LiPo battery and a power switch for a wireless controller.
+- optionally a LiPo battery and a power switch for a wireless controller;
+- pods: a 6x6 mm tactile switch for the reset button, by the USB wall.
 
 ### 3. Print
 
@@ -104,6 +105,7 @@ models rather than measured parts. Measure yours, or print a small test first:
 - the PMW3389 round module (placeholder numbers);
 - controller BOOT button positions;
 - power-switch openings (SS12D00, KCD11, MTS-102/103);
+- the 6x6 mm reset switch's body and plunger;
 - the controller clamp's contact area (adjustable under Electronics).
 
 Details are in [Numbers to verify](docs/geometry.md#numbers-to-verify-before-trusting-a-print).

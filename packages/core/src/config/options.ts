@@ -44,6 +44,7 @@ export const TRANSLATED_CHOICES = new Set([
   'weight_cap',
   'pod_base',
   'sensor_mount',
+  'reset_switch',
   'pod_side',
   'mcu_hold',
   'palm_attachment',
@@ -77,6 +78,7 @@ export function optionApplies(name: string, v: Partial<Values>): boolean {
   if (name === 'shell' || name === 'weight_depth') return pod;
   if (name === 'weight_cap') return pod && Number(v.weight_depth ?? 8) > 0;
   if (name === 'pod_base' || name === 'pod_side') return v.build === 'cradle';
+  if (name === 'reset_switch') return pod;
   if (name === 'sensor_mount') return v.build === 'cradle' && v.pod_base !== 'covered';
   if (pod && (POD_HIDDEN.has(name) || ['Buttons', 'Deck'].includes(BY_NAME[name]?.group))) return false;
   const holeless = !MCUS[String(v.mcu)]?.holes?.length;
@@ -170,6 +172,7 @@ export function makeDesign(values: Partial<Values>): Design {
       mcu_place: v.mcu_place,
       usb_type: v.usb_type,
       mcu_hold: v.mcu_hold,
+      reset_switch: v.build !== 'full' ? v.reset_switch : 'none',
       clamp_length: v.clamp_length,
       clamp_width: v.clamp_width,
       usb_exit: v.usb === 'back' ? 'back' : 'side',

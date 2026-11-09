@@ -40,7 +40,7 @@
     /** Printed parts meant for transparent filament, always drawn see-through. */
     clear?: string[];
   } = $props();
-  const HARDWARE = new Set(['mcu', 'sensor', 'switches', 'battery', 'power_switch']);
+  const HARDWARE = new Set(['mcu', 'sensor', 'switches', 'battery', 'power_switch', 'reset_switch']);
   let host: HTMLDivElement;
   let scene: THREE.Scene,
     renderer: THREE.WebGLRenderer,

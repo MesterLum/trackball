@@ -296,6 +296,26 @@ floor when it has no mounting holes, on 1 mm standoffs when it has.
   polyhedron), a bayonet (three lugs at the rim that enter through slots and
   turn 60° into a groove) or none (an open pocket, weights glued in). A slot
   across the bottom turns it with a coin.
+- **Reset button** (`reset_switch`): a closed pod hides the controller's own
+  buttons, so a 6x6 mm through-hole tactile switch (body 6 x 6 x 3.5 mm, 3.5 mm
+  plunger 0.8 mm proud, 4.3 mm overall) sits behind a wall and is pressed with a
+  pin through a 3.9 mm hole. To flash, plug the cable in and double press it:
+  nRF52840 boards open their bootloader drive; RP2040 boards need QMK's
+  `RP2040_BOOTLOADER_DOUBLE_TAP_RESET`. Trim its legs to 1.5 mm and solder the
+  wires to them, led upward, to the controller's reset and GND, or across its
+  own RESET button's legs. It goes on the USB wall, as close to the plug as the
+  controller's pocket and clamp allow (`USB_PLUG_HALF` keeps the hole clear of
+  the cable's moulded plug). A compact pod has no room there between the
+  controller and a corner post, so it moves to a wall beside it, at the end
+  nearest the USB wall (`RESET_WALLS`). Every controller fits a compact pod this
+  way, growing it by at most one padding step. The holder (`place_reset_switch`,
+  `reset_switch_parts`) stands on the base floor, open on top: two cheeks and a
+  shelf locate the body 1 mm up, and a rib between the two leg pairs takes the
+  press. It may merge with a corner post, but the switch and its legs keep clear
+  of it. A pod's side curves away from the middle, so the body sits behind the
+  wall's deepest point under the holder, which fills in up to the wall; the
+  plunger ends 1.5 to 3 mm under the outer face. Through a shell down to the
+  desk, the hole goes through the shell and the holder stops at its fitting gap.
 
 Pod assembly with the sensor in the shell: inserts in the shell's underside
 (2 for the sensor, 4 over the posts), BTUs into the shell, sensor screwed to
@@ -306,8 +326,9 @@ With a sensor plate: inserts in the shell and sensor plate, BTUs into the shell,
 sensor on the plate, nuts into their pockets on the plate, shell onto the
 plate (4 screws from below), controller on the base, wires, plate onto the
 base (4 M3x8 screws up through the posts), weights into the cup and the cup
-screwed in, feet over the screw pockets, ball in. Flash the controller before
-closing the pod: its BOOT button ends up inside.
+screwed in, feet over the screw pockets, ball in. Drop the reset switch into
+its holder and wire it before closing the pod. Without one, flash the
+controller first: its BOOT and RESET buttons end up inside.
 
 ## Assembly
 
@@ -385,6 +406,8 @@ the two-dot column.
 
 ## Numbers to verify before trusting a print
 
+- **Reset switch**: the 6x6 mm tactile switch sizes come from a seller's
+  drawing (`RESET_SWITCHES`); check the body and plunger of yours.
 - **Lens stack** (`calculations/sensor.ts`): from PixArt's datasheets, which
   agree for the PMW3360 (v1.30, Figure 4 and Table 3), PMW3389 (v1.0,
   Figure 5) and PMW3610 (R2.4, Figure 4, LM18-LSI lens): the top of a 1.60 mm

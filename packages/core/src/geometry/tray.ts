@@ -4,7 +4,7 @@ import { _ } from '../i18n.js';
 import { circle, cube, hull, linear_extrude, polygon, union } from '../scad/index.js';
 import { EPS, half_space_above, rounded_rect, to_world, zcyl } from './common.js';
 import { tray_palm_joint } from './palmrest.js';
-import { power_switch_parts } from './power.js';
+import { power_switch_parts, reset_switch_parts } from './power.js';
 import { clamp_posts } from './clamp.js';
 import { cradle_base, pod_plate } from './pod.js';
 import { weight_chamber } from './weights.js';
@@ -246,6 +246,9 @@ export function tray(d: any): any {
     if (cradle) adds.push(cradle);
     if (opening) cuts.push(opening);
   }
+  const [holder, pin_hole] = reset_switch_parts(d);
+  if (holder) adds.push(holder);
+  if (pin_hole) cuts.push(pin_hole);
   const chamber = weight_chamber(d);
   if (chamber) cuts.push(chamber);
   for ([fx, fy] of d.feet_xy()) {

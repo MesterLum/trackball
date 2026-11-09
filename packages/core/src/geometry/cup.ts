@@ -18,7 +18,7 @@ import {
 import { cradle_cuts, pod_rim_chamfer, pod_shroud } from './pod.js';
 import { cradle_shape } from '../calculations/pod.js';
 import { usb_cutout } from './tray.js';
-import { power_switch_parts } from './power.js';
+import { power_switch_parts, reset_switch_parts } from './power.js';
 import { pcb_features } from './carrier.js';
 import { EPS, place_on_ball, rounded_rect, rounded_slab, support_frames, zcyl } from './common.js';
 export function lens_window_size(d: any): any {
@@ -176,11 +176,12 @@ export function cup(d: any): any {
   // A pod's shell is also its outer wall: the USB plug comes out through it.
   // Without a walled base the shell is the outer wall: the USB plug and power switch go through it.
   if (d.is_pod) {
-    const opening = d.pod.walled ? null : power_switch_parts(d)[1];
-    result = sub(
-      result,
-      union()(...(d.pod.cradle ? [] : [pod_rim_chamfer(d)]), usb_cutout(d), ...(opening ? [opening] : [])),
-    );
+    const openings = d.pod.walled
+      ? []
+      : [power_switch_parts(d)[1], reset_switch_parts(d)[1]].filter(
+          (s): s is NonNullable<typeof s> => s !== null,
+        );
+    result = sub(result, union()(...(d.pod.cradle ? [] : [pod_rim_chamfer(d)]), usb_cutout(d), ...openings));
   }
   return result;
 }
