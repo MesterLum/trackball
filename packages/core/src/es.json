@@ -345,7 +345,6 @@
   "No switch": "Sin interruptor",
   ", held by the printed clamp bar": ", sujeto con la barra de sujeción impresa",
   "Glue only": "Solo pegamento",
-  "M2x6 self-tapping screws": "Tornillos autorroscantes M2x6",
   "Screwed clamp bar": "Barra de sujeción atornillada",
   "clamp pad length": "largo de la zona de presión",
   "clamp pad width": "ancho de la zona de presión",
@@ -449,5 +448,8 @@
   "no room for the {switch} on any wall": "no hay espacio para el {switch} en ninguna pared",
   "no room for the {switch} on the {wall} wall beside the USB plug": "no hay espacio para el {switch} en la pared {wall} junto al conector USB",
   "3.5x6 mm 2-pin switch (Corne, Lily58, Sofle)": "pulsador de 3.5x6 mm, 2 patas (Corne, Lily58, Sofle)",
-  "Tactile switch 3.5x6 mm, 4.3 mm tall, 2-pin (through-hole)": "Pulsador táctil 3.5x6 mm, 4.3 mm de alto, 2 patas (de inserción)"
+  "Tactile switch 3.5x6 mm, 4.3 mm tall, 2-pin (through-hole)": "Pulsador táctil 3.5x6 mm, 4.3 mm de alto, 2 patas (de inserción)",
+  ", 2 controller clamp posts": ", 2 postes de la pinza del controlador",
+  "M3x8 button-head screws": "Tornillos M3x8 de cabeza redondeada",
+  "controller clamp bar into its posts; a low head clears the sensor board": "barra de la pinza del controlador a sus postes; la cabeza baja libra la placa del sensor"
 }

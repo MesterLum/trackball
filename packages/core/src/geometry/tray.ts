@@ -214,9 +214,11 @@ export function tray(d: any): any {
       local = sub(local, union()(_box(-a, a, c, pw / 2 + 3, z0, z1), _box(-a, a, -pw / 2 - 3, -c, z0, z1)));
     }
     const clamp = clamp_posts(d);
-    if (clamp) local = sub(add(local, clamp[0]), clamp[1]);
+    if (clamp) local = add(local, clamp[0]);
     rot = truth(t.usb_exit === 'back') ? 90.0 : truth(t.usb_side > 0) ? 0.0 : 180.0;
     adds.push(local.rotate([0, 0, rot]).translate([mx, my, 0]));
+    // The insert holes run on into the floor under the posts.
+    if (clamp) cuts.push(clamp[1].rotate([0, 0, rot]).translate([mx, my, 0]));
   }
   cuts.push(usb_cutout(d));
   if (truth(d.battery.enabled)) {

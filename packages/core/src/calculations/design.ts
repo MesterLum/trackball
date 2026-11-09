@@ -26,7 +26,7 @@ import {
   place_reset_switch,
   usb_wall,
 } from './power.js';
-import { CLAMP, CLAMP_SIDE_EXTRA } from './clamp.js';
+import { CLAMP, CLAMP_SIDE_EXTRA, CLAMP_TOP_CLEAR, clamp_insert_sink, clamp_post_points } from './clamp.js';
 import {
   POD_CUP_CEILING,
   POD_FEET,
@@ -628,9 +628,15 @@ export class Design {
     return !truth(t.mcu.holes) && t.mcu_hold === 'clamp';
   }
   get mcu_stack(): any {
-    let t: any;
-    t = this.tray;
-    return add(add(add(t.standoff_h, t.mcu.thickness), t.mcu.component_height), t.clearance);
+    const t = this.tray;
+    // A pocketed board with parts on its back sits on a raised ledge; above it, the clamp bar and a
+    // button-head screw also need room under whatever covers the board.
+    const seat = Math.max(t.standoff_h, this.mcu_under_relief);
+    const above = Math.max(
+      t.mcu.component_height + t.clearance,
+      this.mcu_clamped ? CLAMP.bar + CLAMP.head_h + CLAMP_TOP_CLEAR : 0,
+    );
+    return Math.round((seat + t.mcu.thickness + above) * 100) / 100;
   }
   get bay_depth(): any {
     return add(index(this.mcu_xy_size, 1), 1.0);
@@ -1283,7 +1289,16 @@ export class Design {
   get weight_extra(): number {
     const b = this.ballast;
     if (!b) return 0;
-    const cover = this.tray.mcu.holes?.length ? POD_STANDOFF_SINK + 0.8 : POD_CUP_CEILING;
+    let cover = this.tray.mcu.holes?.length ? POD_STANDOFF_SINK + 0.8 : POD_CUP_CEILING;
+    // The clamp's insert holes reach into the floor: keep a floor under them where they stand over
+    // the chamber.
+    const sink = clamp_insert_sink(this);
+    if (sink > 0) {
+      const [, , cx, cy] = this.footprint;
+      const reach = b.outer_r + (CLAMP.insert_dia + this.fit.hole) / 2;
+      if (clamp_post_points(this).some(([x, y]) => Math.hypot(x - cx, y - cy) < reach))
+        cover = Math.max(cover, sink + CLAMP.insert_floor);
+    }
     return Math.max(b.total + cover - this.tray.floor, 0);
   }
   get usb_kind(): any {
@@ -1933,12 +1948,17 @@ export class Design {
         ['note']: _('JST or direct solder'),
       },
     ]);
-    if (this.mcu_clamped)
+    if (this.mcu_clamped) {
+      // Two more inserts in the clamp posts, on the same line.
+      const inserts = items.find((i: any) => i && i.item === _('M3 heat-set inserts (Ø4 x 5 mm)'));
+      inserts.qty += 2;
+      inserts.note = add(inserts.note, _(', 2 controller clamp posts'));
       items.push({
-        ['item']: _('M2x6 self-tapping screws'),
+        ['item']: _('M3x8 button-head screws'),
         ['qty']: 2,
-        ['note']: _('controller clamp bar to its posts'),
+        ['note']: _('controller clamp bar into its posts; a low head clears the sensor board'),
       });
+    }
     return (() => {
       const result: any = [];
       for (const i of items) {

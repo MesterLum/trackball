@@ -108,7 +108,7 @@ describe('option input (shared links and the form)', () => {
   });
 
   it('auto fit takes the largest padding when several problems ask for more', () => {
-    const tight = { mcu: 'nice-nano', battery: '50x34x5', switches: 0, padding: 4 };
+    const tight = { mcu: 'pico', battery: '50x34x5', switches: 0, padding: 4 };
     const asked = createDesign(tight)
       .problems()
       .map((p: any) => p.fix.padding)

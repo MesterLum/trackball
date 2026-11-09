@@ -19,7 +19,7 @@ describe('power switch placement', () => {
   for (const power_switch of Object.keys(POWER_SWITCHES))
     for (const power_wall of ['right', 'left', 'back'])
       it(`${power_switch} on the ${power_wall} wall of a roomy body`, () => {
-        const d = createDesign({ ...battery, power_switch, power_wall, padding: 20 });
+        const d = createDesign({ ...battery, power_switch, power_wall, padding: 24 });
         const p = d.power_switch_placement();
         expect(is_placement(p), JSON.stringify(p)).toBe(true);
         expect(d.validate()).toEqual([]);
@@ -29,7 +29,7 @@ describe('power switch placement', () => {
     let checked = 0;
     for (const mcu_place of ['behind', 'under'])
       for (const power_switch of Object.keys(POWER_SWITCHES)) {
-        const values = { ...battery, mcu: 'rp2040-zero', mcu_place, usb: 'right', power_switch, padding: 20 };
+        const values = { ...battery, mcu: 'rp2040-zero', mcu_place, usb: 'right', power_switch, padding: 24 };
         const d = createDesign(autofit(values).values);
         const p = d.power_switch_placement();
         if (!is_placement(p)) continue; // reported as a fit problem instead
@@ -42,7 +42,7 @@ describe('power switch placement', () => {
   });
 
   it('keeps the body under the lid and above the floor', () => {
-    const d = createDesign({ ...battery, tilt: 15, tent: -10, power_switch: 'rocker', padding: 20 });
+    const d = createDesign({ ...battery, tilt: 15, tent: -10, power_switch: 'rocker', padding: 24 });
     const p = d.power_switch_placement();
     expect(is_placement(p)).toBe(true);
     if (!is_placement(p)) return;
@@ -59,7 +59,7 @@ describe('power switch placement', () => {
         [0, -10],
         [15, 8],
       ]) {
-        const d = createDesign({ ...battery, tilt, tent, power_wall, padding: 20 });
+        const d = createDesign({ ...battery, tilt, tent, power_wall, padding: 24 });
         const p = d.power_switch_placement();
         expect(is_placement(p), `${power_wall} ${tilt}/${tent}`).toBe(true);
         if (!is_placement(p)) continue;

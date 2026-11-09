@@ -11,17 +11,29 @@ export const CLAMP = {
   preload: 0.15,
   /** Minimum bar width along the board (covers the screw holes). */
   min_span: 5.0,
-  /** Screw posts beside the pocket. */
-  post_dia: 5.0,
-  /** Post centre beyond the pocket edge. */
-  post_offset: 3.0,
-  pilot_dia: 1.8,
-  pilot_depth: 6.0,
-  clear_dia: 2.4,
+  /**
+   * Screw posts beside the pocket, for the build's M3 heat-set inserts (Ø4 x 5 mm): 1.5 mm of wall
+   * around the insert (solid with 4 perimeters), a 45° foot into the floor, and the post's centre
+   * this far from the pocket's edge, which leaves 0.6 mm of frame between them.
+   */
+  post_dia: 7.0,
+  post_foot: 1.5,
+  post_offset: 4.1,
+  insert_dia: 4.0,
+  /** The insert's hole, from the post top: its 5 mm and a little room under it. */
+  insert_depth: 5.5,
+  /** Floor left between an insert hole and a weight chamber under it. */
+  insert_floor: 0.8,
+  /** M3 clearance through the bar, and the round boss around each hole at the bar's ends. */
+  clear_dia: 3.4,
+  /** M3x8 button-head screw: the head's height over the bar. */
+  head_h: 1.7,
   /** Half the size of a tactile button, for the BOOT button check. */
   button_half: 1.5,
 };
 
+/** Air left over the clamp screws' heads, under the sensor board. */
+export const CLAMP_TOP_CLEAR = 0.5;
 /** Extra width on each side of the pocket frame taken by the screw posts. */
 export const CLAMP_SIDE_EXTRA = CLAMP.post_offset + CLAMP.post_dia / 2 - 1.5;
 
@@ -65,4 +77,22 @@ export function clamp_layout(d: any): ClampLayout | null {
     post_top: board_top + CLAMP.relief - CLAMP.preload,
     bar_top: board_top + CLAMP.bar,
   };
+}
+
+/** World xy of the clamp's two screw posts (the board's frame turned as in the tray). */
+export function clamp_post_points(d: any): number[][] {
+  const l = clamp_layout(d);
+  if (!l) return [];
+  const t = d.tray;
+  const a = (l.a0 + l.a1) / 2;
+  const [x, y] = d.mcu_center();
+  return [-l.post_c, l.post_c].map((c) =>
+    t.usb_exit === 'back' ? [x - c, y + a] : [x + t.usb_side * a, y + t.usb_side * c],
+  );
+}
+/** How far the insert holes reach below the floor's top (0 when they stay in the post). */
+export function clamp_insert_sink(d: any): number {
+  const l = clamp_layout(d);
+  if (!l) return 0;
+  return Math.max(CLAMP.insert_depth - (l.post_top - d.z_floor_top), 0);
 }

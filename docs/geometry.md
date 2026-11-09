@@ -149,7 +149,8 @@ a friction pocket), USB size, tallest component, BOOTSEL position.
   `PMW3389_ROUND` in `calculations/design.ts`). The carrier is the only part that changes.
 - Screws: M3 heat-set inserts (Ø4 hole): 4 in the cup, 2 in the carrier,
   4 in the tray posts. M3x8 for cup and lid, M3x6 for the PCB.
-  M2x6 self-tapping for Pico-style boards.
+  M2x6 self-tapping for Pico-style boards; 2 more inserts and M3x8 button-head
+  screws for the controller clamp.
 - MCU dimension references (L along USB × W, mm):
   [Pico physical drawing](https://datasheets.raspberrypi.com/pico/pico-product-brief.pdf)
   confirms 51 × 21 and 47 × 11.4 mounting-hole spacing;
@@ -167,19 +168,29 @@ a friction pocket), USB size, tallest component, BOOTSEL position.
   board revision before printing. Adjust `MCU` in `packages/core/src/calculations/design.ts` for
   different outlines, connector overhang or mid-mount offsets. A connector-type
   override alone cannot describe every clone's mechanical differences.
-- MCU presets: `pico`, `pico-w`, `pico2`, `rp2040-zero`, `xiao`,
-  `nice-nano`, `supermini`, `pro-micro`. Boards without mounting holes sit in
-  a pocket that takes the plug's push and pull. By default (`mcu_hold clamp`)
-  a separate printed bar (`mcu_clamp.stl`, 2.8 mm thick) is screwed over the
-  board end opposite the USB with two M2x6 self-tapping screws into posts
-  beside the pocket, so wiggling the cable cannot lever the board up. Only its
-  pad touches the board: `clamp_length` (from that end, default 3 mm) by
-  `clamp_width` (centred, default 8 mm); elsewhere the underside stays 1.4 mm
-  up, clear of edge pads and wires. The posts sit 0.15 mm low, so tightening
-  the screws flexes the bar and keeps the pad pressed. Check the default pad
-  against your board: these boards have not been measured for part-free
-  areas. Validation refuses a pad wider than the board, past its middle, or a
-  bar over the RP2040-Zero BOOT button. `mcu_hold glue` keeps the plain pocket.
+- MCU presets: `pico`, `pico-w`, `pico2`, `rp2040-zero`, `xiao`, `nice-nano`,
+  `supermini`, `pro-micro`. Boards without mounting holes sit in a pocket that
+  takes the plug's push and pull. By default (`mcu_hold clamp`) a separate
+  printed bar (`mcu_clamp.stl`, 2.8 mm thick) is screwed over the board end
+  opposite the USB with two M3x8 button-head screws into M3 heat-set inserts (Ø4
+  x 5 mm, the build's own) in posts beside the pocket, so wiggling the cable
+  cannot lever the board up. The posts are 7 mm across, leaving 1.5 mm of wall
+  around the insert (solid with 4 perimeters), stand on a 45° foot and sit 0.6
+  mm clear of the pocket. They are only 2-4 mm tall, since the bar must press
+  the board, so the 5.5 mm insert holes run on into the floor; over a pod's
+  weight chamber the floor thickens to keep 0.8 mm under them
+  (`clamp_insert_sink`), about 2.8 mm taller. The bar has a 7 mm round boss
+  around each M3 hole, beside the board, while its span over the board stays
+  short. The room reserved above the board under the sensor covers the bar and a
+  button head (`mcu_stack`), and the raised ledge of a board with parts on its
+  back. Only its pad touches the board: `clamp_length` (from that end, default 3
+  mm) by `clamp_width` (centred, default 8 mm); elsewhere the underside stays
+  1.4 mm up, clear of edge pads and wires. The posts sit 0.15 mm low, so
+  tightening the screws flexes the bar and keeps the pad pressed. Check the
+  default pad against your board: these boards have not been measured for
+  part-free areas. Validation refuses a pad wider than the board, past its
+  middle, or a bar over the RP2040-Zero BOOT button. `mcu_hold glue` keeps the
+  plain pocket.
 - Battery: `battery LxWxT` makes a framed pocket for that cell under the
   sensor (L along X, W along Y). Useful with the wireless boards
   (nice!nano, Supermini, XIAO nRF52840, Pico W with a LiPo shim).
